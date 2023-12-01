@@ -1,3 +1,4 @@
+import './style.css';
 import * as THREE from 'three';
 
 //import orbit controls
@@ -12,8 +13,23 @@ import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
 //import axes helper
 import { AxesHelper } from 'three';
 
+import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
+
+
 const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera( 50, window.innerWidth / window.innerHeight, 0.1, 1000 );
+const camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 0.1, 1000 );
+
+scene.background = new THREE.CubeTextureLoader()
+	.setPath( 'textures/cubeMap/' )
+	.load( [
+				'px.png',
+				'nx.png',
+				'py.png',
+				'ny.png',
+				'pz.png',
+				'nz.png'
+			] );
+
 
 //add axes helper
 const axesHelper = new AxesHelper( 5 );
@@ -43,23 +59,34 @@ const renderer = new THREE.WebGLRenderer();
 renderer.setSize( window.innerWidth, window.innerHeight );
 document.body.appendChild( renderer.domElement );
 
+const objLoader = new OBJLoader();
+
+objLoader.load(
+	// resource URL
+	'public/old_oil_barrel.obj',
+	// called when resource is loaded
+	function ( object ) {
+
+		scene.add( object );
+    object.scale.set(0.52, 0.52, 0.52);
+    object.position.set(0, -3.55, -0.6);
+    //make object smaller
+	},
+	// called when loading is in progresses
+	function ( xhr ) {
+
+		console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
+
+	},
+	// called when loading has errors
+	function ( error ) {
+
+		console.log( 'An error happened' );
+
+	});
+
 const geometry = new THREE.BoxGeometry( 1, 1, 1 );
 const material = new THREE.MeshBasicMaterial( { color: 0x00ff00  } );
-//add plane geometry
-const planeGeometry = new THREE.PlaneGeometry( 5, 5, 32 );
-const planeMaterial = new THREE.MeshBasicMaterial( {color: 0xffff00, side: THREE.DoubleSide} );
-const plane = new THREE.Mesh( planeGeometry, planeMaterial );
-scene.add( plane );
-
-//rotate plane x axis by half
-plane.rotation.x = Math.PI/2;
-
-//place position of plane lower on x axis
-plane.position.y = -0.03;
-
-//make plane smaller
-plane.scale.x = 0.5;
-plane.scale.y = 0.5;
 
 //add orbit controls
 const controls = new OrbitControls(camera, renderer.domElement);
@@ -77,8 +104,8 @@ scene.add(directionalLight);
 const helper = new THREE.DirectionalLightHelper(directionalLight, 5); 
 scene.add(helper);
 
-camera.position.z = 1;
-camera.position.y = 0.9;
+camera.position.z = 1; //zoom in van 2 naar 1
+camera.position.y = 0.4;
 
 //camera position to screen
 camera.lookAt(0, 0, 0);
