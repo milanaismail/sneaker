@@ -45,19 +45,19 @@ loader.setDRACOLoader(dracoLoader);
 
 //add public/Shoe_compressed.glb 
 loader.load('public/Shoe_compressed.glb', function(gltf){
-  gltf.scene.position.set(0, 0.06, 0)
+  gltf.scene.position.set(0, 0.10, -0.05)
   gltf.scene.rotation.set(0, -65 * (Math.PI / 180), 0)
   gltf.scene.scale.set(3, 3, 3);
+  gltf.scene.castShadow = true;
   scene.add(gltf.scene);
-}, undefined, function(error){
-  console.error(error);
 });
 
-//add orbit to shoe only
 
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize( window.innerWidth, window.innerHeight );
 document.body.appendChild( renderer.domElement );
+
+
 
 const objLoader = new OBJLoader();
 
