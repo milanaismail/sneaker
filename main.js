@@ -43,16 +43,42 @@ const dracoLoader = new DRACOLoader();
 dracoLoader.setDecoderPath('https://www.gstatic.com/draco/versioned/decoders/1.5.6/');
 loader.setDRACOLoader(dracoLoader);
 
+let shoe;
+
 //add public/Shoe_compressed.glb 
 loader.load('public/Shoe_compressed.glb', function(gltf){
-  gltf.scene.position.set(0.1, 0.10, -0.04)
-  gltf.scene.rotation.set(0, -65 * (Math.PI / 180), 0)
-  gltf.scene.scale.set(3, 3, 3);
-  gltf.scene.castShadow = true;
-  scene.add(gltf.scene);
-  gltf.scene.receiveShadow = true;
+  shoe = gltf.scene;
+  shoe.position.set(0.1, 0.10, -0.04)
+  shoe.rotation.set(0, -65 * (Math.PI / 180), 0)
+  shoe.scale.set(3, 3, 3);
+  shoe.castShadow = true;
+  scene.add(shoe);
+  shoe.receiveShadow = true;
+  shoe.rotation.set(0, -65 * (Math.PI / 180), 0); 
 });
 
+let isDragging = false;
+let previousMouseX = 0;
+
+// Event listener for mouse movement
+document.addEventListener('mousedown', (event) => {
+  isDragging = true;
+  previousMouseX = event.clientX;
+});
+
+document.addEventListener('mouseup', () => {
+  isDragging = false;
+});
+
+document.addEventListener('mousemove', (event) => {
+  if (isDragging && shoe) {
+    const delta = event.clientX - previousMouseX;
+    previousMouseX = event.clientX;
+
+    // Rotate the shoe based on mouse movement
+    shoe.rotation.y += delta * 0.01; // You can adjust the sensitivity here
+  }
+});
 
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize( window.innerWidth, window.innerHeight );
@@ -78,7 +104,7 @@ const geometry = new THREE.BoxGeometry( 1, 1, 1 );
 const material = new THREE.MeshBasicMaterial( { color: 0x00ff00  } );
 
 //add orbit controls
-const controls = new OrbitControls(camera, renderer.domElement);
+//const controls = new OrbitControls(camera, renderer.domElement);
 
 //add ambient light
 const ambientLight = new THREE.AmbientLight(0xffffff,1.2);
@@ -110,8 +136,6 @@ camera.position.y = 0.4;
 
 //camera position to screen
 camera.lookAt(0, 0, 0);
-
-
 
 function animate() {
 	requestAnimationFrame( animate );
