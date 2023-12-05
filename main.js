@@ -146,7 +146,7 @@ scene.add(directionalLight);
 const helper = new THREE.DirectionalLightHelper(directionalLight, 5); 
 scene.add(helper);
 
-camera.position.z = 1; //zoom in van 2 naar 1
+camera.position.z = 2; //zoom in van 2 naar 1
 camera.position.y = 0.4;
 
 //camera position to screen
@@ -154,7 +154,9 @@ camera.lookAt(0, 0, 0);
 
 function animate() {
 	requestAnimationFrame( animate );
-
+  if (camera.position.z > 1) {
+    camera.position.z -= 0.01;
+  }
 	renderer.render( scene, camera );
 }
 
