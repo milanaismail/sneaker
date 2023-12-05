@@ -45,11 +45,12 @@ loader.setDRACOLoader(dracoLoader);
 
 //add public/Shoe_compressed.glb 
 loader.load('public/Shoe_compressed.glb', function(gltf){
-  gltf.scene.position.set(0, 0.10, -0.05)
+  gltf.scene.position.set(0.1, 0.10, -0.04)
   gltf.scene.rotation.set(0, -65 * (Math.PI / 180), 0)
   gltf.scene.scale.set(3, 3, 3);
   gltf.scene.castShadow = true;
   scene.add(gltf.scene);
+  gltf.scene.receiveShadow = true;
 });
 
 
@@ -57,7 +58,7 @@ const renderer = new THREE.WebGLRenderer();
 renderer.setSize( window.innerWidth, window.innerHeight );
 document.body.appendChild( renderer.domElement );
 
-
+renderer.shadowMap.enabled = true;
 
 const objLoader = new OBJLoader();
 
@@ -71,18 +72,6 @@ objLoader.load(
     object.scale.set(0.52, 0.52, 0.52);
     object.position.set(0, -3.55, -0.6);
     //make object smaller
-	},
-	// called when loading is in progresses
-	function ( xhr ) {
-
-		console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
-
-	},
-	// called when loading has errors
-	function ( error ) {
-
-		console.log( 'An error happened' );
-
 	});
 
 const geometry = new THREE.BoxGeometry( 1, 1, 1 );
@@ -92,12 +81,24 @@ const material = new THREE.MeshBasicMaterial( { color: 0x00ff00  } );
 const controls = new OrbitControls(camera, renderer.domElement);
 
 //add ambient light
-const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+const ambientLight = new THREE.AmbientLight(0xffffff,1.2);
 scene.add(ambientLight);
+
+const pointLight = new THREE.PointLight(0x0000ff, 0.2);
+scene.add(pointLight);
+pointLight.castShadow = true;
+pointLight.position.set(0, 0, -0.2);
+
+//add point light helper
+const pointLightHelper = new THREE.PointLightHelper(pointLight);
+scene.add(pointLightHelper);
+
+// optional light
 
 //add directional light
 const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
 directionalLight.position.set(0, 15, 4);
+directionalLight.castShadow = true;
 scene.add(directionalLight);
 
 //add helper
