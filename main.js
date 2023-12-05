@@ -53,7 +53,6 @@ loader.load('public/Shoe_compressed.glb', function(gltf){
   shoe.scale.set(3, 3, 3);
   shoe.castShadow = true;
   scene.add(shoe);
-  shoe.receiveShadow = true;
   shoe.rotation.set(0, -65 * (Math.PI / 180), 0); 
 });
 
@@ -86,19 +85,35 @@ document.body.appendChild( renderer.domElement );
 
 renderer.shadowMap.enabled = true;
 
+const texture = new THREE.TextureLoader().load('textures/normal2.png');
+const material2 = new THREE.MeshStandardMaterial({ 
+  map: texture,
+  metalness: 0.5,
+  roughness: 0.2,
+ });
+
 const objLoader = new OBJLoader();
 
 objLoader.load(
 	// resource URL
 	'public/old_oil_barrel.obj',
 	// called when resource is loaded
-	function ( object ) {
+	function ( barrel ) {
+		scene.add( barrel );
+    barrel.scale.set(0.52, 0.52, 0.52);
+    barrel.position.set(0, -3.55, -0.6);
+	  barrel.receiveShadow = true;
+    //add material2
+    barrel.traverse( function ( child ) {
+      if ( child instanceof THREE.Mesh ) {
+        child.material = material2;
+      }
+    });
+    //adjust material metalness
 
-		scene.add( object );
-    object.scale.set(0.52, 0.52, 0.52);
-    object.position.set(0, -3.55, -0.6);
-    //make object smaller
 	});
+
+
 
 const geometry = new THREE.BoxGeometry( 1, 1, 1 );
 const material = new THREE.MeshBasicMaterial( { color: 0x00ff00  } );
