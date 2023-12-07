@@ -172,21 +172,58 @@ camera.lookAt(0, -1, 0);
 let name = document.getElementById('name');
 const paletteLaces = document.getElementById('color-palette-laces');
 
-
 const clock = new THREE.Clock();
+
+let raycastClicked = false;
 
 // Function to change the color of the laces
 function changeLacesColor(color) {
   if (scene) {
-    const lacesMesh = scene.children[4].children[0].children[1];
-    if (lacesMesh.name === "laces") {
+    const lacesMesh = scene.getObjectByName("laces");
+    console.log(lacesMesh);
+    if (lacesMesh) {
       lacesMesh.material.color.set(color);
     }
   }
+};
+
+function handlePaletteClick() {
+  // Change the color of the laces
+  changeLacesColor("#ff0000"); // Adjust the color as needed
+  raycastClicked = true;
 }
 
+// Handle click event
+window.addEventListener('click', function () {
+  
+  const intersects = raycaster.intersectObjects(scene.children, true);
+    for (const intersect of intersects) {
+      if (intersect.object.isMesh ) {
+      // Look at the clicked object
+      camera.lookAt(intersect.object.position);
+
+      // Set camera position based on the clicked object
+      camera.position.z = 0;
+      camera.position.x = 1; // Adjust as needed
+      camera.position.y = 1; // Adjust as needed
+
+      // Handle different parts of the shoe
+      if (intersect.object.name === "laces") {
+        name.innerHTML = "Laces";
+        paletteLaces.style.display = "flex";
+
+        paletteLaces.removeEventListener('click', handlePaletteClick); // Remove previous listener to avoid multiple bindings
+        paletteLaces.addEventListener('click', handlePaletteClick);
+  
+      } else if (intersect.object.name === "sole_bottom") {
+        name.innerHTML = "Sole Bottom";
+        paletteLaces.style.display = "none";
+      }
+    }
+  }
+});
+
 function animate() {
-  requestAnimationFrame(animate);
 
   const elapsedTime = clock.getElapsedTime();
   const speed = elapsedTime * 0.1;
@@ -202,46 +239,27 @@ function animate() {
 
   // Reset color for all objects
   scene.traverse((node) => {
-    if (node.isMesh) {
+    if (node.isMesh && raycastClicked === false) {
+      node.material.color.set("#ffffff");
+    } else if (node.isMesh && raycastClicked === true && node.name !== "laces"){
       node.material.color.set("#ffffff");
     }
   });
 
   // Change color for the first intersected mesh
   for (const intersect of intersects) {
-    if (intersect.object.isMesh && !meshFound) {
+    if (intersect.object.isMesh && !meshFound && raycastClicked === false) {
       intersect.object.material.color.set("#69ff47");
       meshFound = true;
-
-      // Handle click event
-      window.addEventListener('click', function () {
-        // Look at the clicked object
-        camera.lookAt(intersect.object.position);
-
-        // Set camera position based on the clicked object
-        camera.position.z = 0;
-        camera.position.x = 1; // Adjust as needed
-        camera.position.y = 1; // Adjust as needed
-
-        // Handle different parts of the shoe
-        if (intersect.object.name === "laces") {
-          name.innerHTML = "Laces";
-          paletteLaces.style.display = "flex";
-
-          // Call the function to change the laces color when clicked on the palette
-          paletteLaces.addEventListener('click', function () {
-            changeLacesColor("red"); // Change the color as needed
-          });
-        } else if (intersect.object.name === "sole_bottom") {
-          name.innerHTML = "Sole Bottom";
-          paletteLaces.style.display = "none";
-        }
-      });
+    }else if (intersect.object.isMesh && !meshFound && raycastClicked === true && intersect.object.name !== "laces"){
+      intersect.object.material.color.set("#69ff47");
+      meshFound = true;
     }
   }
+ 
+  requestAnimationFrame(animate);
 
   renderer.render(scene, camera);
 }
 
 animate();
-
