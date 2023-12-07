@@ -18,6 +18,31 @@ import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 0.1, 1000 );
+const raycaster = new THREE.Raycaster();
+raycaster.precision = 0.1; // Adjust the value as needed
+raycaster.params.Points.threshold = 0.1; // Adjust the value as needed
+
+const pointer = new THREE.Vector2();
+//add audio 
+const listener = new THREE.AudioListener();
+camera.add( listener );
+
+// create a global audio source
+const sound = new THREE.Audio( listener );
+
+// load a sound and set it as the Audio object's buffer
+const audioLoader = new THREE.AudioLoader();
+audioLoader.load( '/sounds/Click.mp3', function( buffer ) {
+  sound.setBuffer( buffer );
+  sound.setVolume( 0.5 );
+});
+
+const onPointerMove = ( event ) => {
+	pointer.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+	pointer.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+}
+
+window.addEventListener( 'pointermove', onPointerMove );
 
 scene.background = new THREE.CubeTextureLoader()
 	.setPath( 'textures/cubeMap/' )
@@ -144,13 +169,79 @@ camera.position.z = 2; //zoom in van 2 naar 1
 camera.position.y = 0.65;
 camera.lookAt(0, -1, 0);
 
+let name = document.getElementById('name');
+const paletteLaces = document.getElementById('color-palette-laces');
+
+
+const clock = new THREE.Clock();
+
+// Function to change the color of the laces
+function changeLacesColor(color) {
+  if (scene) {
+    const lacesMesh = scene.children[4].children[0].children[1];
+    if (lacesMesh.name === "laces") {
+      lacesMesh.material.color.set(color);
+    }
+  }
+}
 
 function animate() {
-	requestAnimationFrame( animate );
- /*if (camera.position.z > 0.8) {
-    camera.position.z -= 0.01;
-  }*/
-	renderer.render( scene, camera );
+  requestAnimationFrame(animate);
+
+  const elapsedTime = clock.getElapsedTime();
+  const speed = elapsedTime * 0.1;
+
+  // Update raycaster position based on mouse movement
+  raycaster.setFromCamera(pointer, camera);
+
+  // Raycast to find intersected objects
+  const intersects = raycaster.intersectObjects(scene.children, true);
+
+  // Flag to track whether an intersected mesh has been found
+  let meshFound = false;
+
+  // Reset color for all objects
+  scene.traverse((node) => {
+    if (node.isMesh) {
+      node.material.color.set("#ffffff");
+    }
+  });
+
+  // Change color for the first intersected mesh
+  for (const intersect of intersects) {
+    if (intersect.object.isMesh && !meshFound) {
+      intersect.object.material.color.set("#69ff47");
+      meshFound = true;
+
+      // Handle click event
+      window.addEventListener('click', function () {
+        // Look at the clicked object
+        camera.lookAt(intersect.object.position);
+
+        // Set camera position based on the clicked object
+        camera.position.z = 0;
+        camera.position.x = 1; // Adjust as needed
+        camera.position.y = 1; // Adjust as needed
+
+        // Handle different parts of the shoe
+        if (intersect.object.name === "laces") {
+          name.innerHTML = "Laces";
+          paletteLaces.style.display = "flex";
+
+          // Call the function to change the laces color when clicked on the palette
+          paletteLaces.addEventListener('click', function () {
+            changeLacesColor("red"); // Change the color as needed
+          });
+        } else if (intersect.object.name === "sole_bottom") {
+          name.innerHTML = "Sole Bottom";
+          paletteLaces.style.display = "none";
+        }
+      });
+    }
+  }
+
+  renderer.render(scene, camera);
 }
 
 animate();
+
