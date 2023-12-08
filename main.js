@@ -15,6 +15,8 @@ import { AxesHelper } from 'three';
 
 import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
 
+import clickSoundUrl from '/sounds/click.mp3';
+
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 0.1, 1000 );
@@ -24,18 +26,32 @@ raycaster.params.Points.threshold = 0.1; // Adjust the value as needed
 
 const pointer = new THREE.Vector2();
 //add audio 
-const listener = new THREE.AudioListener();
-camera.add( listener );
 
-// create a global audio source
-const sound = new THREE.Audio( listener );
-
-// load a sound and set it as the Audio object's buffer
 const audioLoader = new THREE.AudioLoader();
-audioLoader.load( '/sounds/Click.mp3', function( buffer ) {
-  sound.setBuffer( buffer );
-  sound.setVolume( 0.5 );
-});
+
+const listener = new THREE.AudioListener();
+camera.add(listener);
+
+const sound = new THREE.PositionalAudio(listener);
+function loadAudio() {
+  // load audio only after a user gesture (e.g., click)
+  audioLoader.load(clickSoundUrl, function(buffer) {
+    sound.setBuffer(buffer);
+    sound.setVolume(0.5);
+    sound.setRefDistance(5); // Adjust the reference distance as needed
+    scene.add(sound);
+
+    // now that the audio is loaded, you can play it
+    playClickSound();
+  });
+}
+
+
+function playClickSound() {
+  sound.play();
+}
+
+window.addEventListener('click', loadAudio);
 
 const onPointerMove = ( event ) => {
 	pointer.x = ( event.clientX / window.innerWidth ) * 2 - 1;
