@@ -38,6 +38,15 @@ body {
   font-size: 24px;
 }
 
+#color-palette-sole{
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  margin-top: 50px;
+  display: none;
+  font-size: 24px;
+}
+
 .box {
   height: 100px;
   width: 100px;

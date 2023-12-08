@@ -78,12 +78,21 @@ loader.load('public/Shoe_compressed.glb', function(gltf){
   shoe.scale.set(3, 3, 3);
   shoe.receiveShadow = true; 
   scene.add(shoe);
+  // Find laces and sole meshes by name
+  const lacesMesh = shoe.getObjectByName("laces");
+  const soleBottomMesh = shoe.getObjectByName("sole_bottom");
+
+  lacesMesh.traverse(function(node){
+    if (node.isMesh){
+      node.castShadow = true;
   shoe.rotation.set(0, -65 * (Math.PI / 180), 0)
   shoe.traverse(function(node){
     if (node.isMesh){
       node.castShadow = true;
     }
   }) 
+    }
+  });
 });
 
 let isDragging = false;
@@ -165,40 +174,62 @@ scene.add(directionalLight);
 const helper = new THREE.DirectionalLightHelper(directionalLight, 5); 
 scene.add(helper);
 
-camera.position.z = 2; //zoom in van 2 naar 1
+camera.position.z = 1.5; //zoom in van 2 naar 1
 camera.position.y = 0.65;
-camera.lookAt(0, -1, 0);
+camera.lookAt(0, 0, 0);
 
 let name = document.getElementById('name');
 const paletteLaces = document.getElementById('color-palette-laces');
+const paletteSole = document.getElementById('color-palette-sole');
 
 const clock = new THREE.Clock();
 
-let raycastClicked = false;
+let lacesRaycastClicked = false;
+let soleRaycastClicked = false;
 
 // Function to change the color of the laces
 function changeLacesColor(color) {
-  if (scene) {
-    const lacesMesh = scene.getObjectByName("laces");
-    console.log(lacesMesh);
+  if (shoe) {
+    const lacesMesh = shoe.getObjectByName("laces");
     if (lacesMesh) {
       lacesMesh.material.color.set(color);
     }
   }
 };
 
+function changeSoleBottomColor(color) {
+  if (shoe) {
+    const soleBottomMesh = shoe.getObjectByName("sole_bottom");
+    if (soleBottomMesh) {
+      soleBottomMesh.material.color.set(color);
+    }
+  }
+};
+
 function handlePaletteClick() {
-  // Change the color of the laces
-  changeLacesColor("#ff0000"); // Adjust the color as needed
-  raycastClicked = true;
+  // Check if laces are not already red
+  if (!lacesRaycastClicked) {
+    // Change the color of the laces
+    changeLacesColor("#ff0000");
+    lacesRaycastClicked = true;
+  }
+}
+
+function handlePaletteSoleClick() {
+  // Check if sole is not already red
+  if (!soleRaycastClicked) {
+    // Change the color of the sole
+    changeSoleBottomColor("#ff0000");
+    soleRaycastClicked = true;
+  }
 }
 
 // Handle click event
 window.addEventListener('click', function () {
-  
   const intersects = raycaster.intersectObjects(scene.children, true);
-    for (const intersect of intersects) {
-      if (intersect.object.isMesh ) {
+
+  for (const intersect of intersects) {
+    if (intersect.object.isMesh) {
       // Look at the clicked object
       camera.lookAt(intersect.object.position);
 
@@ -211,17 +242,26 @@ window.addEventListener('click', function () {
       if (intersect.object.name === "laces") {
         name.innerHTML = "Laces";
         paletteLaces.style.display = "flex";
+        paletteSole.style.display = "none";
 
-        paletteLaces.removeEventListener('click', handlePaletteClick); // Remove previous listener to avoid multiple bindings
+        // Corrected the event listener to use paletteLaces
+        paletteLaces.removeEventListener('click', handlePaletteSoleClick);
         paletteLaces.addEventListener('click', handlePaletteClick);
-  
-      } else if (intersect.object.name === "sole_bottom") {
+      } 
+      if (intersect.object.name === "sole_bottom") {
         name.innerHTML = "Sole Bottom";
+        paletteSole.style.display = "flex";
         paletteLaces.style.display = "none";
+
+        // Corrected the event listener to use paletteSole
+        paletteSole.removeEventListener('click', handlePaletteClick);
+        paletteSole.addEventListener('click', handlePaletteSoleClick);
       }
     }
   }
 });
+
+
 
 function animate() {
 
@@ -237,25 +277,41 @@ function animate() {
   // Flag to track whether an intersected mesh has been found
   let meshFound = false;
 
-  // Reset color for all objects
-  scene.traverse((node) => {
-    if (node.isMesh && raycastClicked === false) {
-      node.material.color.set("#ffffff");
-    } else if (node.isMesh && raycastClicked === true && node.name !== "laces"){
+ // Reset color for all objects
+scene.traverse((node) => {
+  if (node.isMesh && !lacesRaycastClicked && !soleRaycastClicked) {
+    // Change the color only if both lacesRaycastClicked and soleRaycastClicked are false
+    node.material.color.set("#ffffff");
+  }  if (node.isMesh && lacesRaycastClicked && node.name !== "laces") {
+    // Check if laces are already red before changing the color to white
+    if (node.material.color.getHexString() !== "ff0000") {
       node.material.color.set("#ffffff");
     }
-  });
+  }  if (node.isMesh && soleRaycastClicked && node.name !== "sole_bottom") {
+    // Check if sole is already red before changing the color to white
+    if (node.material.color.getHexString() !== "ff0000") {
+      node.material.color.set("#ffffff");
+    }
+  }
+});
+
 
   // Change color for the first intersected mesh
   for (const intersect of intersects) {
-    if (intersect.object.isMesh && !meshFound && raycastClicked === false) {
+    if (intersect.object.isMesh && !meshFound && lacesRaycastClicked === false && soleRaycastClicked === false) {
       intersect.object.material.color.set("#69ff47");
       meshFound = true;
-    }else if (intersect.object.isMesh && !meshFound && raycastClicked === true && intersect.object.name !== "laces"){
+    }  if (intersect.object.isMesh && !meshFound && lacesRaycastClicked === true && intersect.object.name !== "laces"){
       intersect.object.material.color.set("#69ff47");
       meshFound = true;
+    }  if (intersect.object.isMesh && !meshFound && soleRaycastClicked === true && intersect.object.name !== "sole_bottom"){
+      intersect.object.material.color.set("#69ff47");
+      meshFound = true;
+      
     }
   }
+   
+   
  
   requestAnimationFrame(animate);
 
