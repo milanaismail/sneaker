@@ -181,11 +181,29 @@ camera.lookAt(0, 0, 0);
 let name = document.getElementById('name');
 const paletteLaces = document.getElementById('color-palette-laces');
 const paletteSole = document.getElementById('color-palette-sole');
+const paletteLacesColors = paletteLaces.querySelectorAll('.box');
+console.log(paletteLacesColors);
 
-const clock = new THREE.Clock();
-
+let color;
 let lacesRaycastClicked = false;
 let soleRaycastClicked = false;
+
+
+function handleColorBoxClick(color) {
+  console.log(`Clicked color: ${color}`);
+
+  lacesRaycastClicked = false;
+}
+
+// Attach click event listeners to each color box in the laces palette
+paletteLacesColors.forEach((colorBox) => {
+  colorBox.addEventListener('click', () => {
+    color = colorBox.style.backgroundColor;
+    handleColorBoxClick(color);
+  });
+});
+
+const clock = new THREE.Clock();
 
 // Function to change the color of the laces
 function changeLacesColor(color) {
@@ -210,7 +228,7 @@ function handlePaletteClick() {
   // Check if laces are not already red
   if (!lacesRaycastClicked) {
     // Change the color of the laces
-    changeLacesColor("#ff0000");
+    changeLacesColor(color);
     lacesRaycastClicked = true;
   }
 }
@@ -219,7 +237,7 @@ function handlePaletteSoleClick() {
   // Check if sole is not already red
   if (!soleRaycastClicked) {
     // Change the color of the sole
-    changeSoleBottomColor("#ff0000");
+    changeSoleBottomColor("red");
     soleRaycastClicked = true;
   }
 }
@@ -260,8 +278,6 @@ window.addEventListener('click', function () {
     }
   }
 });
-
-
 
 function animate() {
 
