@@ -182,24 +182,34 @@ let name = document.getElementById('name');
 const paletteLaces = document.getElementById('color-palette-laces');
 const paletteSole = document.getElementById('color-palette-sole');
 const paletteLacesColors = paletteLaces.querySelectorAll('.box');
+const paletteSoleColors = paletteSole.querySelectorAll('.box');
 console.log(paletteLacesColors);
 
-let color;
+let colorLaces;
+let colorSole;
 let lacesRaycastClicked = false;
 let soleRaycastClicked = false;
-
 
 function handleColorBoxClick(color) {
   console.log(`Clicked color: ${color}`);
 
   lacesRaycastClicked = false;
+  soleRaycastClicked = false;
 }
 
 // Attach click event listeners to each color box in the laces palette
 paletteLacesColors.forEach((colorBox) => {
   colorBox.addEventListener('click', () => {
-    color = colorBox.style.backgroundColor;
-    handleColorBoxClick(color);
+    colorLaces = colorBox.style.backgroundColor;
+    handleColorBoxClick(colorLaces);
+  });
+});
+
+// Attach click event listeners to each color box in the sole palette
+paletteSoleColors.forEach((colorBox) => {
+  colorBox.addEventListener('click', () => {
+    colorSole = colorBox.style.backgroundColor;
+    handleColorBoxClick(colorSole);
   });
 });
 
@@ -228,7 +238,7 @@ function handlePaletteClick() {
   // Check if laces are not already red
   if (!lacesRaycastClicked) {
     // Change the color of the laces
-    changeLacesColor(color);
+    changeLacesColor(colorLaces);
     lacesRaycastClicked = true;
   }
 }
@@ -237,7 +247,7 @@ function handlePaletteSoleClick() {
   // Check if sole is not already red
   if (!soleRaycastClicked) {
     // Change the color of the sole
-    changeSoleBottomColor("red");
+    changeSoleBottomColor(colorSole);
     soleRaycastClicked = true;
   }
 }
