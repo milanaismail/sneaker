@@ -18,6 +18,31 @@ import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 0.1, 1000 );
+const raycaster = new THREE.Raycaster();
+raycaster.precision = 0.1; // Adjust the value as needed
+raycaster.params.Points.threshold = 0.1; // Adjust the value as needed
+
+const pointer = new THREE.Vector2();
+//add audio 
+const listener = new THREE.AudioListener();
+camera.add( listener );
+
+// create a global audio source
+const sound = new THREE.Audio( listener );
+
+// load a sound and set it as the Audio object's buffer
+const audioLoader = new THREE.AudioLoader();
+audioLoader.load( '/sounds/Click.mp3', function( buffer ) {
+  sound.setBuffer( buffer );
+  sound.setVolume( 0.5 );
+});
+
+const onPointerMove = ( event ) => {
+	pointer.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+	pointer.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+}
+
+window.addEventListener( 'pointermove', onPointerMove );
 
 /*scene.background = new THREE.CubeTextureLoader()
 	.setPath( 'textures/cubeMap/' )
@@ -53,12 +78,21 @@ loader.load('public/Shoe_compressed.glb', function(gltf){
   shoe.scale.set(3, 3, 3);
   shoe.receiveShadow = true; 
   scene.add(shoe);
+  // Find laces and sole meshes by name
+  const lacesMesh = shoe.getObjectByName("laces");
+  const soleBottomMesh = shoe.getObjectByName("sole_bottom");
+
+  lacesMesh.traverse(function(node){
+    if (node.isMesh){
+      node.castShadow = true;
   shoe.rotation.set(0, -65 * (Math.PI / 180), 0)
   shoe.traverse(function(node){
     if (node.isMesh){
       node.castShadow = true;
     }
   }) 
+    }
+  });
 });
 
 let isDragging = false;
@@ -140,17 +174,175 @@ scene.add(directionalLight);
 const helper = new THREE.DirectionalLightHelper(directionalLight, 5); 
 scene.add(helper);
 
-camera.position.z = 1; //zoom in van 2 naar 1
 camera.position.y = 1;
+camera.position.z = 1.5; //zoom in van 2 naar 1
+camera.position.y = 0.65;
 camera.lookAt(0, 0, 0);
 
+let name = document.getElementById('name');
+const paletteLaces = document.getElementById('color-palette-laces');
+const paletteSole = document.getElementById('color-palette-sole');
+const paletteLacesColors = paletteLaces.querySelectorAll('.box');
+const paletteSoleColors = paletteSole.querySelectorAll('.box');
+console.log(paletteLacesColors);
+
+let colorLaces;
+let colorSole;
+let lacesRaycastClicked = false;
+let soleRaycastClicked = false;
+
+function handleColorBoxClick(color) {
+  console.log(`Clicked color: ${color}`);
+
+  lacesRaycastClicked = false;
+  soleRaycastClicked = false;
+}
+
+// Attach click event listeners to each color box in the laces palette
+paletteLacesColors.forEach((colorBox) => {
+  colorBox.addEventListener('click', () => {
+    colorLaces = colorBox.style.backgroundColor;
+    handleColorBoxClick(colorLaces);
+  });
+});
+
+// Attach click event listeners to each color box in the sole palette
+paletteSoleColors.forEach((colorBox) => {
+  colorBox.addEventListener('click', () => {
+    colorSole = colorBox.style.backgroundColor;
+    handleColorBoxClick(colorSole);
+  });
+});
+
+const clock = new THREE.Clock();
+
+// Function to change the color of the laces
+function changeLacesColor(color) {
+  if (shoe) {
+    const lacesMesh = shoe.getObjectByName("laces");
+    if (lacesMesh) {
+      lacesMesh.material.color.set(color);
+    }
+  }
+};
+
+function changeSoleBottomColor(color) {
+  if (shoe) {
+    const soleBottomMesh = shoe.getObjectByName("sole_bottom");
+    if (soleBottomMesh) {
+      soleBottomMesh.material.color.set(color);
+    }
+  }
+};
+
+function handlePaletteClick() {
+  // Check if laces are not already red
+  if (!lacesRaycastClicked) {
+    // Change the color of the laces
+    changeLacesColor(colorLaces);
+    lacesRaycastClicked = true;
+  }
+}
+
+function handlePaletteSoleClick() {
+  // Check if sole is not already red
+  if (!soleRaycastClicked) {
+    // Change the color of the sole
+    changeSoleBottomColor(colorSole);
+    soleRaycastClicked = true;
+  }
+}
+
+// Handle click event
+window.addEventListener('click', function () {
+  const intersects = raycaster.intersectObjects(scene.children, true);
+
+  for (const intersect of intersects) {
+    if (intersect.object.isMesh) {
+      // Look at the clicked object
+      camera.lookAt(intersect.object.position);
+
+      // Set camera position based on the clicked object
+      camera.position.z = 0;
+      camera.position.x = 1; // Adjust as needed
+      camera.position.y = 1; // Adjust as needed
+
+      // Handle different parts of the shoe
+      if (intersect.object.name === "laces") {
+        name.innerHTML = "Laces";
+        paletteLaces.style.display = "flex";
+        paletteSole.style.display = "none";
+
+        // Corrected the event listener to use paletteLaces
+        paletteLaces.removeEventListener('click', handlePaletteSoleClick);
+        paletteLaces.addEventListener('click', handlePaletteClick);
+      } 
+      if (intersect.object.name === "sole_bottom") {
+        name.innerHTML = "Sole Bottom";
+        paletteSole.style.display = "flex";
+        paletteLaces.style.display = "none";
+
+        // Corrected the event listener to use paletteSole
+        paletteSole.removeEventListener('click', handlePaletteClick);
+        paletteSole.addEventListener('click', handlePaletteSoleClick);
+      }
+    }
+  }
+});
 
 function animate() {
-	requestAnimationFrame( animate );
- /*if (camera.position.z > 0.8) {
-    camera.position.z -= 0.01;
-  }*/
-	renderer.render( scene, camera );
+
+  const elapsedTime = clock.getElapsedTime();
+  const speed = elapsedTime * 0.1;
+
+  // Update raycaster position based on mouse movement
+  raycaster.setFromCamera(pointer, camera);
+
+  // Raycast to find intersected objects
+  const intersects = raycaster.intersectObjects(scene.children, true);
+
+  // Flag to track whether an intersected mesh has been found
+  let meshFound = false;
+
+ // Reset color for all objects
+scene.traverse((node) => {
+  if (node.isMesh && !lacesRaycastClicked && !soleRaycastClicked) {
+    // Change the color only if both lacesRaycastClicked and soleRaycastClicked are false
+    node.material.color.set("#ffffff");
+  }  if (node.isMesh && lacesRaycastClicked && node.name !== "laces") {
+    // Check if laces are already red before changing the color to white
+    if (node.material.color.getHexString() !== "ff0000") {
+      node.material.color.set("#ffffff");
+    }
+  }  if (node.isMesh && soleRaycastClicked && node.name !== "sole_bottom") {
+    // Check if sole is already red before changing the color to white
+    if (node.material.color.getHexString() !== "ff0000") {
+      node.material.color.set("#ffffff");
+    }
+  }
+});
+
+
+  // Change color for the first intersected mesh
+  for (const intersect of intersects) {
+    if (intersect.object.isMesh && !meshFound && lacesRaycastClicked === false && soleRaycastClicked === false) {
+      intersect.object.material.color.set("#69ff47");
+      meshFound = true;
+    }  if (intersect.object.isMesh && !meshFound && lacesRaycastClicked === true && intersect.object.name !== "laces"){
+      intersect.object.material.color.set("#69ff47");
+      meshFound = true;
+    }  if (intersect.object.isMesh && !meshFound && soleRaycastClicked === true && intersect.object.name !== "sole_bottom"){
+      intersect.object.material.color.set("#69ff47");
+      meshFound = true;
+      
+    }
+  }
+   
+   
+ 
+  requestAnimationFrame(animate);
+
+  renderer.render(scene, camera);
 }
 
 animate();
