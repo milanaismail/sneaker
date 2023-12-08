@@ -19,7 +19,7 @@ import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 0.1, 1000 );
 
-scene.background = new THREE.CubeTextureLoader()
+/*scene.background = new THREE.CubeTextureLoader()
 	.setPath( 'textures/cubeMap/' )
 	.load( [
 				'px.png',
@@ -29,7 +29,7 @@ scene.background = new THREE.CubeTextureLoader()
 				'pz.png',
 				'nz.png'
 			] );
-
+*/
 
 //add axes helper
 const axesHelper = new AxesHelper( 5 );
@@ -98,7 +98,7 @@ const material2 = new THREE.MeshStandardMaterial({
   roughness: 0.2,
  });
 
-/*const objLoader = new OBJLoader();
+const objLoader = new OBJLoader();
 
 objLoader.load(
 	// resource URL
@@ -117,7 +117,7 @@ objLoader.load(
       }
     });
 	});
-*/
+
 const geometry = new THREE.BoxGeometry( 1, 1, 1 );
 const material = new THREE.MeshBasicMaterial( { color: 0x00ff00  } );
 
@@ -140,9 +140,9 @@ scene.add(directionalLight);
 const helper = new THREE.DirectionalLightHelper(directionalLight, 5); 
 scene.add(helper);
 
-camera.position.z = 2; //zoom in van 2 naar 1
-camera.position.y = 0.65;
-camera.lookAt(0, -1, 0);
+camera.position.z = 1; //zoom in van 2 naar 1
+camera.position.y = 1;
+camera.lookAt(0, 0, 0);
 
 
 function animate() {
