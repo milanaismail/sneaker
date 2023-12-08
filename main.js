@@ -44,7 +44,7 @@ const onPointerMove = ( event ) => {
 
 window.addEventListener( 'pointermove', onPointerMove );
 
-/*scene.background = new THREE.CubeTextureLoader()
+scene.background = new THREE.CubeTextureLoader()
 	.setPath( 'textures/cubeMap/' )
 	.load( [
 				'px.png',
@@ -54,7 +54,7 @@ window.addEventListener( 'pointermove', onPointerMove );
 				'pz.png',
 				'nz.png'
 			] );
-*/
+
 
 //add axes helper
 const axesHelper = new AxesHelper( 5 );
