@@ -59,7 +59,7 @@ const onPointerMove = ( event ) => {
 }
 
 window.addEventListener( 'pointermove', onPointerMove );
-
+/*
 scene.background = new THREE.CubeTextureLoader()
 	.setPath( 'textures/cubeMap/' )
 	.load( [
@@ -70,7 +70,22 @@ scene.background = new THREE.CubeTextureLoader()
 				'pz.png',
 				'nz.png'
 			] );
-
+*/
+      const textureLoader = new THREE.TextureLoader();
+      const background = textureLoader.load('/textures/background.jpeg'); // Replace with the path to your image
+      
+      // Create a plane geometry
+      const planeGeometry = new THREE.PlaneGeometry(12, 12); // Adjust the size as needed
+      
+      // Create a material with the texture
+      const planeMaterial = new THREE.MeshBasicMaterial({ map: background });
+      
+      // Create a mesh with the geometry and material
+      const plane = new THREE.Mesh(planeGeometry, planeMaterial);
+      
+      // Add the mesh to the scene
+      scene.add(plane);     
+      plane.position.z = -2; // Adjust as needed
 
 //add axes helper
 const axesHelper = new AxesHelper( 5 );
@@ -140,6 +155,7 @@ document.body.appendChild( renderer.domElement );
 
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap; 
+renderer.antialias = true;
 
 const texture = new THREE.TextureLoader().load('textures/normal2.png');
 const material2 = new THREE.MeshStandardMaterial({ 
@@ -148,9 +164,9 @@ const material2 = new THREE.MeshStandardMaterial({
   roughness: 0.2,
  });
 
-const objLoader = new OBJLoader();
+const oilBarrel = new OBJLoader();
 
-objLoader.load(
+oilBarrel.load(
 	// resource URL
 	'public/old_oil_barrel.obj',
 	// called when resource is loaded
@@ -279,9 +295,9 @@ window.addEventListener('click', function () {
       camera.lookAt(intersect.object.position);
 
       // Set camera position based on the clicked object
-      camera.position.z = 0;
+      /*camera.position.z = 0;
       camera.position.x = 1; // Adjust as needed
-      camera.position.y = 1; // Adjust as needed
+      camera.position.y = 1; // Adjust as needed*/
 
       // Handle different parts of the shoe
       if (intersect.object.name === "laces") {
@@ -354,8 +370,15 @@ scene.traverse((node) => {
     }
   }
    
-   
- 
+  /*if (oilBarrel) {
+    const oscillationAmplitude = 0.1; // Adjust the amplitude as needed
+    const oscillationSpeed = 0.5; // Adjust the speed as needed
+    const minY = -0.; // Minimum Y position
+    const maxY = 0.5; // Maximum Y position
+
+    oilBarrel.position.y = Math.sin(elapsedTime * oscillationSpeed) * oscillationAmplitude;
+  }*/
+
   requestAnimationFrame(animate);
 
   renderer.render(scene, camera);
