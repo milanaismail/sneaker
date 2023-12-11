@@ -101,6 +101,8 @@ loader.setDRACOLoader(dracoLoader);
 
 let shoe;
 
+const shoeMeshes = [];
+
 //add public/Shoe_compressed.glb 
 loader.load('public/Shoe_compressed.glb', function(gltf){
   shoe = gltf.scene;
@@ -112,6 +114,8 @@ loader.load('public/Shoe_compressed.glb', function(gltf){
   // Find laces and sole meshes by name
   const lacesMesh = shoe.getObjectByName("laces");
   const soleBottomMesh = shoe.getObjectByName("sole_bottom");
+
+  shoeMeshes.push(lacesMesh, soleBottomMesh);
 
   lacesMesh.traverse(function(node){
     if (node.isMesh){
@@ -287,7 +291,7 @@ function handlePaletteSoleClick() {
 
 // Handle click event
 window.addEventListener('click', function () {
-  const intersects = raycaster.intersectObjects(scene.children, true);
+  const intersects = raycaster.intersectObjects(shoeMeshes, true);
 
   for (const intersect of intersects) {
     if (intersect.object.isMesh) {
@@ -331,7 +335,7 @@ function animate() {
   raycaster.setFromCamera(pointer, camera);
 
   // Raycast to find intersected objects
-  const intersects = raycaster.intersectObjects(scene.children, true);
+  const intersects = raycaster.intersectObjects(shoeMeshes, true);
 
   // Flag to track whether an intersected mesh has been found
   let meshFound = false;
