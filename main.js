@@ -15,6 +15,8 @@ import { AxesHelper } from 'three';
 
 import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
 
+import clickSoundUrl from '/sounds/click.mp3';
+
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 0.1, 1000 );
@@ -24,18 +26,32 @@ raycaster.params.Points.threshold = 0.1; // Adjust the value as needed
 
 const pointer = new THREE.Vector2();
 //add audio 
-const listener = new THREE.AudioListener();
-camera.add( listener );
 
-// create a global audio source
-const sound = new THREE.Audio( listener );
-
-// load a sound and set it as the Audio object's buffer
 const audioLoader = new THREE.AudioLoader();
-audioLoader.load( '/sounds/Click.mp3', function( buffer ) {
-  sound.setBuffer( buffer );
-  sound.setVolume( 0.5 );
-});
+
+const listener = new THREE.AudioListener();
+camera.add(listener);
+
+const sound = new THREE.PositionalAudio(listener);
+function loadAudio() {
+  // load audio only after a user gesture (e.g., click)
+  audioLoader.load(clickSoundUrl, function(buffer) {
+    sound.setBuffer(buffer);
+    sound.setVolume(0.5);
+    sound.setRefDistance(5); // Adjust the reference distance as needed
+    scene.add(sound);
+
+    // now that the audio is loaded, you can play it
+    playClickSound();
+  });
+}
+
+
+function playClickSound() {
+  sound.play();
+}
+
+window.addEventListener('click', loadAudio);
 
 const onPointerMove = ( event ) => {
 	pointer.x = ( event.clientX / window.innerWidth ) * 2 - 1;
@@ -43,7 +59,7 @@ const onPointerMove = ( event ) => {
 }
 
 window.addEventListener( 'pointermove', onPointerMove );
-
+/*
 scene.background = new THREE.CubeTextureLoader()
 	.setPath( 'textures/cubeMap/' )
 	.load( [
@@ -54,7 +70,22 @@ scene.background = new THREE.CubeTextureLoader()
 				'pz.png',
 				'nz.png'
 			] );
-
+*/
+      const textureLoader = new THREE.TextureLoader();
+      const background = textureLoader.load('/textures/background.jpeg'); // Replace with the path to your image
+      
+      // Create a plane geometry
+      const planeGeometry = new THREE.PlaneGeometry(12, 12); // Adjust the size as needed
+      
+      // Create a material with the texture
+      const planeMaterial = new THREE.MeshBasicMaterial({ map: background });
+      
+      // Create a mesh with the geometry and material
+      const plane = new THREE.Mesh(planeGeometry, planeMaterial);
+      
+      // Add the mesh to the scene
+      scene.add(plane);     
+      plane.position.z = -2; // Adjust as needed
 
 //add axes helper
 const axesHelper = new AxesHelper( 5 );
@@ -124,6 +155,7 @@ document.body.appendChild( renderer.domElement );
 
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap; 
+renderer.antialias = true;
 
 const texture = new THREE.TextureLoader().load('textures/normal2.png');
 const material2 = new THREE.MeshStandardMaterial({ 
@@ -132,9 +164,9 @@ const material2 = new THREE.MeshStandardMaterial({
   roughness: 0.2,
  });
 
-/*const objLoader = new OBJLoader();
+const oilBarrel = new OBJLoader();
 
-objLoader.load(
+oilBarrel.load(
 	// resource URL
 	'public/old_oil_barrel.obj',
 	// called when resource is loaded
@@ -151,7 +183,7 @@ objLoader.load(
       }
     });
 	});
-*/
+
 const geometry = new THREE.BoxGeometry( 1, 1, 1 );
 const material = new THREE.MeshBasicMaterial( { color: 0x00ff00  } );
 
@@ -174,6 +206,7 @@ scene.add(directionalLight);
 const helper = new THREE.DirectionalLightHelper(directionalLight, 5); 
 scene.add(helper);
 
+camera.position.y = 1;
 camera.position.z = 1.5; //zoom in van 2 naar 1
 camera.position.y = 0.65;
 camera.lookAt(0, 0, 0);
@@ -261,9 +294,9 @@ window.addEventListener('click', function () {
       camera.lookAt(intersect.object.position);
 
       // Set camera position based on the clicked object
-      camera.position.z = 0;
+      /*camera.position.z = 0;
       camera.position.x = 1; // Adjust as needed
-      camera.position.y = 1; // Adjust as needed
+      camera.position.y = 1; // Adjust as needed*/
 
       // Handle different parts of the shoe
       if (intersect.object.name === "laces") {
@@ -336,8 +369,15 @@ scene.traverse((node) => {
     }
   }
    
-   
- 
+  /*if (oilBarrel) {
+    const oscillationAmplitude = 0.1; // Adjust the amplitude as needed
+    const oscillationSpeed = 0.5; // Adjust the speed as needed
+    const minY = -0.; // Minimum Y position
+    const maxY = 0.5; // Maximum Y position
+
+    oilBarrel.position.y = Math.sin(elapsedTime * oscillationSpeed) * oscillationAmplitude;
+  }*/
+
   requestAnimationFrame(animate);
 
   renderer.render(scene, camera);

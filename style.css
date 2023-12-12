@@ -1,6 +1,23 @@
 body {
   margin: 0;
   text-align: center;
+  font-family: 'Helvetica', sans-serif;
+  text-transform: uppercase;
+}
+
+button{
+  position: absolute;
+  top: 20px; 
+  right: 30px; 
+  width: 200px; 
+  height: auto; 
+  padding: 8px 16px;
+  font-size: 16px;
+  text-transform: uppercase;
+  border-radius:0;
+  color:white;
+  background-color: black;
+  border-width:0;
 }
 
 #app {
@@ -20,42 +37,51 @@ body {
   bottom:0;
   width: 100%; 
   height: 155px; 
-  background-color: white;
+  background-color: black;
+  color: white;
+  margin-top: 16px;
 }
 
 
 #name{
-  margin: 0;
+  margin-top: 16px;
+  color: white;
+  font-size: 26px;
 }
 
+.color-palette-container{
+  font-family: 'Helvetica Roman', sans-serif;
+  font-size: 12px;
+}
 
 #color-palette-laces{
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  margin-top: 50px;
   display: none;
-  font-size: 24px;
+
 }
 
 #color-palette-sole{
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  margin-top: 50px;
   display: none;
-  font-size: 24px;
 }
 
 .box {
-  height: 100px;
-  width: 100px;
-  margin-bottom: 15px;
-  margin-right: 30px;
-  margin-left: 30px;
+  height: 40px;
+  width: 40px;
+  margin-bottom: 6px;
+  margin-right: 20px;
+  margin-left: 20px;
   border: 1px solid black;
   display: block;
 
+}
+
+.box:active {
+  border: 2px solid #68ff47;
 }
 
 .red {
