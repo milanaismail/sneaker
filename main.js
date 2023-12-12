@@ -192,7 +192,6 @@ let soleRaycastClicked = false;
 
 function handleColorBoxClick(color) {
   console.log(`Clicked color: ${color}`);
-
   lacesRaycastClicked = false;
   soleRaycastClicked = false;
 }
