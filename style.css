@@ -36,7 +36,7 @@ button{
   position: absolute;
   bottom:0;
   width: 100%; 
-  height: 155px; 
+  height: 300px; 
   background-color: black;
   color: white;
   margin-top: 16px;
@@ -52,9 +52,19 @@ button{
 .color-palette-container{
   font-family: 'Helvetica Roman', sans-serif;
   font-size: 12px;
+  display: none;
 }
 
 #color-palette-laces{
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  display: none;
+  margin-bottom: 16px;
+
+}
+
+#color-fabrics-laces{
   flex-direction: row;
   justify-content: center;
   align-items: center;
