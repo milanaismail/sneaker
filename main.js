@@ -15,9 +15,6 @@ import { AxesHelper } from 'three';
 
 import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
 
-import clickSoundUrl from '/sounds/click.mp3';
-
-
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 0.1, 1000 );
 const raycaster = new THREE.Raycaster();
@@ -74,7 +71,7 @@ scene.background = new THREE.CubeTextureLoader()
 */
       const textureLoader = new THREE.TextureLoader();
       const background = textureLoader.load('/textures/background.jpeg'); // Replace with the path to your image
-      
+      const polyesterMat = textureLoader.load('/textures/polyester.jpg');
       // Create a plane geometry
       const planeGeometry = new THREE.PlaneGeometry(12, 12); // Adjust the size as needed
       
@@ -218,11 +215,13 @@ const paletteLaces = document.getElementById('color-palette-laces');
 const fabricLaces = document.getElementById('color-fabrics-laces');
 const paletteSole = document.getElementById('color-palette-sole');
 const paletteLacesColors = paletteLaces.querySelectorAll('.box');
+const fabricLaceMat = fabricLaces.querySelectorAll('.box');
 const paletteSoleColors = paletteSole.querySelectorAll('.box');
 console.log(paletteLacesColors);
 
 let colorLaces;
 let colorSole;
+let fabricLace;
 let lacesRaycastClicked = false;
 let soleRaycastClicked = false;
 
@@ -238,6 +237,13 @@ paletteLacesColors.forEach((colorBox) => {
     colorLaces = colorBox.style.backgroundColor;
     handleColorBoxClick(colorLaces);
   });
+});
+
+fabricLaceMat.forEach((fabricBox) => {
+  fabricBox.addEventListener('click', () => {
+    fabricLace = fabricBox.style.backgroundImage;
+    handleColorBoxClick(fabricLace);
+  })
 });
 
 // Attach click event listeners to each color box in the sole palette
@@ -260,6 +266,17 @@ function changeLacesColor(color) {
   }
 };
 
+// Function to change the fabric of the laces
+function changeLacesFabric(fabric) {
+  if (shoe) {
+    const lacesMesh = shoe.getObjectByName("laces");
+    if (lacesMesh) {
+      lacesMesh.material.map = fabric;
+    }
+  }
+};
+  
+
 function changeSoleBottomColor(color) {
   if (shoe) {
     const soleBottomMesh = shoe.getObjectByName("sole_bottom");
@@ -274,6 +291,7 @@ function handlePaletteClick() {
   if (!lacesRaycastClicked) {
     // Change the color of the laces
     changeLacesColor(colorLaces);
+    changeLacesFabric(fabricLace);
     lacesRaycastClicked = true;
   }
 }
