@@ -35,7 +35,7 @@ camera.add(listener);
 const sound = new THREE.PositionalAudio(listener);
 function loadAudio() {
   // load audio only after a user gesture (e.g., click)
-  audioLoader.load(clickSoundUrl, function(buffer) {
+  audioLoader.load("/sounds/MouseClick.mp4", function(buffer) {
     sound.setBuffer(buffer);
     sound.setVolume(0.5);
     sound.setRefDistance(5); // Adjust the reference distance as needed
@@ -43,6 +43,7 @@ function loadAudio() {
 
     // now that the audio is loaded, you can play it
     playClickSound();
+
   });
 }
 
@@ -356,7 +357,7 @@ scene.traverse((node) => {
 
   // Change color for the first intersected mesh
   for (const intersect of intersects) {
-    if (intersect.object.isMesh && !meshFound && lacesRaycastClicked === false && soleRaycastClicked === false) {
+    if (intersect.object.isMesh && !meshFound && lacesRaycastClicked === false && soleRaycastClicked === false && intersect) {
       intersect.object.material.color.set("#69ff47");
       meshFound = true;
     }  if (intersect.object.isMesh && !meshFound && lacesRaycastClicked === true && intersect.object.name !== "laces"){
