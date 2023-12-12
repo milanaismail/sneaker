@@ -143,6 +143,7 @@ plane.rotation.x = Math.PI / 2;
 plane.position.y = -1.05;
 
 
+
 //add axes helper
 const axesHelper = new AxesHelper( 5 );
 scene.add( axesHelper );
@@ -394,22 +395,22 @@ function animate() {
   raycaster.setFromCamera(pointer, camera);
 
   // Raycast to find intersected objects
-  const intersects = raycaster.intersectObjects(shoeMeshes, true);
+  const intersects = raycaster.intersectObjects([...shoeMeshes, /* Add other objects to exclude if needed */], true);
 
   // Flag to track whether an intersected mesh has been found
   let meshFound = false;
 
  // Reset color for all objects
 scene.traverse((node) => {
-  if (node.isMesh && !lacesRaycastClicked && !soleRaycastClicked) {
+  if (node.isMesh && !lacesRaycastClicked && !soleRaycastClicked && node !== plane) {
     // Change the color only if both lacesRaycastClicked and soleRaycastClicked are false
-      //node.material.color.set("#ffffff");
-  }  if (node.isMesh && lacesRaycastClicked && node.name !== "laces") {
+    node.material.color.set("#ffffff");
+  }  if (node.isMesh && lacesRaycastClicked && node.name !== "laces" && node !== plane) {
     // Check if laces are already red before changing the color to white
     if (node.material.color.getHexString() !== "ff0000") {
       node.material.color.set("#ffffff");
     }
-  }  if (node.isMesh && soleRaycastClicked && node.name !== "sole_bottom") {
+  }  if (node.isMesh && soleRaycastClicked && node.name !== "sole_bottom" && node !== plane) {
     // Check if sole is already red before changing the color to white
     if (node.material.color.getHexString() !== "ff0000") {
       node.material.color.set("#ffffff");
