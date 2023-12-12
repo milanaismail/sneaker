@@ -219,11 +219,14 @@ renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap; 
 renderer.antialias = true;
 
-const texture = new THREE.TextureLoader().load('textures/normal2.png');
+const texture = new THREE.TextureLoader().load('/textures/mixed.png');
+const metalnessTexture = new THREE.TextureLoader().load('/textures/metal3.png');
+const roughnessTexture = new THREE.TextureLoader().load('/textures/roughness.png');
+
 const material2 = new THREE.MeshStandardMaterial({ 
   map: texture,
-  metalness: 0.5,
-  roughness: 0.2,
+  metalnessMap: metalnessTexture,
+  roughnessMap: roughnessTexture,
  });
 
 const oilBarrel = new OBJLoader();
@@ -242,6 +245,7 @@ oilBarrel.load(
         child.material = material2;
         child.receiveShadow = true;
         child.castShadow = true;
+        child.texture = texture;
       }
     });
 	});
