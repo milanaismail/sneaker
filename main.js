@@ -69,7 +69,7 @@ scene.background = new THREE.CubeTextureLoader()
 				'nz.png'
 			] );
 */
-      const textureLoader = new THREE.TextureLoader();
+      /*const textureLoader = new THREE.TextureLoader();
       const background = textureLoader.load('/textures/background.jpeg'); // Replace with the path to your image
       const polyesterMat = textureLoader.load('/textures/polyester.jpg');
       // Create a plane geometry
@@ -83,7 +83,64 @@ scene.background = new THREE.CubeTextureLoader()
       
       // Add the mesh to the scene
       scene.add(plane);     
-      plane.position.z = -2; // Adjust as needed
+      plane.position.z = -2; // Adjust as needed*/
+
+      //Add gridhelper
+      const size = 50;
+      const divisions = 50;
+      const gridHelper = new THREE.GridHelper( size, divisions );
+
+      scene.add( gridHelper );
+
+      gridHelper.position.y = -1;
+
+      //change color of gridhelper
+      gridHelper.material.color.set(0xffffff);
+      // change width of gridhelper
+      gridHelper.material.linewidth = 3;
+
+      
+//add plane
+const planeGeometry = new THREE.PlaneGeometry(50, 50, 20, 20);
+
+// Custom shader material for the gradient effect
+const vertexShader = `
+  varying vec2 vUv;
+  void main() {
+    vUv = uv;
+    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+  }
+`;
+
+const fragmentShader = `
+  varying vec2 vUv;
+  uniform float time;
+
+  void main() {
+    vec3 color = vec3(0.0, 0.0, 0.5);  // Initial color, adjust as needed
+    float gradient = vUv.x + sin(time + vUv.y * 10.0) * 0.1;  // Create a gradient effect with some vertical movement
+    color.b = smoothstep(0.0, 0.1, gradient);  // Blue component
+    color.r = smoothstep(0.4, 0.5, gradient);  // Purple component
+
+    gl_FragColor = vec4(color, 1.0);
+  }
+`;
+
+const planeMaterial = new THREE.ShaderMaterial({
+  vertexShader,
+  fragmentShader,
+  side: THREE.DoubleSide,
+  uniforms: {
+    time: { value: 0.0 },
+  }
+});
+
+const plane = new THREE.Mesh(planeGeometry, planeMaterial);
+scene.add(plane);
+plane.rotation.x = Math.PI / 2;
+plane.position.y = -1.05;
+
+
 
 //add axes helper
 const axesHelper = new AxesHelper( 5 );
@@ -99,6 +156,8 @@ loader.setDRACOLoader(dracoLoader);
 
 let shoe;
 
+const shoeMeshes = [];
+
 //add public/Shoe_compressed.glb 
 loader.load('public/Shoe_compressed.glb', function(gltf){
   shoe = gltf.scene;
@@ -110,6 +169,8 @@ loader.load('public/Shoe_compressed.glb', function(gltf){
   // Find laces and sole meshes by name
   const lacesMesh = shoe.getObjectByName("laces");
   const soleBottomMesh = shoe.getObjectByName("sole_bottom");
+
+  shoeMeshes.push(lacesMesh, soleBottomMesh);
 
   lacesMesh.traverse(function(node){
     if (node.isMesh){
@@ -186,7 +247,7 @@ const geometry = new THREE.BoxGeometry( 1, 1, 1 );
 const material = new THREE.MeshBasicMaterial( { color: 0x00ff00  } );
 
 //add orbit controls
-const controls = new OrbitControls(camera, renderer.domElement);
+//const controls = new OrbitControls(camera, renderer.domElement);
 
 //add ambient light
 const ambientLight = new THREE.AmbientLight(0xffffff,1.2);
@@ -307,7 +368,7 @@ function handlePaletteSoleClick() {
 
 // Handle click event
 window.addEventListener('click', function () {
-  const intersects = raycaster.intersectObjects(scene.children, true);
+  const intersects = raycaster.intersectObjects(shoeMeshes, true);
 
   for (const intersect of intersects) {
     if (intersect.object.isMesh) {
@@ -352,26 +413,29 @@ function animate() {
   const elapsedTime = clock.getElapsedTime();
   const speed = elapsedTime * 0.1;
 
+  planeMaterial.uniforms.time.value += 0.01;
+
+
   // Update raycaster position based on mouse movement
   raycaster.setFromCamera(pointer, camera);
 
   // Raycast to find intersected objects
-  const intersects = raycaster.intersectObjects(scene.children, true);
+  const intersects = raycaster.intersectObjects([...shoeMeshes, /* Add other objects to exclude if needed */], true);
 
   // Flag to track whether an intersected mesh has been found
   let meshFound = false;
 
  // Reset color for all objects
 scene.traverse((node) => {
-  if (node.isMesh && !lacesRaycastClicked && !soleRaycastClicked) {
+  if (node.isMesh && !lacesRaycastClicked && !soleRaycastClicked && node !== plane) {
     // Change the color only if both lacesRaycastClicked and soleRaycastClicked are false
     node.material.color.set("#ffffff");
-  }  if (node.isMesh && lacesRaycastClicked && node.name !== "laces") {
+  }  if (node.isMesh && lacesRaycastClicked && node.name !== "laces" && node !== plane) {
     // Check if laces are already red before changing the color to white
     if (node.material.color.getHexString() === "69ff47") {
       node.material.color.set("#ffffff");
     }
-  }  if (node.isMesh && soleRaycastClicked && node.name !== "sole_bottom") {
+  }  if (node.isMesh && soleRaycastClicked && node.name !== "sole_bottom" && node !== plane) {
     // Check if sole is already red before changing the color to white
     if (node.material.color.getHexString() === "69ff47") {
       node.material.color.set("#ffffff");
