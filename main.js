@@ -241,7 +241,7 @@ paletteLacesColors.forEach((colorBox) => {
 
 fabricLaceMat.forEach((fabricBox) => {
   fabricBox.addEventListener('click', () => {
-    fabricLace = fabricBox.style.backgroundImage;
+    fabricLace = fabricBox.style.backgroundImage.slice(4, -1).replace(/"/g, "");
     handleColorBoxClick(fabricLace);
   })
 });
