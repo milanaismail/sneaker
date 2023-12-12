@@ -418,7 +418,6 @@ scene.traverse((node) => {
   }
 });
 
-
   // Change color for the first intersected mesh
   for (const intersect of intersects) {
     if (intersect.object.isMesh && !meshFound && lacesRaycastClicked === false && soleRaycastClicked === false) {
