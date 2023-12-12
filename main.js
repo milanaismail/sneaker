@@ -249,7 +249,7 @@ const geometry = new THREE.BoxGeometry( 1, 1, 1 );
 const material = new THREE.MeshBasicMaterial( { color: 0x00ff00  } );
 
 //add orbit controls
-const controls = new OrbitControls(camera, renderer.domElement);
+//const controls = new OrbitControls(camera, renderer.domElement);
 
 //add ambient light
 const ambientLight = new THREE.AmbientLight(0xffffff,1.2);
