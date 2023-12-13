@@ -438,6 +438,37 @@ window.addEventListener('click', function () {
   }
 });
 
+// Function to handle color box click
+function colorBoxClicked(colorBox) {
+  console.log(`Clicked color: ${colorBox.style.backgroundColor}`);
+  lacesRaycastClicked = false;
+  soleRaycastClicked = false;
+
+  // Remove the 'selected' class from all color boxes
+  paletteLacesColors.forEach(box => box.classList.remove('selected'));
+  fabricLaceMat.forEach(box => box.classList.remove('selected'));
+  paletteSoleColors.forEach(box => box.classList.remove('selected'));
+
+  // Add the 'selected' class to the clicked color box
+  colorBox.classList.add('selected');
+}
+
+// Attach click event listeners to each color box in the laces palette
+paletteLacesColors.forEach((colorBox) => {
+  colorBox.addEventListener('click', () => {
+    colorLaces = colorBox.style.backgroundColor;
+    colorBoxClicked(colorBox);
+  });
+});
+
+// Attach click event listeners to each color box in the sole palette
+paletteSoleColors.forEach((colorBox) => {
+  colorBox.addEventListener('click', () => {
+    colorSole = colorBox.style.backgroundColor;
+    colorBoxClicked(colorBox);
+  });
+});
+
 function animate() {
 
   const elapsedTime = clock.getElapsedTime();

@@ -117,3 +117,7 @@ button{
 .pink {
   background-color: pink;
 }
+
+.box.selected {
+  border: 2px solid #68ff47;
+}
