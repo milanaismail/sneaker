@@ -32,7 +32,7 @@ camera.add(listener);
 const sound = new THREE.PositionalAudio(listener);
 function loadAudio() {
   // load audio only after a user gesture (e.g., click)
-  audioLoader.load("/sounds/MouseClick.mp4", function(buffer) {
+  audioLoader.load("/sounds/Click.mp3", function(buffer) {
     sound.setBuffer(buffer);
     sound.setVolume(0.5);
     sound.setRefDistance(5); // Adjust the reference distance as needed
@@ -164,7 +164,7 @@ loader.load('public/shoe-optimized-arne.glb', function(gltf){
   shoe = gltf.scene;
   shoe.position.set(0.05, 0.10, -0.04)
   shoe.rotation.set(0, -65 * (Math.PI / 180), 0)
-  shoe.scale.set(3, 3, 3);
+  shoe.scale.set(0.5, 0.5, 0.5);
   shoe.receiveShadow = true; 
   scene.add(shoe);
   // Find laces and sole meshes by name
