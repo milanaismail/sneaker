@@ -302,13 +302,13 @@ paletteLacesColors.forEach((colorBox) => {
   });
 });
 
-fabricLaceMat.forEach((fabricBox) => {
+/*fabricLaceMat.forEach((fabricBox) => {
   fabricBox.addEventListener('click', () => {
     fabricLace = fabricBox.style.backgroundImage.slice(4, -1);
     handleColorBoxClick(fabricLace);
 
   })
-});
+});*/
 
 // Attach click event listeners to each color box in the sole palette
 paletteSoleColors.forEach((colorBox) => {
@@ -330,7 +330,7 @@ function changeLacesColor(color) {
   }
 };
 
-function changeLacesFabric(fabric) {
+/*function changeLacesFabric(fabric) {
   if (shoe) {
     const lacesMesh = shoe.getObjectByName("laces");
     if (lacesMesh) {
@@ -352,7 +352,7 @@ function changeLacesFabric(fabric) {
       );
     }
   }
-}
+}*/
 
 
   
@@ -374,14 +374,14 @@ function handlePaletteClick() {
   }
 }
 
-function handleFabricClick() {
+/*function handleFabricClick() {
     if (!lacesRaycastClicked) {
       // Change the fabric of the laces
       changeLacesFabric(fabricLace);
       lacesRaycastClicked = true;
     console.log("The laces are:" + fabricLace);
     }
-}
+}*/
 
 function handlePaletteSoleClick() {
   // Check if sole is not already red
