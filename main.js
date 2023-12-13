@@ -15,7 +15,7 @@ import { AxesHelper } from 'three';
 
 import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
 
-import clickSoundUrl from '/sounds/click.mp3';
+import clickSoundUrl from '/sounds/Click.mp3';
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 0.1, 1000 );
