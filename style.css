@@ -79,6 +79,40 @@ button{
   display: none;
 }
 
+#color-palette-sole-top{
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  display: none;
+}
+
+#color-palette-outside1{
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  display: none;
+}
+#color-palette-outside2{
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  display: none;
+}
+#color-palette-outside3{
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  display: none;
+}
+
+#color-palette-inside{
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  display: none;
+}
+
+
 .box {
   height: 40px;
   width: 40px;

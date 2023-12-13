@@ -170,8 +170,13 @@ loader.load('public/Shoe_compressed.glb', function(gltf){
   // Find laces and sole meshes by name
   const lacesMesh = shoe.getObjectByName("laces");
   const soleBottomMesh = shoe.getObjectByName("sole_bottom");
+  const soleTopMesh = shoe.getObjectByName("sole_top");
+  const insideMesh = shoe.getObjectByName("inside");
+  const outside1Mesh = shoe.getObjectByName("outside_1");
+  const outside2Mesh = shoe.getObjectByName("outside_2");
+  const outside3Mesh = shoe.getObjectByName("outside_3");
 
-  shoeMeshes.push(lacesMesh, soleBottomMesh);
+  shoeMeshes.push(lacesMesh, soleBottomMesh, soleTopMesh, insideMesh, outside1Mesh, outside2Mesh, outside3Mesh);
   console.log(lacesMesh.material.map);
 
   lacesMesh.traverse(function(node){
@@ -277,6 +282,11 @@ const container = document.querySelector('.color-palette-container');
 const paletteLaces = document.getElementById('color-palette-laces');
 const fabricLaces = document.getElementById('color-fabrics-laces');
 const paletteSole = document.getElementById('color-palette-sole');
+const paletteSoleTop = document.getElementById('color-palette-sole-top');
+const paletteOutside1 = document.getElementById('color-palette-outside1');
+const paletteOutside2 = document.getElementById('color-palette-outside2');
+const paletteOutside3 = document.getElementById('color-palette-outside3');
+const paletteInside = document.getElementById('color-palette-inside');
 const paletteLacesColors = paletteLaces.querySelectorAll('.box');
 const fabricLaceMat = fabricLaces.querySelectorAll('.box');
 const paletteSoleColors = paletteSole.querySelectorAll('.box');
@@ -413,6 +423,11 @@ window.addEventListener('click', function () {
         paletteLaces.style.display = "flex";
         fabricLaces.style.display = "flex";
         paletteSole.style.display = "none";
+        paletteSoleTop.style.display = "none";
+        paletteInside.style.display = "none";
+        paletteOutside1.style.display = "none";
+        paletteOutside2.style.display = "none";
+        paletteOutside3.style.display = "none";
 
         // Corrected the event listener to use paletteLaces
         paletteLaces.removeEventListener('click', handlePaletteSoleClick);
@@ -424,13 +439,77 @@ window.addEventListener('click', function () {
         name.innerHTML = "Sole Bottom";
         paletteSole.style.display = "flex";
         container.style.display = "none";
-
         fabricLaces.style.display = "none";
         paletteLaces.style.display = "none";
+        paletteSoleTop.style.display = "none";
+        paletteInside.style.display = "none";
+        paletteOutside1.style.display = "none";
+        paletteOutside2.style.display = "none";
+        paletteOutside3.style.display = "none";
 
         // Corrected the event listener to use paletteSole
         paletteSole.removeEventListener('click', handlePaletteClick);
         paletteSole.addEventListener('click', handlePaletteSoleClick);
+      }
+      if (intersect.object.name === "sole_top") {
+        name.innerHTML = "Sole Top";
+        container.style.display = "none";
+        paletteSole.style.display = "none";
+        fabricLaces.style.display = "none";
+        paletteLaces.style.display = "none";
+        paletteSoleTop.style.display = "flex";
+        paletteInside.style.display = "none";
+        paletteOutside1.style.display = "none";
+        paletteOutside2.style.display = "none";
+        paletteOutside3.style.display = "none";
+      }
+      if (intersect.object.name === "outside_1") {
+        name.innerHTML = "Outside 1";
+        container.style.display = "none";
+        paletteSole.style.display = "none";
+        fabricLaces.style.display = "none";
+        paletteLaces.style.display = "none";
+        paletteSoleTop.style.display = "none";
+        paletteInside.style.display = "none";
+        paletteOutside1.style.display = "flex";
+        paletteOutside2.style.display = "none";
+        paletteOutside3.style.display = "none";
+      }
+      if (intersect.object.name === "outside_2") {
+        name.innerHTML = "Outside 2";
+        container.style.display = "none";
+        paletteSole.style.display = "none";
+        fabricLaces.style.display = "none";
+        paletteLaces.style.display = "none";
+        paletteSoleTop.style.display = "none";
+        paletteInside.style.display = "none";
+        paletteOutside1.style.display = "none";
+        paletteOutside2.style.display = "flex";
+        paletteOutside3.style.display = "none";
+      }
+      if (intersect.object.name === "outside_3") {
+        name.innerHTML = "Outside 3";
+        container.style.display = "none";
+        paletteSole.style.display = "none";
+        fabricLaces.style.display = "none";
+        paletteLaces.style.display = "none";
+        paletteSoleTop.style.display = "none";
+        paletteInside.style.display = "none";
+        paletteOutside1.style.display = "none";
+        paletteOutside2.style.display = "none";
+        paletteOutside3.style.display = "flex";
+      }
+      if (intersect.object.name === "inside") {
+        name.innerHTML = "Inside";
+        container.style.display = "none";
+        paletteSole.style.display = "none";
+        fabricLaces.style.display = "none";
+        paletteLaces.style.display = "none";
+        paletteSoleTop.style.display = "none";
+        paletteInside.style.display = "flex";
+        paletteOutside1.style.display = "none";
+        paletteOutside2.style.display = "none";
+        paletteOutside3.style.display = "none";
       }
     }
   }
