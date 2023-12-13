@@ -79,7 +79,7 @@ button{
   display: none;
 }
 
-.box {
+.box, .box-fabric {
   height: 40px;
   width: 40px;
   margin-bottom: 6px;
@@ -87,10 +87,13 @@ button{
   margin-left: 20px;
   border: 1px solid black;
   display: block;
-
 }
 
-.box:active {
+.box-fabric {
+  border-radius: 50%;
+}
+
+.box:active, .box-fabric:active {
   border: 2px solid #68ff47;
 }
 
@@ -118,6 +121,6 @@ button{
   background-color: pink;
 }
 
-.box.selected {
+.box.selected, .box-fabric.selected {
   border: 2px solid #68ff47;
 }
