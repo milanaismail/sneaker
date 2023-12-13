@@ -6,16 +6,21 @@ body {
 }
 
 button{
-
-  width: 200px; 
-  height: auto; 
+  width: 355px; 
+  height: 40px; 
   padding: 8px 16px;
   font-size: 16px;
   text-transform: uppercase;
   border-radius:0;
-  color:white;
-  background-color: black;
+  color:black;
+  background-color:rgb(105, 255, 71);
   border-width:0;
+  margin-top: 40px;
+}
+
+button:disabled{
+  background-color:rgba(105, 255, 71,0.5);
+
 }
 
 #app {
@@ -44,7 +49,11 @@ button{
   flex-direction: column;
   justify-content: center;
   align-items: center;
+}
 
+.customizer-container p{
+ margin-bottom: 0;
+ font-size: 16px;
 }
 
 div{
@@ -52,6 +61,7 @@ div{
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  font-size: 10px;
 
 }
 
@@ -72,6 +82,7 @@ div{
   align-items: center;
   display: none;
   padding: 8px;
+  margin-bottom: 28px;
 }
 
 #color-fabrics-laces{
@@ -79,6 +90,8 @@ div{
   justify-content: center;
   align-items: center;
   display: none;
+  margin-bottom: 28px;
+
 }
 
 #color-palette-sole{
@@ -88,12 +101,29 @@ div{
   display: none;
 }
 
+.size-container{
+  display:flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+
+.size-container label{
+  margin-bottom: 8px;
+  font-size: 16px;
+}
+
+#size{
+  width: 355px;
+  height: 40px;
+}
+
 .box, .box-fabric {
   height: 40px;
   width: 40px;
   border: 1px solid black;
   display: block;
-  margin: 18px;
+  margin: 12px;
 }
 
 .box-fabric {

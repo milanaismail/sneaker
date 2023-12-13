@@ -39,7 +39,22 @@
               <div><div class="box purple" style="background-color: purple;"></div> Purple </div>
               <div><div class="box pink" style="background-color: pink;"></div> Pink </div>
           </div>
-          <button>Order now</button>
+
+          <div class="size-container">
+          <label for="size">Size</label>
+            <select name="size" id="size">
+              <option value="" disabled selected>Select</option>
+              <option value="size-36">36</option>
+              <option value="size-37">37</option>
+              <option value="size-38">38</option>
+              <option value="size-39">39</option>
+              <option value="size-40">40</option>
+              <option value="size-41">41</option>
+              <option value="size-42">42</option>
+            </select>
+          </div>
+
+          <button id="orderButton" disabled>Order now</button>
       </div>
     </div>
   </div>

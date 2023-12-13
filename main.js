@@ -469,6 +469,11 @@ paletteSoleColors.forEach((colorBox) => {
   });
 });
 
+document.getElementById('size').addEventListener('change', function () {
+  const button = document.getElementById('orderButton');
+  button.disabled = this.value === ''; // Disable the button if no size is selected
+});
+
 function animate() {
 
   const elapsedTime = clock.getElapsedTime();
