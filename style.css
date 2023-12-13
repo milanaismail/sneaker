@@ -44,11 +44,18 @@ button{
   flex-direction: column;
   justify-content: center;
   align-items: center;
+
 }
 
+div{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+}
 
 #name{
-  margin-top: 16px;
   color: rgb(105, 255, 71);
   font-size: 26px;
 }
@@ -64,8 +71,7 @@ button{
   justify-content: center;
   align-items: center;
   display: none;
-  margin-bottom: 16px;
-
+  padding: 8px;
 }
 
 #color-fabrics-laces{
@@ -73,7 +79,6 @@ button{
   justify-content: center;
   align-items: center;
   display: none;
-
 }
 
 #color-palette-sole{
@@ -86,11 +91,9 @@ button{
 .box, .box-fabric {
   height: 40px;
   width: 40px;
-  margin-bottom: 6px;
-  margin-right: 20px;
-  margin-left: 20px;
   border: 1px solid black;
   display: block;
+  margin: 18px;
 }
 
 .box-fabric {
