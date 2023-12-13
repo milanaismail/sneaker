@@ -158,6 +158,7 @@ let shoe;
 
 const shoeMeshes = [];
 
+
 //add public/Shoe_compressed.glb 
 loader.load('public/Shoe_compressed.glb', function(gltf){
   shoe = gltf.scene;
@@ -171,6 +172,7 @@ loader.load('public/Shoe_compressed.glb', function(gltf){
   const soleBottomMesh = shoe.getObjectByName("sole_bottom");
 
   shoeMeshes.push(lacesMesh, soleBottomMesh);
+  console.log(lacesMesh.material.map);
 
   lacesMesh.traverse(function(node){
     if (node.isMesh){
@@ -302,8 +304,9 @@ paletteLacesColors.forEach((colorBox) => {
 
 fabricLaceMat.forEach((fabricBox) => {
   fabricBox.addEventListener('click', () => {
-    fabricLace = fabricBox.style.backgroundImage.slice(4, -1).replace(/"/g, "");
+    fabricLace = fabricBox.style.backgroundImage.slice(4, -1);
     handleColorBoxClick(fabricLace);
+
   })
 });
 
@@ -327,17 +330,32 @@ function changeLacesColor(color) {
   }
 };
 
-// Function to change the fabric of the laces
 function changeLacesFabric(fabric) {
   if (shoe) {
     const lacesMesh = shoe.getObjectByName("laces");
     if (lacesMesh) {
-      lacesMesh.material.map = fabric;
+      const textureLoader = new THREE.TextureLoader();
+      textureLoader.load(
+        fabric,
+        (newTexture) => {
+          console.log("Texture loaded successfully:", newTexture);
+          lacesMesh.material.map = newTexture;
+          lacesMesh.material.needsUpdate = true;
+          lacesMesh.material.map.needsUpdate = true;
+    console.log(shoeMeshes[0].material.map);
+
+        },
+        undefined,
+        (error) => {
+          console.error("Error loading texture:", error);
+        }
+      );
     }
   }
-};
-  
+}
 
+
+  
 function changeSoleBottomColor(color) {
   if (shoe) {
     const soleBottomMesh = shoe.getObjectByName("sole_bottom");
@@ -352,9 +370,17 @@ function handlePaletteClick() {
   if (!lacesRaycastClicked) {
     // Change the color of the laces
     changeLacesColor(colorLaces);
-    changeLacesFabric(fabricLace);
     lacesRaycastClicked = true;
   }
+}
+
+function handleFabricClick() {
+    if (!lacesRaycastClicked) {
+      // Change the fabric of the laces
+      changeLacesFabric(fabricLace);
+      lacesRaycastClicked = true;
+    console.log("The laces are:" + fabricLace);
+    }
 }
 
 function handlePaletteSoleClick() {
@@ -391,6 +417,8 @@ window.addEventListener('click', function () {
         // Corrected the event listener to use paletteLaces
         paletteLaces.removeEventListener('click', handlePaletteSoleClick);
         paletteLaces.addEventListener('click', handlePaletteClick);
+        fabricLaces.removeEventListener('click', handlePaletteSoleClick);
+        fabricLaces.addEventListener('click', handleFabricClick);
       } 
       if (intersect.object.name === "sole_bottom") {
         name.innerHTML = "Sole Bottom";
