@@ -290,18 +290,38 @@ const paletteInside = document.getElementById('color-palette-inside');
 const paletteLacesColors = paletteLaces.querySelectorAll('.box');
 const fabricLaceMat = fabricLaces.querySelectorAll('.box');
 const paletteSoleColors = paletteSole.querySelectorAll('.box');
+const paletteSoleTopColors = paletteSoleTop.querySelectorAll('.box');
+const paletteOutside1Colors = paletteOutside1.querySelectorAll('.box');
+const paletteOutside2Colors = paletteOutside2.querySelectorAll('.box');
+const paletteOutside3Colors = paletteOutside3.querySelectorAll('.box');
+const paletteInsideColors = paletteInside.querySelectorAll('.box');
 console.log(paletteLacesColors);
 
 let colorLaces;
 let colorSole;
+let colorSoleTop;
+let colorOutside1;
+let colorOutside2;
+let colorOutside3;
+let colorInside;
 let fabricLace;
 let lacesRaycastClicked = false;
 let soleRaycastClicked = false;
+let soleTopRaycastClicked = false;
+let outside1RaycastClicked = false;
+let outside2RaycastClicked = false;
+let outside3RaycastClicked = false;
+let insideRaycastClicked = false;
 
 function handleColorBoxClick(color) {
   console.log(`Clicked color: ${color}`);
   lacesRaycastClicked = false;
   soleRaycastClicked = false;
+  soleTopRaycastClicked = false;
+  outside1RaycastClicked = false;
+  outside2RaycastClicked = false;
+  outside3RaycastClicked = false;
+  insideRaycastClicked = false;
 }
 
 // Attach click event listeners to each color box in the laces palette
@@ -325,6 +345,46 @@ paletteSoleColors.forEach((colorBox) => {
   colorBox.addEventListener('click', () => {
     colorSole = colorBox.style.backgroundColor;
     handleColorBoxClick(colorSole);
+  });
+});
+
+// Attach click event listeners to each color box in the sole top palette
+paletteSoleTopColors.forEach((colorBox) => {
+  colorBox.addEventListener('click', () => {
+    colorSoleTop = colorBox.style.backgroundColor;
+    handleColorBoxClick(colorSoleTop);
+  });
+});
+
+// Attach click event listeners to each color box in the outside 1 palette
+paletteOutside1Colors.forEach((colorBox) => {
+  colorBox.addEventListener('click', () => {
+    colorOutside1 = colorBox.style.backgroundColor;
+    handleColorBoxClick(colorOutside1);
+  });
+});
+
+// Attach click event listeners to each color box in the outside 2 palette
+paletteOutside2Colors.forEach((colorBox) => {
+  colorBox.addEventListener('click', () => {
+    colorOutside2 = colorBox.style.backgroundColor;
+    handleColorBoxClick(colorOutside2);
+  });
+});
+
+// Attach click event listeners to each color box in the outside 3 palette
+paletteOutside3Colors.forEach((colorBox) => {
+  colorBox.addEventListener('click', () => {
+    colorOutside3 = colorBox.style.backgroundColor;
+    handleColorBoxClick(colorOutside3);
+  });
+});
+
+// Attach click event listeners to each color box in the inside palette
+paletteInsideColors.forEach((colorBox) => {
+  colorBox.addEventListener('click', () => {
+    colorInside = colorBox.style.backgroundColor;
+    handleColorBoxClick(colorInside);
   });
 });
 
@@ -375,6 +435,51 @@ function changeSoleBottomColor(color) {
   }
 };
 
+function changeSoleTopColor(color) {
+  if (shoe) {
+    const soleTopMesh = shoe.getObjectByName("sole_top");
+    if (soleTopMesh) {
+      soleTopMesh.material.color.set(color);
+    }
+  }
+};
+
+function changeOutside1Color(color) {
+  if (shoe) {
+    const outside1Mesh = shoe.getObjectByName("outside_1");
+    if (outside1Mesh) {
+      outside1Mesh.material.color.set(color);
+    }
+  }
+};
+
+function changeOutside2Color(color) {
+  if (shoe) {
+    const outside2Mesh = shoe.getObjectByName("outside_2");
+    if (outside2Mesh) {
+      outside2Mesh.material.color.set(color);
+    }
+  }
+};
+
+function changeOutside3Color(color) {
+  if (shoe) {
+    const outside3Mesh = shoe.getObjectByName("outside_3");
+    if (outside3Mesh) {
+      outside3Mesh.material.color.set(color);
+    }
+  }
+};
+
+function changeInsideColor(color) {
+  if (shoe) {
+    const insideMesh = shoe.getObjectByName("inside");
+    if (insideMesh) {
+      insideMesh.material.color.set(color);
+    }
+  }
+};
+
 function handlePaletteClick() {
   // Check if laces are not already red
   if (!lacesRaycastClicked) {
@@ -384,14 +489,14 @@ function handlePaletteClick() {
   }
 }
 
-/*function handleFabricClick() {
+function handleFabricClick() {
     if (!lacesRaycastClicked) {
       // Change the fabric of the laces
       changeLacesFabric(fabricLace);
       lacesRaycastClicked = true;
     console.log("The laces are:" + fabricLace);
     }
-}*/
+}
 
 function handlePaletteSoleClick() {
   // Check if sole is not already red
@@ -399,6 +504,51 @@ function handlePaletteSoleClick() {
     // Change the color of the sole
     changeSoleBottomColor(colorSole);
     soleRaycastClicked = true;
+  }
+}
+
+function handlePaletteSoleTopClick() {
+  // Check if sole is not already red
+  if (!soleTopRaycastClicked) {
+    // Change the color of the sole
+    changeSoleTopColor(colorSoleTop);
+    soleTopRaycastClicked = true;
+  }
+}
+
+function handlePaletteOutside1Click() {
+  // Check if sole is not already red
+  if (!outside1RaycastClicked) {
+    // Change the color of the sole
+    changeOutside1Color(colorOutside1);
+    outside1RaycastClicked = true;
+  }
+}
+
+function handlePaletteOutside2Click() {
+  // Check if sole is not already red
+  if (!outside2RaycastClicked) {
+    // Change the color of the sole
+    changeOutside2Color(colorOutside2);
+    outside2RaycastClicked = true;
+  }
+}
+
+function handlePaletteOutside3Click() {
+  // Check if sole is not already red
+  if (!outside3RaycastClicked) {
+    // Change the color of the sole
+    changeOutside3Color(colorOutside3);
+    outside3RaycastClicked = true;
+  }
+}
+
+function handlePaletteInsideClick() {
+  // Check if sole is not already red
+  if (!insideRaycastClicked) {
+    // Change the color of the sole
+    changeInsideColor(colorInside);
+    insideRaycastClicked = true;
   }
 }
 
@@ -433,6 +583,11 @@ window.addEventListener('click', function () {
         paletteLaces.removeEventListener('click', handlePaletteSoleClick);
         paletteLaces.addEventListener('click', handlePaletteClick);
         fabricLaces.removeEventListener('click', handlePaletteSoleClick);
+        paletteLaces.removeEventListener('click', handlePaletteSoleTopClick);
+        paletteLaces.removeEventListener('click', handlePaletteOutside1Click);
+        paletteLaces.removeEventListener('click', handlePaletteOutside2Click);
+        paletteLaces.removeEventListener('click', handlePaletteOutside3Click);
+        paletteLaces.removeEventListener('click', handlePaletteInsideClick);
         //fabricLaces.addEventListener('click', handleFabricClick);
       } 
       if (intersect.object.name === "sole_bottom") {
@@ -450,6 +605,11 @@ window.addEventListener('click', function () {
         // Corrected the event listener to use paletteSole
         paletteSole.removeEventListener('click', handlePaletteClick);
         paletteSole.addEventListener('click', handlePaletteSoleClick);
+        paletteSole.removeEventListener('click', handlePaletteSoleTopClick);
+        paletteSole.removeEventListener('click', handlePaletteOutside1Click);
+        paletteSole.removeEventListener('click', handlePaletteOutside2Click);
+        paletteSole.removeEventListener('click', handlePaletteOutside3Click);
+        paletteSole.removeEventListener('click', handlePaletteInsideClick);
       }
       if (intersect.object.name === "sole_top") {
         name.innerHTML = "Sole Top";
@@ -462,6 +622,15 @@ window.addEventListener('click', function () {
         paletteOutside1.style.display = "none";
         paletteOutside2.style.display = "none";
         paletteOutside3.style.display = "none";
+
+        // Corrected the event listener to use paletteSoleTop
+        paletteSoleTop.removeEventListener('click', handlePaletteClick);
+        paletteSoleTop.removeEventListener('click', handlePaletteSoleClick);
+        paletteSoleTop.addEventListener('click', handlePaletteSoleTopClick);
+        paletteSoleTop.removeEventListener('click', handlePaletteOutside1Click);
+        paletteSoleTop.removeEventListener('click', handlePaletteOutside2Click);
+        paletteSoleTop.removeEventListener('click', handlePaletteOutside3Click);
+        paletteSoleTop.removeEventListener('click', handlePaletteInsideClick);
       }
       if (intersect.object.name === "outside_1") {
         name.innerHTML = "Outside 1";
@@ -474,6 +643,15 @@ window.addEventListener('click', function () {
         paletteOutside1.style.display = "flex";
         paletteOutside2.style.display = "none";
         paletteOutside3.style.display = "none";
+
+        // Corrected the event listener to use paletteOutside1
+        paletteOutside1.removeEventListener('click', handlePaletteClick);
+        paletteOutside1.removeEventListener('click', handlePaletteSoleClick);
+        paletteOutside1.removeEventListener('click', handlePaletteSoleTopClick);
+        paletteOutside1.addEventListener('click', handlePaletteOutside1Click);
+        paletteOutside1.removeEventListener('click', handlePaletteOutside2Click);
+        paletteOutside1.removeEventListener('click', handlePaletteOutside3Click);
+        paletteOutside1.removeEventListener('click', handlePaletteInsideClick);
       }
       if (intersect.object.name === "outside_2") {
         name.innerHTML = "Outside 2";
@@ -486,6 +664,15 @@ window.addEventListener('click', function () {
         paletteOutside1.style.display = "none";
         paletteOutside2.style.display = "flex";
         paletteOutside3.style.display = "none";
+
+        // Corrected the event listener to use paletteOutside2
+        paletteOutside2.removeEventListener('click', handlePaletteClick);
+        paletteOutside2.removeEventListener('click', handlePaletteSoleClick);
+        paletteOutside2.removeEventListener('click', handlePaletteSoleTopClick);
+        paletteOutside2.removeEventListener('click', handlePaletteOutside1Click);
+        paletteOutside2.addEventListener('click', handlePaletteOutside2Click);
+        paletteOutside2.removeEventListener('click', handlePaletteOutside3Click);
+        paletteOutside2.removeEventListener('click', handlePaletteInsideClick);
       }
       if (intersect.object.name === "outside_3") {
         name.innerHTML = "Outside 3";
@@ -498,6 +685,15 @@ window.addEventListener('click', function () {
         paletteOutside1.style.display = "none";
         paletteOutside2.style.display = "none";
         paletteOutside3.style.display = "flex";
+
+        // Corrected the event listener to use paletteOutside3
+        paletteOutside3.removeEventListener('click', handlePaletteClick);
+        paletteOutside3.removeEventListener('click', handlePaletteSoleClick);
+        paletteOutside3.removeEventListener('click', handlePaletteSoleTopClick);
+        paletteOutside3.removeEventListener('click', handlePaletteOutside1Click);
+        paletteOutside3.removeEventListener('click', handlePaletteOutside2Click);
+        paletteOutside3.addEventListener('click', handlePaletteOutside3Click);
+        paletteOutside3.removeEventListener('click', handlePaletteInsideClick);
       }
       if (intersect.object.name === "inside") {
         name.innerHTML = "Inside";
@@ -510,6 +706,15 @@ window.addEventListener('click', function () {
         paletteOutside1.style.display = "none";
         paletteOutside2.style.display = "none";
         paletteOutside3.style.display = "none";
+
+        // Corrected the event listener to use paletteInside
+        paletteInside.removeEventListener('click', handlePaletteClick);
+        paletteInside.removeEventListener('click', handlePaletteSoleClick);
+        paletteInside.removeEventListener('click', handlePaletteSoleTopClick);
+        paletteInside.removeEventListener('click', handlePaletteOutside1Click);
+        paletteInside.removeEventListener('click', handlePaletteOutside2Click);
+        paletteInside.removeEventListener('click', handlePaletteOutside3Click);
+        paletteInside.addEventListener('click', handlePaletteInsideClick);
       }
     }
   }
@@ -534,7 +739,7 @@ function animate() {
 
  // Reset color for all objects
 scene.traverse((node) => {
-  if (node.isMesh && !lacesRaycastClicked && !soleRaycastClicked && node !== plane) {
+  if (node.isMesh && !lacesRaycastClicked && !soleRaycastClicked && !soleTopRaycastClicked && !outside1RaycastClicked && !outside2RaycastClicked && !outside3RaycastClicked && !insideRaycastClicked && node !== plane) {
     // Change the color only if both lacesRaycastClicked and soleRaycastClicked are false
     node.material.color.set("#ffffff");
   }  if (node.isMesh && lacesRaycastClicked && node.name !== "laces" && node !== plane) {
@@ -547,20 +752,61 @@ scene.traverse((node) => {
     if (node.material.color.getHexString() === "69ff47") {
       node.material.color.set("#ffffff");
     }
-  }
+  } if (node.isMesh && soleTopRaycastClicked && node.name !== "sole_top" && node !== plane) {
+    // Check if sole is already red before changing the color to white
+    if (node.material.color.getHexString() === "69ff47") {
+      node.material.color.set("#ffffff");
+    }
+  } if (node.isMesh && outside1RaycastClicked && node.name !== "outside_1" && node !== plane) {
+    // Check if sole is already red before changing the color to white
+    if (node.material.color.getHexString() === "69ff47") {
+      node.material.color.set("#ffffff");
+    }
+  } if (node.isMesh && outside2RaycastClicked && node.name !== "outside_2" && node !== plane) {
+    // Check if sole is already red before changing the color to white
+    if (node.material.color.getHexString() === "69ff47") {
+      node.material.color.set("#ffffff");
+    }
+  } if (node.isMesh && outside3RaycastClicked && node.name !== "outside_3" && node !== plane) {
+    // Check if sole is already red before changing the color to white
+    if (node.material.color.getHexString() === "69ff47") {
+      node.material.color.set("#ffffff");
+    }
+  } if (node.isMesh && insideRaycastClicked && node.name !== "inside" && node !== plane) {
+    // Check if sole is already red before changing the color to white
+    if (node.material.color.getHexString() === "69ff47") {
+      node.material.color.set("#ffffff");
+    }
+  } 
 });
 
   // Change color for the first intersected mesh
   for (const intersect of intersects) {
 
     //change color to green if intersected object is white
-    if (intersect.object.isMesh && !meshFound && intersect.object.material.color.getHexString() === "ffffff" && lacesRaycastClicked === false && soleRaycastClicked === false && intersect) {
+    if (intersect.object.isMesh && !meshFound && intersect.object.material.color.getHexString() === "ffffff" && lacesRaycastClicked === false && soleRaycastClicked === false  && soleTopRaycastClicked === false 
+    && outside1RaycastClicked === false && outside2RaycastClicked === false && outside3RaycastClicked === false && insideRaycastClicked === false && intersect) {
       intersect.object.material.color.set("#69ff47");
       meshFound = true;
     } if (intersect.object.isMesh && !meshFound && intersect.object.material.color.getHexString() === "ffffff" && lacesRaycastClicked === true && intersect.object.name !== "laces"){
       intersect.object.material.color.set("#69ff47");
       meshFound = true;
     }  if (intersect.object.isMesh && !meshFound && intersect.object.material.color.getHexString() === "ffffff" && soleRaycastClicked === true && intersect.object.name !== "sole_bottom"){
+      intersect.object.material.color.set("#69ff47");
+      meshFound = true; 
+    } if (intersect.object.isMesh && !meshFound && intersect.object.material.color.getHexString() === "ffffff" && soleTopRaycastClicked === true && intersect.object.name !== "sole_top"){
+      intersect.object.material.color.set("#69ff47");
+      meshFound = true; 
+    } if (intersect.object.isMesh && !meshFound && intersect.object.material.color.getHexString() === "ffffff" && outside1RaycastClicked === true && intersect.object.name !== "outside_1"){
+      intersect.object.material.color.set("#69ff47");
+      meshFound = true; 
+    } if (intersect.object.isMesh && !meshFound && intersect.object.material.color.getHexString() === "ffffff" && outside2RaycastClicked === true && intersect.object.name !== "outside_2"){
+      intersect.object.material.color.set("#69ff47");
+      meshFound = true; 
+    } if (intersect.object.isMesh && !meshFound && intersect.object.material.color.getHexString() === "ffffff" && outside3RaycastClicked === true && intersect.object.name !== "outside_3"){
+      intersect.object.material.color.set("#69ff47");
+      meshFound = true; 
+    } if (intersect.object.isMesh && !meshFound && intersect.object.material.color.getHexString() === "ffffff" && insideRaycastClicked === true && intersect.object.name !== "inside"){
       intersect.object.material.color.set("#69ff47");
       meshFound = true; 
     }
