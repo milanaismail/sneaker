@@ -160,16 +160,16 @@ const shoeMeshes = [];
 
 
 //add public/Shoe_compressed.glb 
-loader.load('public/shoe-optimized-arne.glb', function(gltf){
+loader.load('public/Shoe_compressed.glb', function(gltf){
   shoe = gltf.scene;
   shoe.position.set(0.05, 0.10, -0.04)
   shoe.rotation.set(0, -65 * (Math.PI / 180), 0)
-  shoe.scale.set(0.5, 0.5, 0.5);
+  shoe.scale.set(3, 3, 3);
   shoe.receiveShadow = true; 
   scene.add(shoe);
   // Find laces and sole meshes by name
   const lacesMesh = shoe.getObjectByName("laces");
-  const soleBottomMesh = shoe.getObjectByName("sole");
+  const soleBottomMesh = shoe.getObjectByName("sole_bottom");
 
   shoeMeshes.push(lacesMesh, soleBottomMesh);
   console.log(lacesMesh.material.map);
@@ -217,6 +217,8 @@ document.body.appendChild( renderer.domElement );
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap; 
 renderer.antialias = true;
+
+renderer.setPixelRatio(window.devicePixelRatio);
 
 const texture = new THREE.TextureLoader().load('textures/normal2.png');
 const material2 = new THREE.MeshStandardMaterial({ 
@@ -358,7 +360,7 @@ function changeLacesColor(color) {
   
 function changeSoleBottomColor(color) {
   if (shoe) {
-    const soleBottomMesh = shoe.getObjectByName("sole");
+    const soleBottomMesh = shoe.getObjectByName("sole_bottom");
     if (soleBottomMesh) {
       soleBottomMesh.material.color.set(color);
     }
@@ -418,9 +420,9 @@ window.addEventListener('click', function () {
         paletteLaces.removeEventListener('click', handlePaletteSoleClick);
         paletteLaces.addEventListener('click', handlePaletteClick);
         fabricLaces.removeEventListener('click', handlePaletteSoleClick);
-        fabricLaces.addEventListener('click', handleFabricClick);
+        //fabricLaces.addEventListener('click', handleFabricClick);
       } 
-      if (intersect.object.name === "sole") {
+      if (intersect.object.name === "sole_bottom") {
         name.innerHTML = "Sole Bottom";
         paletteSole.style.display = "flex";
         container.style.display = "none";
@@ -463,7 +465,7 @@ scene.traverse((node) => {
     if (node.material.color.getHexString() === "69ff47") {
       node.material.color.set("#ffffff");
     }
-  }  if (node.isMesh && soleRaycastClicked && node.name !== "sole" && node !== plane) {
+  }  if (node.isMesh && soleRaycastClicked && node.name !== "sole_bottom" && node !== plane) {
     // Check if sole is already red before changing the color to white
     if (node.material.color.getHexString() === "69ff47") {
       node.material.color.set("#ffffff");
@@ -481,7 +483,7 @@ scene.traverse((node) => {
     } if (intersect.object.isMesh && !meshFound && intersect.object.material.color.getHexString() === "ffffff" && lacesRaycastClicked === true && intersect.object.name !== "laces"){
       intersect.object.material.color.set("#69ff47");
       meshFound = true;
-    }  if (intersect.object.isMesh && !meshFound && intersect.object.material.color.getHexString() === "ffffff" && soleRaycastClicked === true && intersect.object.name !== "sole"){
+    }  if (intersect.object.isMesh && !meshFound && intersect.object.material.color.getHexString() === "ffffff" && soleRaycastClicked === true && intersect.object.name !== "sole_bottom"){
       intersect.object.material.color.set("#69ff47");
       meshFound = true; 
     }
