@@ -3,7 +3,37 @@ body {
   text-align: center;
   font-family: 'Helvetica', sans-serif;
   text-transform: uppercase;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
+
+.wrapper {
+  display:flex;
+  width: 100%;
+}
+
+.customizer-container{
+  position: absolute;
+  top:50%;
+  right: 0;
+  transform: translateY(-50%);
+  width: 500px; 
+  height:100vh;
+  background-color: black;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.canvas-container {
+  flex: 1;
+  height: 100vh;
+}
+
 
 #close-window {
   position:absolute;
@@ -35,10 +65,6 @@ button:disabled{
 
 }
 
-#app {
-  position: relative;
-}
-
 .logo-image {
   position: absolute;
   top: 30px; 
@@ -47,20 +73,6 @@ button:disabled{
   height: auto; 
 }
 
-.customizer-container{
-  position: absolute;
-  top:50%;
-  right: 0;
-  transform: translateY(-50%);
-  width: 500px; 
-  height:100vh;
-  background-color: black;
-  color: white;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
 
 .customizer-container p{
  margin-bottom: 0;
@@ -101,8 +113,6 @@ div{
   justify-content: center;
   align-items: center;
   display: none;
-  margin-bottom: 28px;
-
 }
 
 #color-palette-sole{
@@ -117,6 +127,7 @@ div{
   flex-direction: column;
   justify-content: flex-start;
   align-items: flex-start;
+  margin-top: 28px;
 }
 
 .size-container label{

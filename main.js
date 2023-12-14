@@ -211,8 +211,9 @@ document.addEventListener('mousemove', (event) => {
 });
 
 const renderer = new THREE.WebGLRenderer();
-renderer.setSize( 900, window.innerHeight );
-document.body.appendChild( renderer.domElement );
+renderer.setSize( window.innerWidth, window.innerHeight );
+const canvas = document.querySelector('.canvas-container');
+canvas.appendChild(renderer.domElement);
 
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap; 
