@@ -11,6 +11,7 @@ body {
 
 .wrapper {
   display:flex;
+  width: 100%
 }
 
 .customizer-container{
@@ -66,7 +67,8 @@ button:disabled{
   top: 30px; 
   left: 30px; 
   width: 200px; 
-  height: auto; 
+  height: auto;
+  z-index: 1; 
 }
 
 

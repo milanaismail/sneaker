@@ -430,11 +430,14 @@ function changeInsideColor(color) {
 };
 
 function handlePaletteClick() {
+  console.log("palette clicked")
+
   // Check if laces are not already red
   if (!lacesRaycastClicked) {
     // Change the color of the laces
     changeLacesColor(colorLaces);
     lacesRaycastClicked = true;
+    console.log("laces clicked")
   }
 }
 
@@ -448,11 +451,14 @@ function handleFabricClick() {
 }
 
 function handlePaletteSoleClick() {
+  console.log("palette clicked")
+
   // Check if sole is not already red
   if (!soleRaycastClicked) {
     // Change the color of the sole
     changeSoleBottomColor(colorSole);
     soleRaycastClicked = true;
+    console.log("sole clicked");
   }
 }
 
@@ -462,6 +468,8 @@ function handlePaletteSoleTopClick() {
     // Change the color of the sole
     changeSoleTopColor(colorSoleTop);
     soleTopRaycastClicked = true;
+    console.log("sole top clicked");
+
   }
 }
 
@@ -471,6 +479,8 @@ function handlePaletteOutside1Click() {
     // Change the color of the sole
     changeOutside1Color(colorOutside1);
     outside1RaycastClicked = true;
+    console.log("outside1 clicked");
+
   }
 }
 
@@ -480,6 +490,8 @@ function handlePaletteOutside2Click() {
     // Change the color of the sole
     changeOutside2Color(colorOutside2);
     outside2RaycastClicked = true;
+    console.log("outside2 clicked");
+
   }
 }
 
