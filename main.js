@@ -1,7 +1,5 @@
 import './style.css';
 import * as THREE from 'three';
-//import orbit controls
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 //import gftloader
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 //import draco loader
@@ -362,29 +360,18 @@ function changeLacesColor(color) {
   }
 };
 
-/*function changeLacesFabric(fabric) {
+const cottonTexture = new THREE.TextureLoader().load('/fabrics/cotton.jpg');
+
+function changeLacesFabric(material, texture) {
   if (shoe) {
     const lacesMesh = shoe.getObjectByName("laces");
     if (lacesMesh) {
-      const textureLoader = new THREE.TextureLoader();
-      textureLoader.load(
-        fabric,
-        (newTexture) => {
-          console.log("Texture loaded successfully:", newTexture);
-          lacesMesh.material.map = newTexture;
-          lacesMesh.material.needsUpdate = true;
+          lacesMesh.material = material;
+          lacesMesh.material.map = texture;
           lacesMesh.material.map.needsUpdate = true;
-    console.log(shoeMeshes[0].material.map);
-
-        },
-        undefined,
-        (error) => {
-          console.error("Error loading texture:", error);
-        }
-      );
     }
   }
-}*/
+}
 
 
   
@@ -804,7 +791,7 @@ scene.traverse((node) => {
       meshFound = true; 
     }
   }
-  
+
   requestAnimationFrame(animate);
 
   renderer.render(scene, camera);

@@ -218,18 +218,3 @@ div{
 .box.selected, .box-fabric.selected {
   border: 2px solid #68ff47;
 }
-
-.order-form{
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  margin-top: 28px;
-}
-
-form{
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
