@@ -144,7 +144,7 @@ plane.position.y = -1.05;
 
 //add axes helper
 const axesHelper = new AxesHelper( 5 );
-scene.add( axesHelper );
+//scene.add( axesHelper );
 
 //add gltf loader
 const loader = new GLTFLoader();

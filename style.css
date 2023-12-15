@@ -15,10 +15,6 @@ body {
 }
 
 .customizer-container{
-  position: absolute;
-  top:50%;
-  right: 0;
-  transform: translateY(-50%);
   width: 500px; 
   height:100vh;
   background-color: black;
@@ -31,6 +27,7 @@ body {
 
 .canvas-container {
   flex: 1;
+  position: relative;
   height: 100vh;
 }
 
@@ -128,6 +125,7 @@ div{
   justify-content: flex-start;
   align-items: flex-start;
   margin-top: 28px;
+
 }
 
 .size-container label{
