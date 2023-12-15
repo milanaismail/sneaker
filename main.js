@@ -217,7 +217,8 @@ document.addEventListener('mousemove', (event) => {
 
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize( window.innerWidth, window.innerHeight );
-document.body.appendChild( renderer.domElement );
+const canvas = document.querySelector('.canvas-container');
+canvas.appendChild(renderer.domElement);
 
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap; 
@@ -718,6 +719,42 @@ window.addEventListener('click', function () {
       }
     }
   }
+});
+
+// Function to handle color box click
+function colorBoxClicked(colorBox) {
+  console.log(`Clicked color: ${colorBox.style.backgroundColor}`);
+  lacesRaycastClicked = false;
+  soleRaycastClicked = false;
+
+  // Remove the 'selected' class from all color boxes
+  paletteLacesColors.forEach(box => box.classList.remove('selected'));
+  fabricLaceMat.forEach(box => box.classList.remove('selected'));
+  paletteSoleColors.forEach(box => box.classList.remove('selected'));
+
+  // Add the 'selected' class to the clicked color box
+  colorBox.classList.add('selected');
+}
+
+// Attach click event listeners to each color box in the laces palette
+paletteLacesColors.forEach((colorBox) => {
+  colorBox.addEventListener('click', () => {
+    colorLaces = colorBox.style.backgroundColor;
+    colorBoxClicked(colorBox);
+  });
+});
+
+// Attach click event listeners to each color box in the sole palette
+paletteSoleColors.forEach((colorBox) => {
+  colorBox.addEventListener('click', () => {
+    colorSole = colorBox.style.backgroundColor;
+    colorBoxClicked(colorBox);
+  });
+});
+
+document.getElementById('size').addEventListener('change', function () {
+  const button = document.getElementById('orderButton');
+  button.disabled = this.value === ''; // Disable the button if no size is selected
 });
 
 function animate() {
