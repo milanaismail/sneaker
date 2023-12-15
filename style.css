@@ -3,7 +3,6 @@ body {
   text-align: center;
   font-family: 'Helvetica', sans-serif;
   text-transform: uppercase;
-  height: 100vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -12,14 +11,9 @@ body {
 
 .wrapper {
   display:flex;
-  width: 100%;
 }
 
 .customizer-container{
-  position: absolute;
-  top:50%;
-  right: 0;
-  transform: translateY(-50%);
   width: 500px; 
   height:100vh;
   background-color: black;
@@ -33,6 +27,7 @@ body {
 .canvas-container {
   flex: 1;
   height: 100vh;
+  position: relative;
 }
 
 
