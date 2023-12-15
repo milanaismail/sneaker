@@ -1,103 +1,72 @@
 import './style.css';
 import * as THREE from 'three';
-
 //import orbit controls
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
-
 //import gftloader
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
-
 //import draco loader
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
-
 //import axes helper
 import { AxesHelper } from 'three';
-
 import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
 
 const scene = new THREE.Scene();
+
 const camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 0.1, 1000 );
+
 const raycaster = new THREE.Raycaster();
-raycaster.precision = 0.1; // Adjust the value as needed
-raycaster.params.Points.threshold = 0.1; // Adjust the value as needed
+raycaster.precision = 0.1; 
+raycaster.params.Points.threshold = 0.1; 
 
 const pointer = new THREE.Vector2();
-//add audio 
 
 const audioLoader = new THREE.AudioLoader();
 
 const listener = new THREE.AudioListener();
+
 camera.add(listener);
+
+//audio
 
 const sound = new THREE.PositionalAudio(listener);
 function loadAudio() {
-  // load audio only after a user gesture (e.g., click)
   audioLoader.load("/sounds/Click.mp3", function(buffer) {
     sound.setBuffer(buffer);
     sound.setVolume(0.5);
-    sound.setRefDistance(5); // Adjust the reference distance as needed
+    sound.setRefDistance(5); 
     scene.add(sound);
 
-    // now that the audio is loaded, you can play it
     playClickSound();
 
   });
 }
 
-
 function playClickSound() {
   sound.play();
 }
 
+//add audio when clicking
 window.addEventListener('click', loadAudio);
 
 const onPointerMove = ( event ) => {
 	pointer.x = ( event.clientX / window.innerWidth ) * 2 - 1;
 	pointer.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
 }
-
 window.addEventListener( 'pointermove', onPointerMove );
-/*
-scene.background = new THREE.CubeTextureLoader()
-	.setPath( 'textures/cubeMap/' )
-	.load( [
-				'px.png',
-				'nx.png',
-				'py.png',
-				'ny.png',
-				'pz.png',
-				'nz.png'
-			] );
-*/
-      /*const textureLoader = new THREE.TextureLoader();
-      const background = textureLoader.load('/textures/background.jpeg'); // Replace with the path to your image
-      const polyesterMat = textureLoader.load('/textures/polyester.jpg');
-      // Create a plane geometry
-      const planeGeometry = new THREE.PlaneGeometry(12, 12); // Adjust the size as needed
-      
-      // Create a material with the texture
-      const planeMaterial = new THREE.MeshBasicMaterial({ map: background });
-      
-      // Create a mesh with the geometry and material
-      const plane = new THREE.Mesh(planeGeometry, planeMaterial);
-      
-      // Add the mesh to the scene
-      scene.add(plane);     
-      plane.position.z = -2; // Adjust as needed*/
 
-      //Add gridhelper
-      const size = 50;
-      const divisions = 50;
-      const gridHelper = new THREE.GridHelper( size, divisions );
+//add gridhelper 
+const size = 50;
+const divisions = 50;
+const gridHelper = new THREE.GridHelper( size, divisions );
 
-      scene.add( gridHelper );
+scene.add( gridHelper );
 
-      gridHelper.position.y = -1;
+gridHelper.position.y = -1;
 
-      //change color of gridhelper
-      gridHelper.material.color.set(0xffffff);
-      // change width of gridhelper
-      gridHelper.material.linewidth = 3;
+//change color of gridhelper
+gridHelper.material.color.set(0xffffff);
+// change width of gridhelper
+gridHelper.material.linewidth = 3;
 
       
 //add plane
@@ -141,11 +110,6 @@ plane.rotation.x = Math.PI / 2;
 plane.position.y = -1.05;
 
 
-
-//add axes helper
-const axesHelper = new AxesHelper( 5 );
-//scene.add( axesHelper );
-
 //add gltf loader
 const loader = new GLTFLoader();
 
@@ -158,7 +122,6 @@ let shoe;
 
 const shoeMeshes = [];
 
-
 //add public/Shoe_compressed.glb 
 loader.load('public/Shoe_compressed.glb', function(gltf){
   shoe = gltf.scene;
@@ -167,6 +130,7 @@ loader.load('public/Shoe_compressed.glb', function(gltf){
   shoe.scale.set(3, 3, 3);
   shoe.receiveShadow = true; 
   scene.add(shoe);
+  
   // Find laces and sole meshes by name
   const lacesMesh = shoe.getObjectByName("laces");
   const soleBottomMesh = shoe.getObjectByName("sole_bottom");
@@ -211,7 +175,7 @@ document.addEventListener('mousemove', (event) => {
     previousMouseX = event.clientX;
 
     // Rotate the shoe based on mouse movement
-    shoe.rotation.y += delta * 0.01; // You can adjust the sensitivity here
+    shoe.rotation.y += delta * 0.01; 
   }
 });
 
@@ -226,6 +190,7 @@ renderer.antialias = true;
 
 renderer.setPixelRatio(window.devicePixelRatio);
 
+//Texture for barrel
 const texture = new THREE.TextureLoader().load('textures/normal2.png');
 const material2 = new THREE.MeshStandardMaterial({ 
   map: texture,
@@ -233,6 +198,7 @@ const material2 = new THREE.MeshStandardMaterial({
   roughness: 0.2,
  });
 
+//add oil barrel
 const oilBarrel = new OBJLoader();
 
 oilBarrel.load(
@@ -253,11 +219,9 @@ oilBarrel.load(
     });
 	});
 
+
 const geometry = new THREE.BoxGeometry( 1, 1, 1 );
 const material = new THREE.MeshBasicMaterial( { color: 0x00ff00  } );
-
-//add orbit controls
-//const controls = new OrbitControls(camera, renderer.domElement);
 
 //add ambient light
 const ambientLight = new THREE.AmbientLight(0xffffff,1.2);
@@ -267,16 +231,19 @@ scene.add(ambientLight);
 const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
 directionalLight.position.set(0, 15, 4);
 directionalLight.target.position.set(0, 0, 0);
+
 //add shadow
 directionalLight.castShadow = true;
 scene.add(directionalLight);
 
 //add helper
 const helper = new THREE.DirectionalLightHelper(directionalLight, 5); 
-scene.add(helper);
+//scene.add(helper);
 
+
+//camera position
 camera.position.y = 1;
-camera.position.z = 1.5; //zoom in van 2 naar 1
+camera.position.z = 1.5; 
 camera.position.y = 0.65;
 camera.lookAt(0, 0, 0);
 
@@ -298,7 +265,6 @@ const paletteOutside1Colors = paletteOutside1.querySelectorAll('.box');
 const paletteOutside2Colors = paletteOutside2.querySelectorAll('.box');
 const paletteOutside3Colors = paletteOutside3.querySelectorAll('.box');
 const paletteInsideColors = paletteInside.querySelectorAll('.box');
-console.log(paletteLacesColors);
 
 let colorLaces;
 let colorSole;
@@ -335,13 +301,6 @@ paletteLacesColors.forEach((colorBox) => {
   });
 });
 
-/*fabricLaceMat.forEach((fabricBox) => {
-  fabricBox.addEventListener('click', () => {
-    fabricLace = fabricBox.style.backgroundImage.slice(4, -1);
-    handleColorBoxClick(fabricLace);
-
-  })
-});*/
 
 // Attach click event listeners to each color box in the sole palette
 paletteSoleColors.forEach((colorBox) => {
@@ -564,11 +523,6 @@ window.addEventListener('click', function () {
       // Look at the clicked object
       camera.lookAt(intersect.object.position);
 
-      // Set camera position based on the clicked object
-      /*camera.position.z = 0;
-      camera.position.x = 1; // Adjust as needed
-      camera.position.y = 1; // Adjust as needed*/
-
       // Handle different parts of the shoe
       if (intersect.object.name === "laces") {
         name.innerHTML = "Laces";
@@ -760,10 +714,10 @@ document.getElementById('size').addEventListener('change', function () {
 });
 
 function animate() {
-
   const elapsedTime = clock.getElapsedTime();
   const speed = elapsedTime * 0.1;
 
+  // change plane gradients
   planeMaterial.uniforms.time.value += 0.01;
 
 
@@ -850,16 +804,7 @@ scene.traverse((node) => {
       meshFound = true; 
     }
   }
-   
-  /*if (oilBarrel) {
-    const oscillationAmplitude = 0.1; // Adjust the amplitude as needed
-    const oscillationSpeed = 0.5; // Adjust the speed as needed
-    const minY = -0.; // Minimum Y position
-    const maxY = 0.5; // Maximum Y position
-
-    oilBarrel.position.y = Math.sin(elapsedTime * oscillationSpeed) * oscillationAmplitude;
-  }*/
-
+  
   requestAnimationFrame(animate);
 
   renderer.render(scene, camera);
