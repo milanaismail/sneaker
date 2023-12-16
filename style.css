@@ -83,77 +83,12 @@ div{
   justify-content: center;
   align-items: center;
   font-size: 10px;
-
 }
 
 #name{
   color: rgb(105, 255, 71);
   font-size: 26px;
 }
-
-.color-palette-container{
-  font-family: 'Helvetica Roman', sans-serif;
-  font-size: 12px;
-  margin-bottom: 18px;
-  display: block;
-}
-
-#color-palette-laces{
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  display: none;
-  padding: 8px;
-  margin-bottom: 28px;
-}
-
-#color-fabrics-laces{
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  display: none;
-}
-
-#color-palette-sole{
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  display: none;
-}
-
-#color-palette-sole-top{
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  display: none;
-}
-
-#color-palette-outside1{
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  display: none;
-}
-#color-palette-outside2{
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  display: none;
-}
-#color-palette-outside3{
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  display: none;
-}
-
-#color-palette-inside{
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  display: none;
-}
-
 .size-container{
   display:flex;
   flex-direction: column;

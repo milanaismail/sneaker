@@ -298,13 +298,52 @@ function onColorOptionClick(event) {
     }
   
     console.log('Selected part:', selectedPart);
+
+    const isFabricOption = event.target.classList.contains('box-fabric');
+    if (isFabricOption) {
+      const fabricType = event.target.parentElement.id; // Get fabric type from parent container id
+      applyFabricToSelectedPart(fabricType);
+    }
   }
+  function onFabricOptionClick(event) {
+    const fabricType = event.target.parentElement.id; // Get fabric type from parent container id
+    applyFabricToSelectedPart(fabricType);
+  
+    // Add or remove the 'selected' class based on the selected fabric
+    const selectedFabric = document.querySelector('.fabric-container.selected');
+    if (selectedFabric) {
+      selectedFabric.classList.remove('selected');
+    }
+    event.target.parentElement.classList.add('selected');
+  }
+
+  function applyFabricToSelectedPart(fabricType) {
+    if (selectedPart) {
+      const fabricMaterial = getFabricMaterial(fabricType);
+      selectedPart.material = fabricMaterial;
+      console.log('Applied fabric:', fabricType);
+    }
+  }
+  
+  function getFabricMaterial(selectedColor) {
+    // Implement logic to return the material for the selected fabric
+    // For example, create a new material based on the fabric type
+    const fabricMaterial = new THREE.MeshStandardMaterial({
+      color: selectedPart.material.color,
+      metalness: 0.5,
+      roughness: 0.2,
+    });
+    return fabricMaterial;
+  }
+
+  
 
 // Add color option click event listeners
 const colorOptions = document.querySelectorAll('.colorOption .box');
 colorOptions.forEach(option => option.addEventListener('click', onColorOptionClick));
 
-// Variable to store the selected part
+const fabricOptions = document.querySelectorAll('.fabricOption .box-fabric');
+fabricOptions.forEach(option => option.addEventListener('click', onFabricOptionClick));
 
 // Function to handle the raycasting logic
 function onDocumentMouseMove(event) {
