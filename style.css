@@ -23,6 +23,10 @@ body {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  position: absolute;
+  right: 0;
+  padding-left: 48px;
+  padding-right: 48px;
 }
 
 .canvas-container {
@@ -74,7 +78,6 @@ button:disabled{
 
 .customizer-container p{
  margin-bottom: 0;
- font-size: 16px;
 }
 
 div{
@@ -82,13 +85,12 @@ div{
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  font-size: 10px;
 
 }
 
 #name{
   color: rgb(105, 255, 71);
-  font-size: 26px;
+  font-size: 48px;
 }
 
 .color-palette-container{
@@ -203,7 +205,7 @@ div{
 }
 
 .color-fabric-container p{
-  font-size: 10px;
+  font-size: 16px;
   margin: 6;
 }
 
