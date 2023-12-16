@@ -126,21 +126,7 @@ const loader = new GLTFLoader();
 const dracoLoader = new DRACOLoader();
 dracoLoader.setDecoderPath('https://www.gstatic.com/draco/versioned/decoders/1.5.6/');
 loader.setDRACOLoader(dracoLoader);
-
-let shoe;
-
-const shoeMeshes = [];
-
-//add public/Shoe_compressed.glb 
-loader.load('public/Shoe_compressed.glb', function(gltf){
-  shoe = gltf.scene;
-  shoe.position.set(0.05, 0.10, -0.04)
-  shoe.rotation.set(0, -65 * (Math.PI / 180), 0)
-  shoe.scale.set(3, 3, 3);
-  shoe.receiveShadow = true; 
-  scene.add(shoe);
-
-
+  
 let isDragging = false;
 let previousMouseX = 0;
 
@@ -211,6 +197,27 @@ camera.position.z = 1.1;
 camera.position.y = 0.65;
 camera.lookAt(0, 0, 0);
 
+let shoe;
+
+const shoeMeshes = [];
+
+//add public/Shoe_compressed.glb 
+loader.load('public/Shoe_compressed.glb', function(gltf){
+  shoe = gltf.scene;
+  shoe.position.set(0.05, 0.10, -0.04)
+  shoe.rotation.set(0, -65 * (Math.PI / 180), 0)
+  shoe.scale.set(3, 3, 3);
+  shoe.receiveShadow = true; 
+  
+  const shoeMaterial = new THREE.MeshStandardMaterial({
+    color: 0xffffff, // Set your desired color here
+    roughness: 0.4,  // Adjust metalness
+
+
+  });
+  
+  scene.add(shoe);
+
   // Find laces and sole meshes by name
   const lacesMesh = shoe.getObjectByName("laces");
   const soleBottomMesh = shoe.getObjectByName("sole_bottom");
@@ -241,11 +248,11 @@ camera.lookAt(0, 0, 0);
       shoe.rotation.y += delta * 0.01; 
     }
   });
-    
   
 
   shoe.traverse(function (node) {
     if (node.isMesh) {
+      node.material = shoeMaterial.clone();
       node.castShadow = true;
 
       // Check if the mesh is part of the shoe
