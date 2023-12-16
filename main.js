@@ -288,7 +288,15 @@ function onColorOptionClick(event) {
     if (selectedPart) {
       selectedPart.material.color.copy(selectedColor);
       partColors.set(selectedPart.uuid, selectedColor);
+  
+      // Add or remove the 'selected' class based on the selected color
+      const selectedBox = document.querySelector('.box.selected');
+      if (selectedBox) {
+        selectedBox.classList.remove('selected');
+      }
+      event.target.classList.add('selected');
     }
+  
     console.log('Selected part:', selectedPart);
   }
 
@@ -369,17 +377,28 @@ function onDocumentMouseDown(event) {
         // If no color has been chosen, set the color to black
         selectedPart.material.color.set(0x000000);
         partColors.set(selectedPart.uuid, new THREE.Color(0x000000));
+
+           // Remove the 'selected' class from the previously selected box
+           const selectedBox = document.querySelector('.box.selected');
+           if (selectedBox) {
+             selectedBox.classList.remove('selected');
+           }
        
         // Save the name of the selected shoe part to the id attribute
         const nameElement = document.getElementById('name');
         nameElement.textContent = selectedPart.name || 'Unnamed Part';
       }
 
+      const clickedBox = event.target;
+      clickedBox.classList.add('selected');
+    }
+
+
       // Store the selected part for later reference
       hoveredPart = selectedPart;
     }
   }
-}
+
 
 // Add the click event listener
 window.addEventListener('click', onDocumentMouseDown, false);
