@@ -219,6 +219,15 @@ camera.lookAt(0, 0, 0);
   const outside1Mesh = shoe.getObjectByName("outside_1");
   const outside2Mesh = shoe.getObjectByName("outside_2");
   const outside3Mesh = shoe.getObjectByName("outside_3");
+
+  lacesMesh.name = "Laces";
+  soleBottomMesh.name = "Sole bottom";
+  soleTopMesh.name = "sole top";
+  insideMesh.name = "Lining";
+  outside1Mesh.name = "Front part";
+  outside2Mesh.name = "Upper part";
+  outside3Mesh.name = "Body";
+
   
   shoeMeshes.push(lacesMesh, soleBottomMesh, soleTopMesh, insideMesh, outside1Mesh, outside2Mesh, outside3Mesh);
   //console.log(lacesMesh);
@@ -353,6 +362,10 @@ function onDocumentMouseDown(event) {
         // If no color has been chosen, set the color to black
         selectedPart.material.color.set(0x000000);
         partColors.set(selectedPart.uuid, new THREE.Color(0x000000));
+       
+        // Save the name of the selected shoe part to the id attribute
+        const nameElement = document.getElementById('name');
+        nameElement.textContent = selectedPart.name || 'Unnamed Part';
       }
 
       // Store the selected part for later reference
