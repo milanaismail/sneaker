@@ -140,16 +140,6 @@ loader.load('public/Shoe_compressed.glb', function(gltf){
   shoe.receiveShadow = true; 
   scene.add(shoe);
 
-document.addEventListener('mousemove', (event) => {
-  if (isDragging && shoe) {
-    const delta = event.clientX - previousMouseX;
-    previousMouseX = event.clientX;
-
-    // Rotate the shoe based on mouse movement
-    shoe.rotation.y += delta * 0.01; 
-  }
-});
-  
 
 let isDragging = false;
 let previousMouseX = 0;
@@ -232,26 +222,44 @@ camera.lookAt(0, 0, 0);
   
   shoeMeshes.push(lacesMesh, soleBottomMesh, soleTopMesh, insideMesh, outside1Mesh, outside2Mesh, outside3Mesh);
   //console.log(lacesMesh);
-  
-  lacesMesh.traverse(function(node){
-    if (node.isMesh){
-      node.castShadow = true;
-  shoe.rotation.set(0, -65 * (Math.PI / 180), 0)
-  shoe.traverse(function(node){
-    if (node.isMesh){
-      node.castShadow = true;
-    }
-  }) 
-    }
-  });
-  });
 
-  let hoveredPart = null;
+  document.addEventListener('mousemove', (event) => {
+    if (isDragging && shoe) {
+      const delta = event.clientX - previousMouseX;
+      previousMouseX = event.clientX;
+  
+      // Rotate the shoe based on mouse movement
+      shoe.rotation.y += delta * 0.01; 
+    }
+  });
+    
+  
+
+  shoe.traverse(function (node) {
+    if (node.isMesh) {
+      node.castShadow = true;
+
+      // Check if the mesh is part of the shoe
+      if (shoeMeshes.includes(node)) {
+        // Skip resetting color for the selected or hovered part
+        if (node !== hoveredPart && node !== selectedPart) {
+          node.material.color.set(0xffffff); // Reset color
+          console.log('reset color');
+        }
+      }
+    }
+  });
+});
+
+let hoveredPart = null;
+let selectedPart = null;
+const partColors = new Map();
 
 // Function to handle color option clicks
 function onColorOptionClick(event) {
+  console.log('color option clicked')
   const selectedColor = new THREE.Color(parseInt(event.target.dataset.color, 16));
-  
+  console.log('Selected color:', selectedColor);
   // Update the color of the clicked part
   /*  if (selectedPart) {
   const newMaterial = new THREE.MeshStandardMaterial({
@@ -259,15 +267,13 @@ function onColorOptionClick(event) {
       metalness: 0.5,
       roughness: 0.2,
     }); USE FOR FABRICS*/
-
-    // Replace the material of the selected part
-    if (hoveredPart || selectedPart) {
-      const targetPart = selectedPart || hoveredPart;
-      targetPart.material.color.copy(selectedColor);
   
-      // Store the selected color for the part
-      partColors.set(targetPart.uuid, selectedColor);
+    // Apply the selected color to the entire shoe
+    if (selectedPart) {
+      selectedPart.material.color.copy(selectedColor);
+      partColors.set(selectedPart.uuid, selectedColor);
     }
+    console.log('Selected part:', selectedPart);
   }
 
 // Add color option click event listeners
@@ -275,9 +281,6 @@ const colorOptions = document.querySelectorAll('.colorOption .box');
 colorOptions.forEach(option => option.addEventListener('click', onColorOptionClick));
 
 // Variable to store the selected part
-let selectedPart = null;
-
-const partColors = new Map();
 
 // Function to handle the raycasting logic
 function onDocumentMouseMove(event) {
@@ -290,31 +293,32 @@ function onDocumentMouseMove(event) {
   // Update the picking ray with the camera and mouse position
   raycaster.setFromCamera(pointer, camera);
 
-  // Check for intersections with the shoe meshes
   const intersects = raycaster.intersectObjects(shoeMeshes, true);
 
-// Reset color for all shoe parts except the clicked part
-if (selectedPart) {
+  // Reset color for all shoe parts except the hovered or selected part
   shoeMeshes.forEach(mesh => {
     if (mesh !== selectedPart) {
-      mesh.material.color.set(0xffffff); // Reset color
+      // Only reset color if a color has not been chosen for this part
+      if (!partColors.has(mesh.uuid)) {
+        mesh.material.color.set(0xffffff); // Reset color
+        console.log('reset color');
+      }
     }
   });
-} else {
-  // Reset color for all shoe parts
-  shoeMeshes.forEach(mesh => {
-    if (mesh !== hoveredPart) {
-      mesh.material.color.set(0xffffff); // Reset color
-    }
-  });
-}
 
-
-  // Apply the hover effect to the currently hovered part
   if (intersects.length > 0) {
-      hoveredPart = intersects[0].object;
-      // Change the material color or apply a hover effect (customize based on your needs)
-      hoveredPart.material.color.set(0x000000); // Hover color
+    hoveredPart = intersects[0].object;
+
+    // Change the material color or apply a hover effect (customize based on your needs)
+    if (hoveredPart !== selectedPart) {
+      // Only set the hover color if a color has not been chosen for this part
+      if (!partColors.has(hoveredPart.uuid)) {
+        hoveredPart.material.color.set(0x000000); // Hover color
+      }
+    }
+  } else {
+    // If no intersection, reset hoveredPart
+    hoveredPart = null;
   }
 }
 
@@ -327,25 +331,34 @@ function onDocumentMouseDown(event) {
   pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
   pointer.y = - (event.clientY / window.innerHeight) * 2 + 1;
 
-  // Update the picking ray with the camera and mouse position
-  raycaster.setFromCamera(pointer, camera);
+  const isColorOption = event.target.classList.contains('box');
 
-  // Check for intersections with the shoe meshes
-  const intersects = raycaster.intersectObjects(shoeMeshes, true);
-// Reset color for all shoe parts
-shoeMeshes.forEach(mesh => {
-  mesh.material.color.set(0xffffff); // Reset color
-});
+  if (!isColorOption) {
+    // Calculate mouse position in normalized device coordinates
+    pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
+    pointer.y = - (event.clientY / window.innerHeight) * 2 + 1;
 
-// Apply the color to the clicked part
-if (intersects.length > 0) {
-  selectedPart = intersects[0].object;
-  selectedPart.material.color.set(0x000000); // Set color to black
+    // Update the picking ray with the camera and mouse position
+    raycaster.setFromCamera(pointer, camera);
 
-  // Store the selected part for later reference
-  hoveredPart = selectedPart;
+    // Check for intersections with the shoe meshes
+    const intersects = raycaster.intersectObjects(shoeMeshes, true);
 
-}
+    // Apply the color to the clicked part
+    if (intersects.length > 0) {
+      selectedPart = intersects[0].object;
+
+      // Check if a color has been chosen for this part
+      if (!partColors.has(selectedPart.uuid)) {
+        // If no color has been chosen, set the color to black
+        selectedPart.material.color.set(0x000000);
+        partColors.set(selectedPart.uuid, new THREE.Color(0x000000));
+      }
+
+      // Store the selected part for later reference
+      hoveredPart = selectedPart;
+    }
+  }
 }
 
 // Add the click event listener
