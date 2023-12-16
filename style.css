@@ -176,10 +176,10 @@ div{
 .box, .box-fabric {
   height: 40px;
   width: 40px;
-  border: 1px solid black;
+  border: 1px solid #333333;
   display: block;
-  margin: 12px;
 }
+
 
 .box-fabric {
   border-radius: 50%;
@@ -189,30 +189,24 @@ div{
   border: 2px solid #68ff47;
 }
 
-.red {
-  background: red;
-}
-
-.green {
-  background-color: green;
-}
-
-.blue {
-  background-color: blue;
-}
-
-.yellow {
-  background-color: yellow;
-}
-
-.purple {
-  background-color: purple;
-}
-
-.pink {
-  background-color: pink;
-}
 
 .box.selected, .box-fabric.selected {
   border: 2px solid #68ff47;
+}
+
+.colorOption, .fabricOption {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 28px;
+}
+
+.color-fabric-container p{
+  font-size: 10px;
+  margin: 6;
+}
+
+.box-container, .fabric-container{
+  margin: 12px;
 }
