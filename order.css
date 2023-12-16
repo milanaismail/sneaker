@@ -7,6 +7,7 @@ body {
     align-items: center;
     margin: 0;
     height: 100%;
+    min-height: 100vh;
   }
 
 .order-form{
@@ -16,6 +17,7 @@ body {
     align-items: left;
     padding: 256px;
     padding-top: 16px;
+    padding-bottom: 0px;
   }
   
   form{
@@ -53,21 +55,18 @@ body {
   
   .order-summary{
     background-color: #f0f0f0;
-    padding: 20px;
-    border-radius: 20px;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
     background-color: black;
     color: white;
-    padding: 256px;
-    padding-bottom: 256px;
+    padding: 128px;
     padding-top: 16px;
-    margin-right: 64px;
+    width: 35%;
   }
   
   .order-summary p{
-    font-size: 16px;
+    font-size: 24px;
   }
   
   .checkout-title {
@@ -84,5 +83,5 @@ body {
     color:black;
     background-color:rgb(105, 255, 71);
     border-width:0;
-    margin-top: 32px;
+    margin-top: 16px;
   }
