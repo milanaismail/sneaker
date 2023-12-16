@@ -66,6 +66,17 @@ gridHelper.material.color.set(0xffffff);
 // change width of gridhelper
 gridHelper.material.linewidth = 3;
 
+const renderer = new THREE.WebGLRenderer();
+renderer.setSize( window.innerWidth, window.innerHeight );
+const canvas = document.querySelector('.canvas-container');
+canvas.appendChild(renderer.domElement);
+
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap; 
+renderer.antialias = true;
+
+renderer.setPixelRatio(window.devicePixelRatio);
+
       
 //add plane
 const planeGeometry = new THREE.PlaneGeometry(50, 50, 20, 20);
@@ -128,31 +139,17 @@ loader.load('public/Shoe_compressed.glb', function(gltf){
   shoe.scale.set(3, 3, 3);
   shoe.receiveShadow = true; 
   scene.add(shoe);
-  
-  // Find laces and sole meshes by name
-  const lacesMesh = shoe.getObjectByName("laces");
-  const soleBottomMesh = shoe.getObjectByName("sole_bottom");
-  const soleTopMesh = shoe.getObjectByName("sole_top");
-  const insideMesh = shoe.getObjectByName("inside");
-  const outside1Mesh = shoe.getObjectByName("outside_1");
-  const outside2Mesh = shoe.getObjectByName("outside_2");
-  const outside3Mesh = shoe.getObjectByName("outside_3");
 
-  shoeMeshes.push(lacesMesh, soleBottomMesh, soleTopMesh, insideMesh, outside1Mesh, outside2Mesh, outside3Mesh);
-  console.log(lacesMesh.material.map);
+document.addEventListener('mousemove', (event) => {
+  if (isDragging && shoe) {
+    const delta = event.clientX - previousMouseX;
+    previousMouseX = event.clientX;
 
-  lacesMesh.traverse(function(node){
-    if (node.isMesh){
-      node.castShadow = true;
-  shoe.rotation.set(0, -65 * (Math.PI / 180), 0)
-  shoe.traverse(function(node){
-    if (node.isMesh){
-      node.castShadow = true;
-    }
-  }) 
-    }
-  });
+    // Rotate the shoe based on mouse movement
+    shoe.rotation.y += delta * 0.01; 
+  }
 });
+  
 
 let isDragging = false;
 let previousMouseX = 0;
@@ -166,27 +163,6 @@ document.addEventListener('mousedown', (event) => {
 document.addEventListener('mouseup', () => {
   isDragging = false;
 });
-
-document.addEventListener('mousemove', (event) => {
-  if (isDragging && shoe) {
-    const delta = event.clientX - previousMouseX;
-    previousMouseX = event.clientX;
-
-    // Rotate the shoe based on mouse movement
-    shoe.rotation.y += delta * 0.01; 
-  }
-});
-
-const renderer = new THREE.WebGLRenderer();
-renderer.setSize( window.innerWidth, window.innerHeight );
-const canvas = document.querySelector('.canvas-container');
-canvas.appendChild(renderer.domElement);
-
-renderer.shadowMap.enabled = true;
-renderer.shadowMap.type = THREE.PCFSoftShadowMap; 
-renderer.antialias = true;
-
-renderer.setPixelRatio(window.devicePixelRatio);
 
 //Texture for barrel
 const texture = new THREE.TextureLoader().load('textures/normal2.png');
@@ -241,471 +217,145 @@ const helper = new THREE.DirectionalLightHelper(directionalLight, 5);
 
 //camera position
 camera.position.y = 1;
-camera.position.z = 1.5; 
+camera.position.z = 1.1; 
 camera.position.y = 0.65;
 camera.lookAt(0, 0, 0);
 
-let name = document.getElementById('name');
-const container = document.querySelector('.color-palette-container');
-const paletteLaces = document.getElementById('color-palette-laces');
-const fabricLaces = document.getElementById('color-fabrics-laces');
-const paletteSole = document.getElementById('color-palette-sole');
-const paletteSoleTop = document.getElementById('color-palette-sole-top');
-const paletteOutside1 = document.getElementById('color-palette-outside1');
-const paletteOutside2 = document.getElementById('color-palette-outside2');
-const paletteOutside3 = document.getElementById('color-palette-outside3');
-const paletteInside = document.getElementById('color-palette-inside');
-const paletteLacesColors = paletteLaces.querySelectorAll('.box');
-const fabricLaceMat = fabricLaces.querySelectorAll('.box');
-const paletteSoleColors = paletteSole.querySelectorAll('.box');
-const paletteSoleTopColors = paletteSoleTop.querySelectorAll('.box');
-const paletteOutside1Colors = paletteOutside1.querySelectorAll('.box');
-const paletteOutside2Colors = paletteOutside2.querySelectorAll('.box');
-const paletteOutside3Colors = paletteOutside3.querySelectorAll('.box');
-const paletteInsideColors = paletteInside.querySelectorAll('.box');
-
-let colorLaces;
-let colorSole;
-let colorSoleTop;
-let colorOutside1;
-let colorOutside2;
-let colorOutside3;
-let colorInside;
-let fabricLace;
-let lacesRaycastClicked = false;
-let soleRaycastClicked = false;
-let soleTopRaycastClicked = false;
-let outside1RaycastClicked = false;
-let outside2RaycastClicked = false;
-let outside3RaycastClicked = false;
-let insideRaycastClicked = false;
-
-function handleColorBoxClick(color) {
-  console.log(`Clicked color: ${color}`);
-  lacesRaycastClicked = false;
-  soleRaycastClicked = false;
-  soleTopRaycastClicked = false;
-  outside1RaycastClicked = false;
-  outside2RaycastClicked = false;
-  outside3RaycastClicked = false;
-  insideRaycastClicked = false;
-}
-
-// Attach click event listeners to each color box in the laces palette
-paletteLacesColors.forEach((colorBox) => {
-  colorBox.addEventListener('click', () => {
-    colorLaces = colorBox.style.backgroundColor;
-    handleColorBoxClick(colorLaces);
-  });
-});
-
-
-// Attach click event listeners to each color box in the sole palette
-paletteSoleColors.forEach((colorBox) => {
-  colorBox.addEventListener('click', () => {
-    colorSole = colorBox.style.backgroundColor;
-    handleColorBoxClick(colorSole);
-  });
-});
-
-// Attach click event listeners to each color box in the sole top palette
-paletteSoleTopColors.forEach((colorBox) => {
-  colorBox.addEventListener('click', () => {
-    colorSoleTop = colorBox.style.backgroundColor;
-    handleColorBoxClick(colorSoleTop);
-  });
-});
-
-// Attach click event listeners to each color box in the outside 1 palette
-paletteOutside1Colors.forEach((colorBox) => {
-  colorBox.addEventListener('click', () => {
-    colorOutside1 = colorBox.style.backgroundColor;
-    handleColorBoxClick(colorOutside1);
-  });
-});
-
-// Attach click event listeners to each color box in the outside 2 palette
-paletteOutside2Colors.forEach((colorBox) => {
-  colorBox.addEventListener('click', () => {
-    colorOutside2 = colorBox.style.backgroundColor;
-    handleColorBoxClick(colorOutside2);
-  });
-});
-
-// Attach click event listeners to each color box in the outside 3 palette
-paletteOutside3Colors.forEach((colorBox) => {
-  colorBox.addEventListener('click', () => {
-    colorOutside3 = colorBox.style.backgroundColor;
-    handleColorBoxClick(colorOutside3);
-  });
-});
-
-// Attach click event listeners to each color box in the inside palette
-paletteInsideColors.forEach((colorBox) => {
-  colorBox.addEventListener('click', () => {
-    colorInside = colorBox.style.backgroundColor;
-    handleColorBoxClick(colorInside);
-  });
-});
-
-const clock = new THREE.Clock();
-
-// Function to change the color of the laces
-function changeLacesColor(color) {
-  if (shoe) {
-    const lacesMesh = shoe.getObjectByName("laces");
-    if (lacesMesh) {
-      lacesMesh.material.color.set(color);
-    }
-  }
-};
-
-const cottonTexture = new THREE.TextureLoader().load('/fabrics/cotton.jpg');
-
-function changeLacesFabric(material, texture) {
-  if (shoe) {
-    const lacesMesh = shoe.getObjectByName("laces");
-    if (lacesMesh) {
-          lacesMesh.material = material;
-          lacesMesh.material.map = texture;
-          lacesMesh.material.map.needsUpdate = true;
-    }
-  }
-}
-
-
+  // Find laces and sole meshes by name
+  const lacesMesh = shoe.getObjectByName("laces");
+  const soleBottomMesh = shoe.getObjectByName("sole_bottom");
+  const soleTopMesh = shoe.getObjectByName("sole_top");
+  const insideMesh = shoe.getObjectByName("inside");
+  const outside1Mesh = shoe.getObjectByName("outside_1");
+  const outside2Mesh = shoe.getObjectByName("outside_2");
+  const outside3Mesh = shoe.getObjectByName("outside_3");
   
-function changeSoleBottomColor(color) {
-  if (shoe) {
-    const soleBottomMesh = shoe.getObjectByName("sole_bottom");
-    if (soleBottomMesh) {
-      soleBottomMesh.material.color.set(color);
+  shoeMeshes.push(lacesMesh, soleBottomMesh, soleTopMesh, insideMesh, outside1Mesh, outside2Mesh, outside3Mesh);
+  //console.log(lacesMesh);
+  
+  lacesMesh.traverse(function(node){
+    if (node.isMesh){
+      node.castShadow = true;
+  shoe.rotation.set(0, -65 * (Math.PI / 180), 0)
+  shoe.traverse(function(node){
+    if (node.isMesh){
+      node.castShadow = true;
+    }
+  }) 
+    }
+  });
+  });
+
+  let hoveredPart = null;
+
+// Function to handle color option clicks
+function onColorOptionClick(event) {
+  const selectedColor = new THREE.Color(parseInt(event.target.dataset.color, 16));
+  
+  // Update the color of the clicked part
+  /*  if (selectedPart) {
+  const newMaterial = new THREE.MeshStandardMaterial({
+      color: selectedColor,
+      metalness: 0.5,
+      roughness: 0.2,
+    }); USE FOR FABRICS*/
+
+    // Replace the material of the selected part
+    if (hoveredPart || selectedPart) {
+      const targetPart = selectedPart || hoveredPart;
+      targetPart.material.color.copy(selectedColor);
+  
+      // Store the selected color for the part
+      partColors.set(targetPart.uuid, selectedColor);
     }
   }
-};
 
-function changeSoleTopColor(color) {
-  if (shoe) {
-    const soleTopMesh = shoe.getObjectByName("sole_top");
-    if (soleTopMesh) {
-      soleTopMesh.material.color.set(color);
-    }
-  }
-};
+// Add color option click event listeners
+const colorOptions = document.querySelectorAll('.colorOption .box');
+colorOptions.forEach(option => option.addEventListener('click', onColorOptionClick));
 
-function changeOutside1Color(color) {
-  if (shoe) {
-    const outside1Mesh = shoe.getObjectByName("outside_1");
-    if (outside1Mesh) {
-      outside1Mesh.material.color.set(color);
-    }
-  }
-};
+// Variable to store the selected part
+let selectedPart = null;
 
-function changeOutside2Color(color) {
-  if (shoe) {
-    const outside2Mesh = shoe.getObjectByName("outside_2");
-    if (outside2Mesh) {
-      outside2Mesh.material.color.set(color);
-    }
-  }
-};
+const partColors = new Map();
 
-function changeOutside3Color(color) {
-  if (shoe) {
-    const outside3Mesh = shoe.getObjectByName("outside_3");
-    if (outside3Mesh) {
-      outside3Mesh.material.color.set(color);
-    }
-  }
-};
+// Function to handle the raycasting logic
+function onDocumentMouseMove(event) {
+  event.preventDefault();
 
-function changeInsideColor(color) {
-  if (shoe) {
-    const insideMesh = shoe.getObjectByName("inside");
-    if (insideMesh) {
-      insideMesh.material.color.set(color);
-    }
-  }
-};
+  // Calculate mouse position in normalized device coordinates
+  pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
+  pointer.y = - (event.clientY / window.innerHeight) * 2 + 1;
 
-function handlePaletteClick() {
-  console.log("palette clicked")
+  // Update the picking ray with the camera and mouse position
+  raycaster.setFromCamera(pointer, camera);
 
-  // Check if laces are not already red
-  if (!lacesRaycastClicked) {
-    // Change the color of the laces
-    changeLacesColor(colorLaces);
-    lacesRaycastClicked = true;
-    console.log("laces clicked")
-  }
-}
-
-function handleFabricClick() {
-    if (!lacesRaycastClicked) {
-      // Change the fabric of the laces
-      changeLacesFabric(fabricLace);
-      lacesRaycastClicked = true;
-    console.log("The laces are:" + fabricLace);
-    }
-}
-
-function handlePaletteSoleClick() {
-  console.log("palette clicked")
-
-  // Check if sole is not already red
-  if (!soleRaycastClicked) {
-    // Change the color of the sole
-    changeSoleBottomColor(colorSole);
-    soleRaycastClicked = true;
-    console.log("sole clicked");
-  }
-}
-
-function handlePaletteSoleTopClick() {
-  // Check if sole is not already red
-  if (!soleTopRaycastClicked) {
-    // Change the color of the sole
-    changeSoleTopColor(colorSoleTop);
-    soleTopRaycastClicked = true;
-    console.log("sole top clicked");
-
-  }
-}
-
-function handlePaletteOutside1Click() {
-  // Check if sole is not already red
-  if (!outside1RaycastClicked) {
-    // Change the color of the sole
-    changeOutside1Color(colorOutside1);
-    outside1RaycastClicked = true;
-    console.log("outside1 clicked");
-
-  }
-}
-
-function handlePaletteOutside2Click() {
-  // Check if sole is not already red
-  if (!outside2RaycastClicked) {
-    // Change the color of the sole
-    changeOutside2Color(colorOutside2);
-    outside2RaycastClicked = true;
-    console.log("outside2 clicked");
-
-  }
-}
-
-function handlePaletteOutside3Click() {
-  // Check if sole is not already red
-  if (!outside3RaycastClicked) {
-    // Change the color of the sole
-    changeOutside3Color(colorOutside3);
-    outside3RaycastClicked = true;
-  }
-}
-
-function handlePaletteInsideClick() {
-  // Check if sole is not already red
-  if (!insideRaycastClicked) {
-    // Change the color of the sole
-    changeInsideColor(colorInside);
-    insideRaycastClicked = true;
-  }
-}
-
-// Handle click event
-window.addEventListener('click', function () {
+  // Check for intersections with the shoe meshes
   const intersects = raycaster.intersectObjects(shoeMeshes, true);
 
-  for (const intersect of intersects) {
-    if (intersect.object.isMesh) {
-      // Look at the clicked object
-      camera.lookAt(intersect.object.position);
-
-      // Handle different parts of the shoe
-      if (intersect.object.name === "laces") {
-        name.innerHTML = "Laces";
-        container.style.display = "block";
-        paletteLaces.style.display = "flex";
-        fabricLaces.style.display = "flex";
-        paletteSole.style.display = "none";
-        paletteSoleTop.style.display = "none";
-        paletteInside.style.display = "none";
-        paletteOutside1.style.display = "none";
-        paletteOutside2.style.display = "none";
-        paletteOutside3.style.display = "none";
-
-        // Corrected the event listener to use paletteLaces
-        paletteLaces.removeEventListener('click', handlePaletteSoleClick);
-        paletteLaces.addEventListener('click', handlePaletteClick);
-        fabricLaces.removeEventListener('click', handlePaletteSoleClick);
-        paletteLaces.removeEventListener('click', handlePaletteSoleTopClick);
-        paletteLaces.removeEventListener('click', handlePaletteOutside1Click);
-        paletteLaces.removeEventListener('click', handlePaletteOutside2Click);
-        paletteLaces.removeEventListener('click', handlePaletteOutside3Click);
-        paletteLaces.removeEventListener('click', handlePaletteInsideClick);
-        //fabricLaces.addEventListener('click', handleFabricClick);
-      } 
-      if (intersect.object.name === "sole_bottom") {
-        name.innerHTML = "Sole Bottom";
-        paletteSole.style.display = "flex";
-        container.style.display = "none";
-        fabricLaces.style.display = "none";
-        paletteLaces.style.display = "none";
-        paletteSoleTop.style.display = "none";
-        paletteInside.style.display = "none";
-        paletteOutside1.style.display = "none";
-        paletteOutside2.style.display = "none";
-        paletteOutside3.style.display = "none";
-
-        // Corrected the event listener to use paletteSole
-        paletteSole.removeEventListener('click', handlePaletteClick);
-        paletteSole.addEventListener('click', handlePaletteSoleClick);
-        paletteSole.removeEventListener('click', handlePaletteSoleTopClick);
-        paletteSole.removeEventListener('click', handlePaletteOutside1Click);
-        paletteSole.removeEventListener('click', handlePaletteOutside2Click);
-        paletteSole.removeEventListener('click', handlePaletteOutside3Click);
-        paletteSole.removeEventListener('click', handlePaletteInsideClick);
-      }
-      if (intersect.object.name === "sole_top") {
-        name.innerHTML = "Sole Top";
-        container.style.display = "none";
-        paletteSole.style.display = "none";
-        fabricLaces.style.display = "none";
-        paletteLaces.style.display = "none";
-        paletteSoleTop.style.display = "flex";
-        paletteInside.style.display = "none";
-        paletteOutside1.style.display = "none";
-        paletteOutside2.style.display = "none";
-        paletteOutside3.style.display = "none";
-
-        // Corrected the event listener to use paletteSoleTop
-        paletteSoleTop.removeEventListener('click', handlePaletteClick);
-        paletteSoleTop.removeEventListener('click', handlePaletteSoleClick);
-        paletteSoleTop.addEventListener('click', handlePaletteSoleTopClick);
-        paletteSoleTop.removeEventListener('click', handlePaletteOutside1Click);
-        paletteSoleTop.removeEventListener('click', handlePaletteOutside2Click);
-        paletteSoleTop.removeEventListener('click', handlePaletteOutside3Click);
-        paletteSoleTop.removeEventListener('click', handlePaletteInsideClick);
-      }
-      if (intersect.object.name === "outside_1") {
-        name.innerHTML = "Outside 1";
-        container.style.display = "none";
-        paletteSole.style.display = "none";
-        fabricLaces.style.display = "none";
-        paletteLaces.style.display = "none";
-        paletteSoleTop.style.display = "none";
-        paletteInside.style.display = "none";
-        paletteOutside1.style.display = "flex";
-        paletteOutside2.style.display = "none";
-        paletteOutside3.style.display = "none";
-
-        // Corrected the event listener to use paletteOutside1
-        paletteOutside1.removeEventListener('click', handlePaletteClick);
-        paletteOutside1.removeEventListener('click', handlePaletteSoleClick);
-        paletteOutside1.removeEventListener('click', handlePaletteSoleTopClick);
-        paletteOutside1.addEventListener('click', handlePaletteOutside1Click);
-        paletteOutside1.removeEventListener('click', handlePaletteOutside2Click);
-        paletteOutside1.removeEventListener('click', handlePaletteOutside3Click);
-        paletteOutside1.removeEventListener('click', handlePaletteInsideClick);
-      }
-      if (intersect.object.name === "outside_2") {
-        name.innerHTML = "Outside 2";
-        container.style.display = "none";
-        paletteSole.style.display = "none";
-        fabricLaces.style.display = "none";
-        paletteLaces.style.display = "none";
-        paletteSoleTop.style.display = "none";
-        paletteInside.style.display = "none";
-        paletteOutside1.style.display = "none";
-        paletteOutside2.style.display = "flex";
-        paletteOutside3.style.display = "none";
-
-        // Corrected the event listener to use paletteOutside2
-        paletteOutside2.removeEventListener('click', handlePaletteClick);
-        paletteOutside2.removeEventListener('click', handlePaletteSoleClick);
-        paletteOutside2.removeEventListener('click', handlePaletteSoleTopClick);
-        paletteOutside2.removeEventListener('click', handlePaletteOutside1Click);
-        paletteOutside2.addEventListener('click', handlePaletteOutside2Click);
-        paletteOutside2.removeEventListener('click', handlePaletteOutside3Click);
-        paletteOutside2.removeEventListener('click', handlePaletteInsideClick);
-      }
-      if (intersect.object.name === "outside_3") {
-        name.innerHTML = "Outside 3";
-        container.style.display = "none";
-        paletteSole.style.display = "none";
-        fabricLaces.style.display = "none";
-        paletteLaces.style.display = "none";
-        paletteSoleTop.style.display = "none";
-        paletteInside.style.display = "none";
-        paletteOutside1.style.display = "none";
-        paletteOutside2.style.display = "none";
-        paletteOutside3.style.display = "flex";
-
-        // Corrected the event listener to use paletteOutside3
-        paletteOutside3.removeEventListener('click', handlePaletteClick);
-        paletteOutside3.removeEventListener('click', handlePaletteSoleClick);
-        paletteOutside3.removeEventListener('click', handlePaletteSoleTopClick);
-        paletteOutside3.removeEventListener('click', handlePaletteOutside1Click);
-        paletteOutside3.removeEventListener('click', handlePaletteOutside2Click);
-        paletteOutside3.addEventListener('click', handlePaletteOutside3Click);
-        paletteOutside3.removeEventListener('click', handlePaletteInsideClick);
-      }
-      if (intersect.object.name === "inside") {
-        name.innerHTML = "Inside";
-        container.style.display = "none";
-        paletteSole.style.display = "none";
-        fabricLaces.style.display = "none";
-        paletteLaces.style.display = "none";
-        paletteSoleTop.style.display = "none";
-        paletteInside.style.display = "flex";
-        paletteOutside1.style.display = "none";
-        paletteOutside2.style.display = "none";
-        paletteOutside3.style.display = "none";
-
-        // Corrected the event listener to use paletteInside
-        paletteInside.removeEventListener('click', handlePaletteClick);
-        paletteInside.removeEventListener('click', handlePaletteSoleClick);
-        paletteInside.removeEventListener('click', handlePaletteSoleTopClick);
-        paletteInside.removeEventListener('click', handlePaletteOutside1Click);
-        paletteInside.removeEventListener('click', handlePaletteOutside2Click);
-        paletteInside.removeEventListener('click', handlePaletteOutside3Click);
-        paletteInside.addEventListener('click', handlePaletteInsideClick);
-      }
+// Reset color for all shoe parts except the clicked part
+if (selectedPart) {
+  shoeMeshes.forEach(mesh => {
+    if (mesh !== selectedPart) {
+      mesh.material.color.set(0xffffff); // Reset color
     }
-  }
-});
-
-// Function to handle color box click
-function colorBoxClicked(colorBox) {
-  console.log(`Clicked color: ${colorBox.style.backgroundColor}`);
-  lacesRaycastClicked = false;
-  soleRaycastClicked = false;
-
-  // Remove the 'selected' class from all color boxes
-  paletteLacesColors.forEach(box => box.classList.remove('selected'));
-  fabricLaceMat.forEach(box => box.classList.remove('selected'));
-  paletteSoleColors.forEach(box => box.classList.remove('selected'));
-
-  // Add the 'selected' class to the clicked color box
-  colorBox.classList.add('selected');
+  });
+} else {
+  // Reset color for all shoe parts
+  shoeMeshes.forEach(mesh => {
+    if (mesh !== hoveredPart) {
+      mesh.material.color.set(0xffffff); // Reset color
+    }
+  });
 }
 
-// Attach click event listeners to each color box in the laces palette
-paletteLacesColors.forEach((colorBox) => {
-  colorBox.addEventListener('click', () => {
-    colorLaces = colorBox.style.backgroundColor;
-    colorBoxClicked(colorBox);
-  });
+
+  // Apply the hover effect to the currently hovered part
+  if (intersects.length > 0) {
+      hoveredPart = intersects[0].object;
+      // Change the material color or apply a hover effect (customize based on your needs)
+      hoveredPart.material.color.set(0x000000); // Hover color
+  }
+}
+
+window.addEventListener('mousemove', onDocumentMouseMove, false);
+
+function onDocumentMouseDown(event) {
+  event.preventDefault();
+
+  // Calculate mouse position in normalized device coordinates
+  pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
+  pointer.y = - (event.clientY / window.innerHeight) * 2 + 1;
+
+  // Update the picking ray with the camera and mouse position
+  raycaster.setFromCamera(pointer, camera);
+
+  // Check for intersections with the shoe meshes
+  const intersects = raycaster.intersectObjects(shoeMeshes, true);
+// Reset color for all shoe parts
+shoeMeshes.forEach(mesh => {
+  mesh.material.color.set(0xffffff); // Reset color
 });
 
-// Attach click event listeners to each color box in the sole palette
-paletteSoleColors.forEach((colorBox) => {
-  colorBox.addEventListener('click', () => {
-    colorSole = colorBox.style.backgroundColor;
-    colorBoxClicked(colorBox);
-  });
-});
+// Apply the color to the clicked part
+if (intersects.length > 0) {
+  selectedPart = intersects[0].object;
+  selectedPart.material.color.set(0x000000); // Set color to black
+
+  // Store the selected part for later reference
+  hoveredPart = selectedPart;
+
+}
+}
+
+// Add the click event listener
+window.addEventListener('click', onDocumentMouseDown, false);
+
+
+
+// clock for animation
+const clock = new THREE.Clock();
+
 
 document.getElementById('size').addEventListener('change', function () {
   const button = document.getElementById('orderButton');
@@ -719,90 +369,7 @@ function animate() {
   // change plane gradients
   planeMaterial.uniforms.time.value += 0.01;
 
-
-  // Update raycaster position based on mouse movement
-  raycaster.setFromCamera(pointer, camera);
-
-  // Raycast to find intersected objects
-  const intersects = raycaster.intersectObjects([...shoeMeshes, /* Add other objects to exclude if needed */], true);
-
-  // Flag to track whether an intersected mesh has been found
-  let meshFound = false;
-
- // Reset color for all objects
-scene.traverse((node) => {
-  if (node.isMesh && !lacesRaycastClicked && !soleRaycastClicked && !soleTopRaycastClicked && !outside1RaycastClicked && !outside2RaycastClicked && !outside3RaycastClicked && !insideRaycastClicked && node !== plane) {
-    // Change the color only if both lacesRaycastClicked and soleRaycastClicked are false
-    node.material.color.set("#ffffff");
-  }  if (node.isMesh && lacesRaycastClicked && node.name !== "laces" && node !== plane) {
-    // Check if laces are already red before changing the color to white
-    if (node.material.color.getHexString() === "69ff47") {
-      node.material.color.set("#ffffff");
-    }
-  }  if (node.isMesh && soleRaycastClicked && node.name !== "sole_bottom" && node !== plane) {
-    // Check if sole is already red before changing the color to white
-    if (node.material.color.getHexString() === "69ff47") {
-      node.material.color.set("#ffffff");
-    }
-  } if (node.isMesh && soleTopRaycastClicked && node.name !== "sole_top" && node !== plane) {
-    // Check if sole is already red before changing the color to white
-    if (node.material.color.getHexString() === "69ff47") {
-      node.material.color.set("#ffffff");
-    }
-  } if (node.isMesh && outside1RaycastClicked && node.name !== "outside_1" && node !== plane) {
-    // Check if sole is already red before changing the color to white
-    if (node.material.color.getHexString() === "69ff47") {
-      node.material.color.set("#ffffff");
-    }
-  } if (node.isMesh && outside2RaycastClicked && node.name !== "outside_2" && node !== plane) {
-    // Check if sole is already red before changing the color to white
-    if (node.material.color.getHexString() === "69ff47") {
-      node.material.color.set("#ffffff");
-    }
-  } if (node.isMesh && outside3RaycastClicked && node.name !== "outside_3" && node !== plane) {
-    // Check if sole is already red before changing the color to white
-    if (node.material.color.getHexString() === "69ff47") {
-      node.material.color.set("#ffffff");
-    }
-  } if (node.isMesh && insideRaycastClicked && node.name !== "inside" && node !== plane) {
-    // Check if sole is already red before changing the color to white
-    if (node.material.color.getHexString() === "69ff47") {
-      node.material.color.set("#ffffff");
-    }
-  } 
-});
-
-  // Change color for the first intersected mesh
-  for (const intersect of intersects) {
-
-    //change color to green if intersected object is white
-    if (intersect.object.isMesh && !meshFound && intersect.object.material.color.getHexString() === "ffffff" && lacesRaycastClicked === false && soleRaycastClicked === false  && soleTopRaycastClicked === false 
-    && outside1RaycastClicked === false && outside2RaycastClicked === false && outside3RaycastClicked === false && insideRaycastClicked === false && intersect) {
-      intersect.object.material.color.set("#69ff47");
-      meshFound = true;
-    } if (intersect.object.isMesh && !meshFound && intersect.object.material.color.getHexString() === "ffffff" && lacesRaycastClicked === true && intersect.object.name !== "laces"){
-      intersect.object.material.color.set("#69ff47");
-      meshFound = true;
-    }  if (intersect.object.isMesh && !meshFound && intersect.object.material.color.getHexString() === "ffffff" && soleRaycastClicked === true && intersect.object.name !== "sole_bottom"){
-      intersect.object.material.color.set("#69ff47");
-      meshFound = true; 
-    } if (intersect.object.isMesh && !meshFound && intersect.object.material.color.getHexString() === "ffffff" && soleTopRaycastClicked === true && intersect.object.name !== "sole_top"){
-      intersect.object.material.color.set("#69ff47");
-      meshFound = true; 
-    } if (intersect.object.isMesh && !meshFound && intersect.object.material.color.getHexString() === "ffffff" && outside1RaycastClicked === true && intersect.object.name !== "outside_1"){
-      intersect.object.material.color.set("#69ff47");
-      meshFound = true; 
-    } if (intersect.object.isMesh && !meshFound && intersect.object.material.color.getHexString() === "ffffff" && outside2RaycastClicked === true && intersect.object.name !== "outside_2"){
-      intersect.object.material.color.set("#69ff47");
-      meshFound = true; 
-    } if (intersect.object.isMesh && !meshFound && intersect.object.material.color.getHexString() === "ffffff" && outside3RaycastClicked === true && intersect.object.name !== "outside_3"){
-      intersect.object.material.color.set("#69ff47");
-      meshFound = true; 
-    } if (intersect.object.isMesh && !meshFound && intersect.object.material.color.getHexString() === "ffffff" && insideRaycastClicked === true && intersect.object.name !== "inside"){
-      intersect.object.material.color.set("#69ff47");
-      meshFound = true; 
-    }
-  }
+  
 
   requestAnimationFrame(animate);
 
