@@ -260,7 +260,6 @@ loader.load('public/Shoe_compressed.glb', function(gltf){
         // Skip resetting color for the selected or hovered part
         if (node !== hoveredPart && node !== selectedPart) {
           node.material.color.set(0xffffff); // Reset color
-          console.log('reset color');
         }
       }
     }
@@ -271,11 +270,13 @@ let hoveredPart = null;
 let selectedPart = null;
 const partColors = new Map();
 
+const fabricOptions = document.querySelectorAll('.fabric-container .box-fabric');
+fabricOptions.forEach(option => option.addEventListener('click', onFabricOptionsClick));
+
+
 // Function to handle color option clicks
 function onColorOptionClick(event) {
-  console.log('color option clicked')
   const selectedColor = new THREE.Color(parseInt(event.target.dataset.color, 16));
-  console.log('Selected color:', selectedColor);
   // Update the color of the clicked part
   /*  if (selectedPart) {
   const newMaterial = new THREE.MeshStandardMaterial({
@@ -297,16 +298,12 @@ function onColorOptionClick(event) {
       event.target.classList.add('selected');
     }
   
-    console.log('Selected part:', selectedPart);
-
-    const isFabricOption = event.target.classList.contains('box-fabric');
-    if (isFabricOption) {
-      const fabricType = event.target.parentElement.id; // Get fabric type from parent container id
-      applyFabricToSelectedPart(fabricType);
-    }
   }
-  function onFabricOptionClick(event) {
+
+  function onFabricOptionsClick(event) {
     const fabricType = event.target.parentElement.id; // Get fabric type from parent container id
+    console.log('Fabric type:', fabricType);
+  
     applyFabricToSelectedPart(fabricType);
   
     // Add or remove the 'selected' class based on the selected fabric
@@ -317,24 +314,51 @@ function onColorOptionClick(event) {
     event.target.parentElement.classList.add('selected');
   }
 
-  function applyFabricToSelectedPart(fabricType) {
-    if (selectedPart) {
-      const fabricMaterial = getFabricMaterial(fabricType);
-      selectedPart.material = fabricMaterial;
-      console.log('Applied fabric:', fabricType);
-    }
+function applyFabricToSelectedPart(fabricType) {
+  console.log('Applying fabric to selected part. Fabric type:', fabricType);
+
+  if (selectedPart) {
+    const fabricMaterial = getFabricMaterial(fabricType);
+    selectedPart.material = fabricMaterial;
+    console.log('Applied fabric:', fabricType);
   }
+}
+
   
-  function getFabricMaterial(selectedColor) {
-    // Implement logic to return the material for the selected fabric
-    // For example, create a new material based on the fabric type
-    const fabricMaterial = new THREE.MeshStandardMaterial({
-      color: selectedPart.material.color,
-      metalness: 0.5,
-      roughness: 0.2,
-    });
-    return fabricMaterial;
+function getFabricMaterial(fabricType) {
+  // Implement logic to return the material for the selected fabric
+  switch (fabricType) {
+    case 'denimFabric':
+      console.log('fabricType:', fabricType);
+      // Load denim texture using TextureLoader
+      const denimTexture = new THREE.TextureLoader().load('/fabrics/denim.jpg');
+      return new THREE.MeshStandardMaterial({
+        map: denimTexture,
+        color: selectedPart.material.color,
+        displacementScale: 1,
+      });
+    case 'leatherFabric':
+      // Create leather material with a specific color
+      return new THREE.MeshStandardMaterial({
+        color: selectedPart.material.color,
+        metalness: 0.7,
+        roughness: 0.3,
+      });
+    case 'suedeFabric':
+      // Create suede material with a different color
+      return new THREE.MeshStandardMaterial({
+        color: selectedPart.material.color,
+        metalness: 0.3,
+        roughness: 0.4,
+      });
+    default:
+      // Default material if fabricType is not recognized
+      return new THREE.MeshStandardMaterial({
+        color: selectedPart.material.color,
+      });
   }
+}
+  
 
   
 
@@ -342,8 +366,6 @@ function onColorOptionClick(event) {
 const colorOptions = document.querySelectorAll('.colorOption .box');
 colorOptions.forEach(option => option.addEventListener('click', onColorOptionClick));
 
-const fabricOptions = document.querySelectorAll('.fabricOption .box-fabric');
-fabricOptions.forEach(option => option.addEventListener('click', onFabricOptionClick));
 
 // Function to handle the raycasting logic
 function onDocumentMouseMove(event) {
@@ -364,7 +386,6 @@ function onDocumentMouseMove(event) {
       // Only reset color if a color has not been chosen for this part
       if (!partColors.has(mesh.uuid)) {
         mesh.material.color.set(0xffffff); // Reset color
-        console.log('reset color');
       }
     }
   });
