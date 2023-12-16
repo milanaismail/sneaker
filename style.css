@@ -95,6 +95,7 @@ div{
   font-family: 'Helvetica Roman', sans-serif;
   font-size: 12px;
   margin-bottom: 18px;
+  display: block;
 }
 
 #color-palette-laces{
