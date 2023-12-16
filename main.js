@@ -7,6 +7,9 @@ import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
 //import axes helper
 import { AxesHelper } from 'three';
 import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
+import { TextGeometry } from 'three/addons/geometries/TextGeometry.js';
+import { FontLoader } from 'three/addons/loaders/FontLoader.js';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
 const scene = new THREE.Scene();
 
@@ -197,6 +200,75 @@ camera.position.z = 1.1;
 camera.position.y = 0.65;
 camera.lookAt(0, 0, 0);
 
+//add orbit controls
+const controls = new OrbitControls(camera, renderer.domElement);
+
+let initials = "VZ";
+
+document.getElementById('initialButton').addEventListener('click', function() {
+  initials = document.getElementById('initials').value;
+  scene.remove(scene.getObjectByName('text'));
+  createTextMesh();
+  console.log(initials);
+});
+let fontMesh;
+function createTextMesh (){
+const fontLoader = new FontLoader();
+
+fontLoader.load( 'fonts/Mulish_Regular.json', function ( font ) {
+  console.log(font);
+	const fontGeometry = new TextGeometry( initials, {
+		font: font,
+		size: 0.05,
+		height: 0.01,
+		curveSegments: 12,
+		bevelThickness: 0.010,
+		bevelSize: 0.08,
+		bevelOffset: 0,
+		bevelSegments: 5,
+	} );
+  const fontMaterial = new THREE.MeshBasicMaterial([
+    new THREE.MeshPhongMaterial({
+       color: 0xff22cc,
+       flatShading: true,
+    }), // front
+    new THREE.MeshPhongMaterial({
+       color: 0xffcc22
+    }), // side
+  ])
+  const fontMesh = new THREE.Mesh(fontGeometry, fontMaterial)
+  fontMesh.name = 'text'
+  scene.add(fontMesh)
+  fontMesh.position.set(0.45, 0.25, -0.5);
+  fontMesh.rotation.set(0, -65 * (Math.PI / 45), 0);
+
+  } );
+
+};
+
+/*const fontLoader = new FontLoader();
+const font = fontLoader.load(
+	// resource URL
+	'fonts/Mulish_Regular.json',
+
+	// onLoad callback
+	function ( font ) {
+		// do something with the font
+		console.log( font );
+	},
+
+	// onProgress callback
+	function ( xhr ) {
+		console.log( (xhr.loaded / xhr.total * 100) + '% loaded' );
+	},
+
+	// onError callback
+	function ( err ) {
+		console.log( 'An error happened' );
+	}
+);*/
+
+
 let shoe;
 
 const shoeMeshes = [];
@@ -246,6 +318,8 @@ loader.load('public/Shoe_compressed.glb', function(gltf){
   
       // Rotate the shoe based on mouse movement
       shoe.rotation.y += delta * 0.01; 
+      
+
     }
   });
   
