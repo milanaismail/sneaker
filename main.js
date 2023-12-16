@@ -301,7 +301,7 @@ function onColorOptionClick(event) {
   }
 
   function onFabricOptionsClick(event) {
-    const fabricType = event.target.parentElement.id; // Get fabric type from parent container id
+    const fabricType = event.currentTarget.id; // Get fabric type from parent container id
     console.log('Fabric type:', fabricType);
   
     applyFabricToSelectedPart(fabricType);
