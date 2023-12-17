@@ -341,7 +341,7 @@ function getFabricMaterial(fabricType) {
       leatherTexture.repeat.set(3, 3);
       return new THREE.MeshStandardMaterial({
         color: selectedPart.material.color,
-        normalMap: metalleatherNormal,
+        normalMap: leatherNormal,
         displacementMap: leatherTexture,
         displacementScale: 0.1,
         envMap: leatherReflect,
@@ -489,7 +489,18 @@ function onDocumentMouseDown(event) {
 
     // Apply the color to the clicked part
     if (intersects.length > 0) {
-      selectedPart = intersects[0].object;
+      const clickedPart = intersects[0].object;
+
+      if (selectedPart && selectedPart !== clickedPart) {
+        // Remove the 'selected' class from the previously selected box-fabric
+        const selectedFabric = document.querySelector('.box-fabric.selected');
+        if (selectedFabric) {
+          selectedFabric.classList.remove('selected');
+        }
+      }
+
+      selectedPart = clickedPart;
+
 
       // Check if a color has been chosen for this part
       if (!partColors.has(selectedPart.uuid)) {
@@ -510,6 +521,8 @@ function onDocumentMouseDown(event) {
 
       const clickedBox = event.target;
       clickedBox.classList.add('selected');
+      const clickedBoxFabric = event.target;
+      clickedBoxFabric.classList.add('selected');
     }
 
 
