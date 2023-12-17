@@ -344,8 +344,7 @@ function getFabricMaterial(fabricType) {
         displacementScale: 0.01,
         aoMap: denimOcc,
         aoMapIntensity: 0.5,
-        specularMap: denimSpec,
-        roughness: 0.5,
+        //roughness: 0.5,
       });
     case 'leatherFabric':
       const leatherTexture = new THREE.TextureLoader().load('/fabrics/leather.jpg');
@@ -364,12 +363,28 @@ function getFabricMaterial(fabricType) {
         roughnessMap: leatherGloss,
         metalness: 0.5,
       });
-    case 'suedeFabric':
+    case 'sequinFabric':
       return new THREE.MeshStandardMaterial({
         color: selectedPart.material.color,
         metalness: 0.3,
         roughness: 0.4,
       });
+      case 'velvetFabric':
+        const velvetTexture = new THREE.TextureLoader().load('/fabrics/velvet.png');
+        const velvetNormal = new THREE.TextureLoader().load('/fabrics/velvetNorm.png');
+        const velvetMetal = new THREE.TextureLoader().load('/fabrics/velvetMetal.png');
+        const velvetRough = new THREE.TextureLoader().load('/fabrics/velvetRough.png');
+        velvetTexture.wrapS = THREE.RepeatWrapping;
+        velvetTexture.wrapT = THREE.RepeatWrapping;
+        velvetTexture.repeat.set(3, 3);
+        return new THREE.MeshStandardMaterial({
+          color: selectedPart.material.color,
+          normalMap: velvetNormal,
+          displacementMap: velvetTexture,
+          displacementScale: 0.1,
+          metalnessMap: velvetMetal,
+          //roughnessMap: velvetRough,
+        });
     default:
       // Default material if fabricType is not recognized
       return new THREE.MeshStandardMaterial({
