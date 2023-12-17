@@ -456,7 +456,7 @@ function onDocumentMouseMove(event) {
     if (hoveredPart !== selectedPart) {
       // Only set the hover color if a color has not been chosen for this part
       if (!partColors.has(hoveredPart.uuid)) {
-        hoveredPart.material.color.set(0x000000); // Hover color
+        hoveredPart.material.color.set(0xC0C0C0); // Hover color
       }
     }
   } else {
@@ -505,8 +505,8 @@ function onDocumentMouseDown(event) {
       // Check if a color has been chosen for this part
       if (!partColors.has(selectedPart.uuid)) {
         // If no color has been chosen, set the color to black
-        selectedPart.material.color.set(0x000000);
-        partColors.set(selectedPart.uuid, new THREE.Color(0x000000));
+        selectedPart.material.color.set(0xC0C0C0);
+        partColors.set(selectedPart.uuid, new THREE.Color(0xC0C0C0));
 
            // Remove the 'selected' class from the previously selected box
            const selectedBox = document.querySelector('.box.selected');
