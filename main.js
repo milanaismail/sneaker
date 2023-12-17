@@ -326,26 +326,45 @@ function applyFabricToSelectedPart(fabricType) {
 
   
 function getFabricMaterial(fabricType) {
-  // Implement logic to return the material for the selected fabric
   switch (fabricType) {
     case 'denimFabric':
       console.log('fabricType:', fabricType);
       // Load denim texture using TextureLoader
       const denimTexture = new THREE.TextureLoader().load('/fabrics/denim.jpg');
+      const denimNormal = new THREE.TextureLoader().load('/fabrics/denimNorm.jpg');
+      const denimOcc = new THREE.TextureLoader().load('/fabrics/denimOcc.jpg');
+      const denimSpec = new THREE.TextureLoader().load('/fabrics/denimSpec.jpg');
+      denimTexture.wrapS = THREE.RepeatWrapping;
+      denimTexture.wrapT = THREE.RepeatWrapping;
+      denimTexture.repeat.set(1, 1);
       return new THREE.MeshStandardMaterial({
-        map: denimTexture,
         color: selectedPart.material.color,
-        displacementScale: 1,
+        normalMap: denimNormal,
+        displacementMap: denimTexture,
+        displacementScale: 0.01,
+        aoMap: denimOcc,
+        aoMapIntensity: 0.5,
+        specularMap: denimSpec,
+        roughness: 0.5,
       });
     case 'leatherFabric':
-      // Create leather material with a specific color
+      const leatherTexture = new THREE.TextureLoader().load('/fabrics/leather.jpg');
+      const leatherNormal = new THREE.TextureLoader().load('/fabrics/leatherNorm.jpg');
+      const leatherReflect = new THREE.TextureLoader().load('/fabrics/leatherReflect.jpg');
+      const leatherGloss = new THREE.TextureLoader().load('/fabrics/leatherGloss.jpg');
+      leatherTexture.wrapS = THREE.RepeatWrapping;
+      leatherTexture.wrapT = THREE.RepeatWrapping;
+      leatherTexture.repeat.set(3, 3);
       return new THREE.MeshStandardMaterial({
         color: selectedPart.material.color,
-        metalness: 0.7,
-        roughness: 0.3,
+        normalMap: leatherNormal,
+        displacementMap: leatherTexture,
+        displacementScale: 0.1,
+        envMap: leatherReflect,
+        roughnessMap: leatherGloss,
+        metalness: 0.5,
       });
     case 'suedeFabric':
-      // Create suede material with a different color
       return new THREE.MeshStandardMaterial({
         color: selectedPart.material.color,
         metalness: 0.3,
