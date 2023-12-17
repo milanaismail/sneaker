@@ -209,10 +209,22 @@ loader.load('public/Shoe_compressed.glb', function(gltf){
   shoe.scale.set(3, 3, 3);
   shoe.receiveShadow = true; 
   
+
+  const leatherTexture = new THREE.TextureLoader().load('/fabrics/leather.jpg');
+  const leatherNormal = new THREE.TextureLoader().load('/fabrics/leatherNorm.jpg');
+  const leatherReflect = new THREE.TextureLoader().load('/fabrics/leatherReflect.jpg');
+  const leatherGloss = new THREE.TextureLoader().load('/fabrics/leatherGloss.jpg');
+  leatherTexture.wrapS = THREE.RepeatWrapping;
+  leatherTexture.wrapT = THREE.RepeatWrapping;
+  leatherTexture.repeat.set(3, 3);
+  
   const shoeMaterial = new THREE.MeshStandardMaterial({
     color: 0xffffff, // Set your desired color here
-    roughness: 0.4,  // Adjust metalness
-
+    normalMap: leatherNormal,
+    displacementMap: leatherTexture,
+    displacementScale: 0.1,
+    envMap: leatherReflect,
+    roughnessMap: leatherGloss,
 
   });
   
@@ -277,14 +289,6 @@ fabricOptions.forEach(option => option.addEventListener('click', onFabricOptions
 // Function to handle color option clicks
 function onColorOptionClick(event) {
   const selectedColor = new THREE.Color(parseInt(event.target.dataset.color, 16));
-  // Update the color of the clicked part
-  /*  if (selectedPart) {
-  const newMaterial = new THREE.MeshStandardMaterial({
-      color: selectedColor,
-      metalness: 0.5,
-      roughness: 0.2,
-    }); USE FOR FABRICS*/
-  
     // Apply the selected color to the entire shoe
     if (selectedPart) {
       selectedPart.material.color.copy(selectedColor);
@@ -307,11 +311,11 @@ function onColorOptionClick(event) {
     applyFabricToSelectedPart(fabricType);
   
     // Add or remove the 'selected' class based on the selected fabric
-    const selectedFabric = document.querySelector('.fabric-container.selected');
+    const selectedFabric = document.querySelector('.box-fabric.selected');
     if (selectedFabric) {
       selectedFabric.classList.remove('selected');
     }
-    event.target.parentElement.classList.add('selected');
+    event.target.classList.add('selected');
   }
 
 function applyFabricToSelectedPart(fabricType) {
@@ -327,6 +331,22 @@ function applyFabricToSelectedPart(fabricType) {
   
 function getFabricMaterial(fabricType) {
   switch (fabricType) {
+    case 'leatherFabric':
+      const leatherTexture = new THREE.TextureLoader().load('/fabrics/leather.jpg');
+      const leatherNormal = new THREE.TextureLoader().load('/fabrics/leatherNorm.jpg');
+      const leatherReflect = new THREE.TextureLoader().load('/fabrics/leatherReflect.jpg');
+      const leatherGloss = new THREE.TextureLoader().load('/fabrics/leatherGloss.jpg');
+      leatherTexture.wrapS = THREE.RepeatWrapping;
+      leatherTexture.wrapT = THREE.RepeatWrapping;
+      leatherTexture.repeat.set(3, 3);
+      return new THREE.MeshStandardMaterial({
+        color: selectedPart.material.color,
+        normalMap: metalleatherNormal,
+        displacementMap: leatherTexture,
+        displacementScale: 0.1,
+        envMap: leatherReflect,
+        roughnessMap: leatherGloss,
+      });
     case 'denimFabric':
       console.log('fabricType:', fabricType);
       // Load denim texture using TextureLoader
@@ -346,28 +366,22 @@ function getFabricMaterial(fabricType) {
         aoMapIntensity: 0.5,
         //roughness: 0.5,
       });
-    case 'leatherFabric':
-      const leatherTexture = new THREE.TextureLoader().load('/fabrics/leather.jpg');
-      const leatherNormal = new THREE.TextureLoader().load('/fabrics/leatherNorm.jpg');
-      const leatherReflect = new THREE.TextureLoader().load('/fabrics/leatherReflect.jpg');
-      const leatherGloss = new THREE.TextureLoader().load('/fabrics/leatherGloss.jpg');
-      leatherTexture.wrapS = THREE.RepeatWrapping;
-      leatherTexture.wrapT = THREE.RepeatWrapping;
-      leatherTexture.repeat.set(3, 3);
+    case 'metalLeatherFabric':
+      const metalleatherTexture = new THREE.TextureLoader().load('/fabrics/leather.jpg');
+      const metalleatherNormal = new THREE.TextureLoader().load('/fabrics/leatherNorm.jpg');
+      const metalleatherReflect = new THREE.TextureLoader().load('/fabrics/leatherReflect.jpg');
+      const metalleatherGloss = new THREE.TextureLoader().load('/fabrics/leatherGloss.jpg');
+      metalleatherTexture.wrapS = THREE.RepeatWrapping;
+      metalleatherTexture.wrapT = THREE.RepeatWrapping;
+      metalleatherTexture.repeat.set(3, 3);
       return new THREE.MeshStandardMaterial({
         color: selectedPart.material.color,
-        normalMap: leatherNormal,
-        displacementMap: leatherTexture,
+        normalMap: metalleatherNormal,
+        displacementMap: metalleatherTexture,
         displacementScale: 0.1,
-        envMap: leatherReflect,
-        roughnessMap: leatherGloss,
+        envMap: metalleatherReflect,
+        roughnessMap: metalleatherGloss,
         metalness: 0.5,
-      });
-    case 'sequinFabric':
-      return new THREE.MeshStandardMaterial({
-        color: selectedPart.material.color,
-        metalness: 0.3,
-        roughness: 0.4,
       });
       case 'velvetFabric':
         const velvetTexture = new THREE.TextureLoader().load('/fabrics/velvet.png');
@@ -385,6 +399,19 @@ function getFabricMaterial(fabricType) {
           metalnessMap: velvetMetal,
           //roughnessMap: velvetRough,
         });
+        case 'polyesterFabric':
+          const polyesterTexture = new THREE.TextureLoader().load('/fabrics/polyester.png');
+          const polyesterNormal = new THREE.TextureLoader().load('/fabrics/polyesterNorm.png');
+          polyesterTexture.wrapS = THREE.RepeatWrapping;
+          polyesterTexture.wrapT = THREE.RepeatWrapping;
+          polyesterTexture.repeat.set(3, 3);
+          return new THREE.MeshStandardMaterial({
+            color: selectedPart.material.color,
+            normalMap: polyesterNormal,
+            displacementMap: polyesterTexture,
+            displacementScale: 0.1,
+            //roughnessMap: velvetRough,
+          });
     default:
       // Default material if fabricType is not recognized
       return new THREE.MeshStandardMaterial({
@@ -392,8 +419,6 @@ function getFabricMaterial(fabricType) {
       });
   }
 }
-  
-
   
 
 // Add color option click event listeners
