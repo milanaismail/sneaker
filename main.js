@@ -459,8 +459,6 @@ function onColorOptionClick(event) {
       }
       event.target.classList.add('selected');
     }
-  
-    sendAllCustomizationData();
   }
 
   function onFabricOptionsClick(event) {
@@ -501,7 +499,6 @@ function onColorOptionClick(event) {
     }
     event.target.classList.add('selected');
   }
-  sendAllCustomizationData();
 }
 
 function applyFabricToSelectedPart(fabricType) {
@@ -725,11 +722,15 @@ window.addEventListener('click', onDocumentMouseDown, false);
 
 // clock for animation
 const clock = new THREE.Clock();
-
+const button = document.getElementById('orderButton');
 
 document.getElementById('size').addEventListener('change', function () {
-  const button = document.getElementById('orderButton');
   button.disabled = this.value === ''; // Disable the button if no size is selected
+});
+
+button.addEventListener('click', function () {
+  // Send all customization data to the backend
+  sendAllCustomizationData();
 });
 
 function animate() {
