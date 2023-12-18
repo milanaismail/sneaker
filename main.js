@@ -270,7 +270,6 @@ const font = fontLoader.load(
 
 
 let customizationData = {
-  shoeColor: null,
   lacesColor: null,
   soleBottomColor: null,
   soleTopColor: null,
@@ -285,6 +284,7 @@ let customizationData = {
   fabricFrontPartType: null,
   fabricUpperPartType: null,
   fabricBodyType: null,
+  shoeSize: null,
 };
 
 function sendAllCustomizationData() {
@@ -315,6 +315,7 @@ function sendAllCustomizationData() {
       fabricFrontPartType: null,
       fabricUpperPartType: null,
       fabricBodyType: null,
+      shoeSize: null,
     };
   })
   .catch(error => {
@@ -729,6 +730,7 @@ document.getElementById('size').addEventListener('change', function () {
 
 button.addEventListener('click', function () {
   // Send all customization data to the backend
+  shoeSize = document.getElementById('size').value;
   sendAllCustomizationData();
   console.log(customizationData);
 });
