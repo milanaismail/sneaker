@@ -81,6 +81,11 @@ renderer.antialias = true;
 
 renderer.setPixelRatio(window.devicePixelRatio);
 
+//add orbit controls
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
+controls.target.set(0, 0, 0);
+controls.update();
 
 
 //add public/cubemap
@@ -93,6 +98,7 @@ const environmentMapTexture = cubeTextureLoader.load([
   '/public/cubemap/pz.png',
   '/public/cubemap/nz.png',
 ]);
+
 
 scene.background = environmentMapTexture;
 
@@ -200,8 +206,9 @@ const cylinderMaterial = new THREE.MeshStandardMaterial(
   { color: "#d357fe",
     emissive: "#ffa57d",
     emissiveIntensity: 0.2,
-    metalness: 0.2,
-    roughness: 0.2,
+    metalness: 0.5,
+    roughness: 0,
+    envMap: environmentMapTexture,
   } );
 const cylinder = new THREE.Mesh( cylinderGeometry, cylinderMaterial );
 scene.add( cylinder );
