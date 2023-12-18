@@ -7,6 +7,9 @@ import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
 //import axes helper
 import { AxesHelper } from 'three';
 import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
+//add orbit controls
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+
 
 const scene = new THREE.Scene();
 
@@ -141,7 +144,7 @@ document.addEventListener('mouseup', () => {
 });
 
 //Texture for barrel
-const texture = new THREE.TextureLoader().load('textures/normal2.png');
+/*const texture = new THREE.TextureLoader().load('textures/normal2.png');
 const material2 = new THREE.MeshStandardMaterial({ 
   map: texture,
   metalness: 0.5,
@@ -167,7 +170,17 @@ oilBarrel.load(
         child.castShadow = true;
       }
     });
-	});
+	});*/
+
+//add cylinder
+const cylinderGeometry = new THREE.CylinderGeometry( 1.1, 1.1, 0.2, 80 );
+const cylinderMaterial = new THREE.MeshStandardMaterial( {color: 0xff0000} );
+const cylinder = new THREE.Mesh( cylinderGeometry, cylinderMaterial );
+scene.add( cylinder );
+//receive shadow cylinder
+cylinder.receiveShadow = true;
+cylinder.castShadow = true;
+cylinder.position.set(0, -0.3, -0.6);
 
 
 const geometry = new THREE.BoxGeometry( 1, 1, 1 );
@@ -544,6 +557,15 @@ const clock = new THREE.Clock();
 document.getElementById('size').addEventListener('change', function () {
   const button = document.getElementById('orderButton');
   button.disabled = this.value === ''; // Disable the button if no size is selected
+
+  const orderButton = document.getElementById('orderButton');
+
+  // Add a click event listener to the button
+  orderButton.addEventListener('click', function() {
+      // Redirect to order.html
+      window.location.href = 'order.html';
+  });
+
 });
 
 function animate() {
