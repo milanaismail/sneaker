@@ -432,10 +432,10 @@ function onColorOptionClick(event) {
         case 'Lining':
           customizationData.liningColor = selectedColor;
           break;
-        case 'Front Part':
+        case 'Front part':
           customizationData.frontPartColor = selectedColor;
           break;
-        case 'Upper Part':
+        case 'Upper part':
           customizationData.upperPartColor = selectedColor;
           break;
         case 'Body':
@@ -478,10 +478,10 @@ function onColorOptionClick(event) {
         case 'Lining':
           customizationData.fabricLiningType = fabricType;
           break;
-        case 'Front Part':
+        case 'Front part':
           customizationData.fabricFrontPartType = fabricType;
           break;
-        case 'Upper Part':
+        case 'Upper part':
           customizationData.fabricUpperPartType = fabricType;
           break;
         case 'Body':
