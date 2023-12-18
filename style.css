@@ -84,7 +84,6 @@ div{
   flex-direction: column;
   justify-content: center;
   align-items: center;
-
 }
 
 #name{
@@ -182,6 +181,7 @@ input{
   margin-bottom: 28px;
 }
 
+
 .color-fabric-container p{
   font-size: 16px;
   margin: 6;
@@ -190,3 +190,4 @@ input{
 .box-container, .fabric-container{
   margin: 12px;
 }
+

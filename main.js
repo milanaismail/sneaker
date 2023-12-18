@@ -269,6 +269,60 @@ const font = fontLoader.load(
 );*/
 
 
+let customizationData = {
+  shoeColor: null,
+  lacesColor: null,
+  soleBottomColor: null,
+  soleTopColor: null,
+  liningColor: null,
+  frontPartColor: null,
+  upperPartColor: null,
+  bodyColor: null,
+  fabricLacesType: null,
+  fabricSoleBottomType: null,
+  fabricSoleTopType: null,
+  fabricLiningType: null,
+  fabricFrontPartType: null,
+  fabricUpperPartType: null,
+  fabricBodyType: null,
+};
+
+function sendAllCustomizationData() {
+  // Basic fetch function to send customization data to the server
+  fetch('/api/saveAllCustomization', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(customizationData),
+  })
+  .then(response => response.json())
+  .then(data => {
+    console.log('All customization data sent to the backend:', data);
+    // Reset customizationData after successful submission
+    customizationData = {
+      lacesColor: null,
+      soleBottomColor: null,
+      soleTopColor: null,
+      liningColor: null,
+      frontPartColor: null,
+      upperPartColor: null,
+      bodyColor: null,
+      fabricLacesType: null,
+      fabricSoleBottomType: null,
+      fabricSoleTopType: null,
+      fabricLiningType: null,
+      fabricFrontPartType: null,
+      fabricUpperPartType: null,
+      fabricBodyType: null,
+    };
+  })
+  .catch(error => {
+    console.error('Error sending customization data:', error);
+  });
+}
+
+
 let shoe;
 
 const shoeMeshes = [];
@@ -281,10 +335,22 @@ loader.load('public/Shoe_compressed.glb', function(gltf){
   shoe.scale.set(3, 3, 3);
   shoe.receiveShadow = true; 
   
+
+  const leatherTexture = new THREE.TextureLoader().load('/fabrics/leather.jpg');
+  const leatherNormal = new THREE.TextureLoader().load('/fabrics/leatherNorm.jpg');
+  const leatherReflect = new THREE.TextureLoader().load('/fabrics/leatherReflect.jpg');
+  const leatherGloss = new THREE.TextureLoader().load('/fabrics/leatherGloss.jpg');
+  leatherTexture.wrapS = THREE.RepeatWrapping;
+  leatherTexture.wrapT = THREE.RepeatWrapping;
+  leatherTexture.repeat.set(3, 3);
+  
   const shoeMaterial = new THREE.MeshStandardMaterial({
     color: 0xffffff, // Set your desired color here
-    roughness: 0.4,  // Adjust metalness
-
+    normalMap: leatherNormal,
+    displacementMap: leatherTexture,
+    displacementScale: 0.1,
+    envMap: leatherReflect,
+    roughnessMap: leatherGloss,
 
   });
   
@@ -334,7 +400,6 @@ loader.load('public/Shoe_compressed.glb', function(gltf){
         // Skip resetting color for the selected or hovered part
         if (node !== hoveredPart && node !== selectedPart) {
           node.material.color.set(0xffffff); // Reset color
-          console.log('reset color');
         }
       }
     }
@@ -345,23 +410,47 @@ let hoveredPart = null;
 let selectedPart = null;
 const partColors = new Map();
 
+const fabricOptions = document.querySelectorAll('.fabric-container .box-fabric');
+fabricOptions.forEach(option => option.addEventListener('click', onFabricOptionsClick));
+
+
 // Function to handle color option clicks
 function onColorOptionClick(event) {
-  console.log('color option clicked')
   const selectedColor = new THREE.Color(parseInt(event.target.dataset.color, 16));
-  console.log('Selected color:', selectedColor);
-  // Update the color of the clicked part
-  /*  if (selectedPart) {
-  const newMaterial = new THREE.MeshStandardMaterial({
-      color: selectedColor,
-      metalness: 0.5,
-      roughness: 0.2,
-    }); USE FOR FABRICS*/
-  
     // Apply the selected color to the entire shoe
     if (selectedPart) {
-      selectedPart.material.color.copy(selectedColor);
-      partColors.set(selectedPart.uuid, selectedColor);
+      
+      switch (selectedPart.name) {
+        case 'laces':
+          customizationData.lacesColor = selectedColor;
+          break;
+        case 'sole_bottom':
+          customizationData.soleBottomColor = selectedColor;
+          break;
+        case 'sole_top':
+          customizationData.soleTopColor = selectedColor;
+          break;
+        case 'Lining':
+          customizationData.liningColor = selectedColor;
+          break;
+        case 'inside':
+          customizationData.frontPartColor = selectedColor;
+          break;
+        case 'outside_2':
+          customizationData.upperPartColor = selectedColor;
+          break;
+        case 'outside_3':
+          customizationData.bodyColor = selectedColor;
+          break;
+
+        // Add cases for other parts as needed
+      } 
+      if (selectedPart.material) {
+        selectedPart.material.color.copy(selectedColor);
+        partColors.set(selectedPart.uuid, selectedColor);
+
+      }
+  
   
       // Add or remove the 'selected' class based on the selected color
       const selectedBox = document.querySelector('.box.selected');
@@ -371,14 +460,157 @@ function onColorOptionClick(event) {
       event.target.classList.add('selected');
     }
   
-    console.log('Selected part:', selectedPart);
+    sendAllCustomizationData();
   }
+
+  function onFabricOptionsClick(event) {
+    const fabricType = event.currentTarget.id; // Get fabric type from parent container id
+    console.log('Fabric type:', fabricType);
+
+    if (selectedPart) {
+      switch (selectedPart.name) {
+        case 'laces':
+          customizationData.fabricLacesType = fabricType;
+          break;
+        case 'sole_bottom':
+          customizationData.fabricSoleBottomType = fabricType;
+          break;
+        case 'sole_top':
+          customizationData.fabricSoleTopType = fabricType;
+          break;
+        case 'inside':
+          customizationData.fabricLiningType = fabricType;
+          break;
+        case 'outside_1':
+          customizationData.fabricFrontPartType = fabricType;
+          break;
+        case 'outside_2':
+          customizationData.fabricUpperPartType = fabricType;
+          break;
+        case 'outside_3':
+          customizationData.fabricBodyType = fabricType;
+          break;
+      }
+    
+    applyFabricToSelectedPart(fabricType);
+  
+    // Add or remove the 'selected' class based on the selected fabric
+    const selectedFabric = document.querySelector('.box-fabric.selected');
+    if (selectedFabric) {
+      selectedFabric.classList.remove('selected');
+    }
+    event.target.classList.add('selected');
+  }
+  sendAllCustomizationData();
+}
+
+function applyFabricToSelectedPart(fabricType) {
+  console.log('Applying fabric to selected part. Fabric type:', fabricType);
+
+  if (selectedPart) {
+    const fabricMaterial = getFabricMaterial(fabricType);
+    selectedPart.material = fabricMaterial;
+    console.log('Applied fabric:', fabricType);
+  }
+}
+
+  
+function getFabricMaterial(fabricType) {
+  switch (fabricType) {
+    case 'leatherFabric':
+      const leatherTexture = new THREE.TextureLoader().load('/fabrics/leather.jpg');
+      const leatherNormal = new THREE.TextureLoader().load('/fabrics/leatherNorm.jpg');
+      const leatherReflect = new THREE.TextureLoader().load('/fabrics/leatherReflect.jpg');
+      const leatherGloss = new THREE.TextureLoader().load('/fabrics/leatherGloss.jpg');
+      leatherTexture.wrapS = THREE.RepeatWrapping;
+      leatherTexture.wrapT = THREE.RepeatWrapping;
+      leatherTexture.repeat.set(3, 3);
+      return new THREE.MeshStandardMaterial({
+        color: selectedPart.material.color,
+        normalMap: leatherNormal,
+        displacementMap: leatherTexture,
+        displacementScale: 0.1,
+        envMap: leatherReflect,
+        roughnessMap: leatherGloss,
+      });
+    case 'denimFabric':
+      console.log('fabricType:', fabricType);
+      // Load denim texture using TextureLoader
+      const denimTexture = new THREE.TextureLoader().load('/fabrics/denim.jpg');
+      const denimNormal = new THREE.TextureLoader().load('/fabrics/denimNorm.jpg');
+      const denimOcc = new THREE.TextureLoader().load('/fabrics/denimOcc.jpg');
+      const denimSpec = new THREE.TextureLoader().load('/fabrics/denimSpec.jpg');
+      denimTexture.wrapS = THREE.RepeatWrapping;
+      denimTexture.wrapT = THREE.RepeatWrapping;
+      denimTexture.repeat.set(1, 1);
+      return new THREE.MeshStandardMaterial({
+        color: selectedPart.material.color,
+        normalMap: denimNormal,
+        displacementMap: denimTexture,
+        displacementScale: 0.01,
+        aoMap: denimOcc,
+        aoMapIntensity: 0.5,
+        //roughness: 0.5,
+      });
+    case 'metalLeatherFabric':
+      const metalleatherTexture = new THREE.TextureLoader().load('/fabrics/leather.jpg');
+      const metalleatherNormal = new THREE.TextureLoader().load('/fabrics/leatherNorm.jpg');
+      const metalleatherReflect = new THREE.TextureLoader().load('/fabrics/leatherReflect.jpg');
+      const metalleatherGloss = new THREE.TextureLoader().load('/fabrics/leatherGloss.jpg');
+      metalleatherTexture.wrapS = THREE.RepeatWrapping;
+      metalleatherTexture.wrapT = THREE.RepeatWrapping;
+      metalleatherTexture.repeat.set(3, 3);
+      return new THREE.MeshStandardMaterial({
+        color: selectedPart.material.color,
+        normalMap: metalleatherNormal,
+        displacementMap: metalleatherTexture,
+        displacementScale: 0.1,
+        envMap: metalleatherReflect,
+        roughnessMap: metalleatherGloss,
+        metalness: 0.5,
+      });
+      case 'velvetFabric':
+        const velvetTexture = new THREE.TextureLoader().load('/fabrics/velvet.png');
+        const velvetNormal = new THREE.TextureLoader().load('/fabrics/velvetNorm.png');
+        const velvetMetal = new THREE.TextureLoader().load('/fabrics/velvetMetal.png');
+        const velvetRough = new THREE.TextureLoader().load('/fabrics/velvetRough.png');
+        velvetTexture.wrapS = THREE.RepeatWrapping;
+        velvetTexture.wrapT = THREE.RepeatWrapping;
+        velvetTexture.repeat.set(3, 3);
+        return new THREE.MeshStandardMaterial({
+          color: selectedPart.material.color,
+          normalMap: velvetNormal,
+          displacementMap: velvetTexture,
+          displacementScale: 0.1,
+          metalnessMap: velvetMetal,
+          //roughnessMap: velvetRough,
+        });
+        case 'polyesterFabric':
+          const polyesterTexture = new THREE.TextureLoader().load('/fabrics/polyester.png');
+          const polyesterNormal = new THREE.TextureLoader().load('/fabrics/polyesterNorm.png');
+          polyesterTexture.wrapS = THREE.RepeatWrapping;
+          polyesterTexture.wrapT = THREE.RepeatWrapping;
+          polyesterTexture.repeat.set(3, 3);
+          return new THREE.MeshStandardMaterial({
+            color: selectedPart.material.color,
+            normalMap: polyesterNormal,
+            displacementMap: polyesterTexture,
+            displacementScale: 0.1,
+            //roughnessMap: velvetRough,
+          });
+    default:
+      // Default material if fabricType is not recognized
+      return new THREE.MeshStandardMaterial({
+        color: selectedPart.material.color,
+      });
+  }
+}
+  
 
 // Add color option click event listeners
 const colorOptions = document.querySelectorAll('.colorOption .box');
 colorOptions.forEach(option => option.addEventListener('click', onColorOptionClick));
 
-// Variable to store the selected part
 
 // Function to handle the raycasting logic
 function onDocumentMouseMove(event) {
@@ -399,7 +631,6 @@ function onDocumentMouseMove(event) {
       // Only reset color if a color has not been chosen for this part
       if (!partColors.has(mesh.uuid)) {
         mesh.material.color.set(0xffffff); // Reset color
-        console.log('reset color');
       }
     }
   });
@@ -411,7 +642,7 @@ function onDocumentMouseMove(event) {
     if (hoveredPart !== selectedPart) {
       // Only set the hover color if a color has not been chosen for this part
       if (!partColors.has(hoveredPart.uuid)) {
-        hoveredPart.material.color.set(0x000000); // Hover color
+        hoveredPart.material.color.set(0xC0C0C0); // Hover color
       }
     }
   } else {
@@ -444,13 +675,24 @@ function onDocumentMouseDown(event) {
 
     // Apply the color to the clicked part
     if (intersects.length > 0) {
-      selectedPart = intersects[0].object;
+      const clickedPart = intersects[0].object;
+
+      if (selectedPart && selectedPart !== clickedPart) {
+        // Remove the 'selected' class from the previously selected box-fabric
+        const selectedFabric = document.querySelector('.box-fabric.selected');
+        if (selectedFabric) {
+          selectedFabric.classList.remove('selected');
+        }
+      }
+
+      selectedPart = clickedPart;
+
 
       // Check if a color has been chosen for this part
       if (!partColors.has(selectedPart.uuid)) {
         // If no color has been chosen, set the color to black
-        selectedPart.material.color.set(0x000000);
-        partColors.set(selectedPart.uuid, new THREE.Color(0x000000));
+        selectedPart.material.color.set(0xC0C0C0);
+        partColors.set(selectedPart.uuid, new THREE.Color(0xC0C0C0));
 
            // Remove the 'selected' class from the previously selected box
            const selectedBox = document.querySelector('.box.selected');
@@ -465,6 +707,8 @@ function onDocumentMouseDown(event) {
 
       const clickedBox = event.target;
       clickedBox.classList.add('selected');
+      const clickedBoxFabric = event.target;
+      clickedBoxFabric.classList.add('selected');
     }
 
 
