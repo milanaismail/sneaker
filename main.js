@@ -77,8 +77,28 @@ canvas.appendChild(renderer.domElement);
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap; 
 renderer.antialias = true;
+renderer.outputEncoding = THREE.sRGBEncoding;
+
 
 renderer.setPixelRatio(window.devicePixelRatio);
+
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
+controls.target.set(0, 0, 0);
+controls.update();
+
+//add public/cubemap
+const cubeTextureLoader = new THREE.CubeTextureLoader();
+const environmentMapTexture = cubeTextureLoader.load([
+  '/public/cubemap/px.png',
+  '/public/cubemap/nx.png',
+  '/public/cubemap/py.png',
+  '/public/cubemap/ny.png',
+  '/public/cubemap/pz.png',
+  '/public/cubemap/nz.png',
+]);
+
+scene.background = environmentMapTexture;
 
       
 //add plane
@@ -173,8 +193,21 @@ oilBarrel.load(
 	});*/
 
 //add cylinder
+const platformMaterial = new THREE.TextureLoader().load('/textures/platform.png');
+const platformColor = new THREE.TextureLoader().load('/textures/platformColor.jpg');
+const platformMetal = new THREE.TextureLoader().load('/textures/platformMetal.jpg');
+const platformRough = new THREE.TextureLoader().load('/textures/platformRough.jpg');
+const platformNormal = new THREE.TextureLoader().load('/textures/platformNorm.jpg');
+const platformAo = new THREE.TextureLoader().load('/textures/platformAo.jpg');
 const cylinderGeometry = new THREE.CylinderGeometry( 1.1, 1.1, 0.2, 80 );
-const cylinderMaterial = new THREE.MeshStandardMaterial( {color: 0xff0000} );
+const cylinderMaterial = new THREE.MeshStandardMaterial( 
+  { color: "#942192",
+    emissive: "#7a7a7a",
+    metalness: 0,
+    roughness: 0.9,
+    envMap: environmentMapTexture,
+    
+  } );
 const cylinder = new THREE.Mesh( cylinderGeometry, cylinderMaterial );
 scene.add( cylinder );
 //receive shadow cylinder
@@ -183,17 +216,18 @@ cylinder.castShadow = true;
 cylinder.position.set(0, -0.3, -0.6);
 
 
-const geometry = new THREE.BoxGeometry( 1, 1, 1 );
-const material = new THREE.MeshBasicMaterial( { color: 0x00ff00  } );
-
 //add ambient light
-const ambientLight = new THREE.AmbientLight(0xffffff,1.2);
+const ambientLight = new THREE.AmbientLight(0xffffff,1.5);
 scene.add(ambientLight);
 
 //add directional light
 const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
-directionalLight.position.set(0, 15, 4);
+directionalLight.position.set(0, 10, 1);
 directionalLight.target.position.set(0, 0, 0);
+
+//add directional helper
+const directionalLightHelper = new THREE.DirectionalLightHelper(directionalLight, 5);
+scene.add(directionalLightHelper);
 
 //add shadow
 directionalLight.castShadow = true;
