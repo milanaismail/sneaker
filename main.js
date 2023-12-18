@@ -214,6 +214,12 @@ cylinder.position.set(0, -0.3, -0.7);
 const ambientLight = new THREE.AmbientLight(0xffffff,1.9);
 scene.add(ambientLight);
 
+//add lightshadow
+const lightShadow = new THREE.DirectionalLight(0xffffff, 1.3);
+lightShadow.position.set(0, 10, 1);
+lightShadow.target.position.set(0, -0.5, 0);
+
+
 //add directional light
 const directionalLight = new THREE.DirectionalLight(0xffffff, 1.3);
 directionalLight.position.set(0, 10, 1);
