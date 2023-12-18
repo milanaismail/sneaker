@@ -413,34 +413,32 @@ const partColors = new Map();
 const fabricOptions = document.querySelectorAll('.fabric-container .box-fabric');
 fabricOptions.forEach(option => option.addEventListener('click', onFabricOptionsClick));
 
-let selectedColor;
-
 // Function to handle color option clicks
 function onColorOptionClick(event) {
-  selectedColor = new THREE.Color(parseInt(event.target.dataset.color, 16));
+  const selectedColor = new THREE.Color(parseInt(event.target.dataset.color, 16));
     // Apply the selected color to the entire shoe
     if (selectedPart) {
       
       switch (selectedPart.name) {
-        case 'laces':
+        case 'Laces':
           customizationData.lacesColor = selectedColor;
           break;
-        case 'sole_bottom':
+        case 'Sole bottom':
           customizationData.soleBottomColor = selectedColor;
           break;
-        case 'sole_top':
+        case 'sole top':
           customizationData.soleTopColor = selectedColor;
           break;
         case 'Lining':
           customizationData.liningColor = selectedColor;
           break;
-        case 'inside':
+        case 'Front Part':
           customizationData.frontPartColor = selectedColor;
           break;
-        case 'outside_2':
+        case 'Upper Part':
           customizationData.upperPartColor = selectedColor;
           break;
-        case 'outside_3':
+        case 'Body':
           customizationData.bodyColor = selectedColor;
           break;
 
@@ -468,25 +466,25 @@ function onColorOptionClick(event) {
 
     if (selectedPart) {
       switch (selectedPart.name) {
-        case 'laces':
+        case 'Laces':
           customizationData.fabricLacesType = fabricType;
           break;
-        case 'sole_bottom':
+        case 'Sole bottom':
           customizationData.fabricSoleBottomType = fabricType;
           break;
-        case 'sole_top':
+        case 'sole top':
           customizationData.fabricSoleTopType = fabricType;
           break;
-        case 'inside':
+        case 'Lining':
           customizationData.fabricLiningType = fabricType;
           break;
-        case 'outside_1':
+        case 'Front Part':
           customizationData.fabricFrontPartType = fabricType;
           break;
-        case 'outside_2':
+        case 'Upper Part':
           customizationData.fabricUpperPartType = fabricType;
           break;
-        case 'outside_3':
+        case 'Body':
           customizationData.fabricBodyType = fabricType;
           break;
       }
@@ -732,6 +730,7 @@ document.getElementById('size').addEventListener('change', function () {
 button.addEventListener('click', function () {
   // Send all customization data to the backend
   sendAllCustomizationData();
+  console.log(customizationData);
 });
 
 function animate() {
