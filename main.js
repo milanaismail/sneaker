@@ -196,11 +196,12 @@ const platformRough = new THREE.TextureLoader().load('/textures/platformRough.jp
 const platformNormal = new THREE.TextureLoader().load('/textures/platformNorm.jpg');
 const platformAo = new THREE.TextureLoader().load('/textures/platformAo.jpg');
 const cylinderGeometry = new THREE.CylinderGeometry( 1.3, 1.3, 0.2, 80 );
-const cylinderMaterial = new THREE.MeshLambertMaterial( 
+const cylinderMaterial = new THREE.MeshStandardMaterial( 
   { color: "#d357fe",
     emissive: "#ffa57d",
-    envMap: platformMetal,
-    reflectivity: 0.3,
+    emissiveIntensity: 0.2,
+    metalness: 0.2,
+    roughness: 0.2,
   } );
 const cylinder = new THREE.Mesh( cylinderGeometry, cylinderMaterial );
 scene.add( cylinder );
@@ -214,10 +215,10 @@ cylinder.position.set(0, -0.3, -0.7);
 const ambientLight = new THREE.AmbientLight(0xffffff,1.9);
 scene.add(ambientLight);
 
-//add lightshadow
-const lightShadow = new THREE.DirectionalLight(0xffffff, 1.3);
-lightShadow.position.set(0, 10, 1);
-lightShadow.target.position.set(0, -0.5, 0);
+//add spotlight
+const spotLight = new THREE.SpotLight(0xffffff, 1);
+spotLight.position.set(0, 2, 0);
+spotLight.target.position.set(0, -0.5, 0);
 
 
 //add directional light
