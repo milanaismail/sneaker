@@ -77,15 +77,11 @@ canvas.appendChild(renderer.domElement);
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap; 
 renderer.antialias = true;
-renderer.outputEncoding = THREE.sRGBEncoding;
 
 
 renderer.setPixelRatio(window.devicePixelRatio);
 
-const controls = new OrbitControls(camera, renderer.domElement);
-controls.enableDamping = true;
-controls.target.set(0, 0, 0);
-controls.update();
+
 
 //add public/cubemap
 const cubeTextureLoader = new THREE.CubeTextureLoader();
@@ -199,31 +195,29 @@ const platformMetal = new THREE.TextureLoader().load('/textures/platformMetal.jp
 const platformRough = new THREE.TextureLoader().load('/textures/platformRough.jpg');
 const platformNormal = new THREE.TextureLoader().load('/textures/platformNorm.jpg');
 const platformAo = new THREE.TextureLoader().load('/textures/platformAo.jpg');
-const cylinderGeometry = new THREE.CylinderGeometry( 1.1, 1.1, 0.2, 80 );
-const cylinderMaterial = new THREE.MeshStandardMaterial( 
-  { color: "#942192",
-    emissive: "#7a7a7a",
-    metalness: 0,
-    roughness: 0.9,
-    envMap: environmentMapTexture,
-    
+const cylinderGeometry = new THREE.CylinderGeometry( 1.3, 1.3, 0.2, 80 );
+const cylinderMaterial = new THREE.MeshLambertMaterial( 
+  { color: "#d357fe",
+    emissive: "#ffa57d",
+    envMap: platformMetal,
+    reflectivity: 0.3,
   } );
 const cylinder = new THREE.Mesh( cylinderGeometry, cylinderMaterial );
 scene.add( cylinder );
 //receive shadow cylinder
 cylinder.receiveShadow = true;
 cylinder.castShadow = true;
-cylinder.position.set(0, -0.3, -0.6);
+cylinder.position.set(0, -0.3, -0.7);
 
 
 //add ambient light
-const ambientLight = new THREE.AmbientLight(0xffffff,1.5);
+const ambientLight = new THREE.AmbientLight(0xffffff,1.9);
 scene.add(ambientLight);
 
 //add directional light
-const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+const directionalLight = new THREE.DirectionalLight(0xffffff, 1.3);
 directionalLight.position.set(0, 10, 1);
-directionalLight.target.position.set(0, 0, 0);
+directionalLight.target.position.set(0, -0.5, 0);
 
 //add directional helper
 const directionalLightHelper = new THREE.DirectionalLightHelper(directionalLight, 5);
