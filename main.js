@@ -730,7 +730,7 @@ document.getElementById('size').addEventListener('change', function () {
 
 button.addEventListener('click', function () {
   // Send all customization data to the backend
-  shoeSize = document.getElementById('size').value;
+  customizationData.shoeSize = document.getElementById('size').value;
   sendAllCustomizationData();
   console.log(customizationData);
 });
