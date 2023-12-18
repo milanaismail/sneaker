@@ -413,10 +413,11 @@ const partColors = new Map();
 const fabricOptions = document.querySelectorAll('.fabric-container .box-fabric');
 fabricOptions.forEach(option => option.addEventListener('click', onFabricOptionsClick));
 
+let selectedColor;
 
 // Function to handle color option clicks
 function onColorOptionClick(event) {
-  const selectedColor = new THREE.Color(parseInt(event.target.dataset.color, 16));
+  selectedColor = new THREE.Color(parseInt(event.target.dataset.color, 16));
     // Apply the selected color to the entire shoe
     if (selectedPart) {
       
