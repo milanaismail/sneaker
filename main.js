@@ -47,9 +47,11 @@ function playClickSound() {
 window.addEventListener('click', loadAudio);
 
 const onPointerMove = ( event ) => {
-	pointer.x = ( event.clientX / window.innerWidth ) * 2 - 1;
-	pointer.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+  const rect = renderer.domElement.getBoundingClientRect();
+  pointer.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+  pointer.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
 }
+  
 window.addEventListener( 'pointermove', onPointerMove );
 
 //add gridhelper 
@@ -192,12 +194,6 @@ oilBarrel.load(
 	});*/
 
 //add cylinder
-const platformMaterial = new THREE.TextureLoader().load('/textures/platform.png');
-const platformColor = new THREE.TextureLoader().load('/textures/platformColor.jpg');
-const platformMetal = new THREE.TextureLoader().load('/textures/platformMetal.jpg');
-const platformRough = new THREE.TextureLoader().load('/textures/platformRough.jpg');
-const platformNormal = new THREE.TextureLoader().load('/textures/platformNorm.jpg');
-const platformAo = new THREE.TextureLoader().load('/textures/platformAo.jpg');
 const cylinderGeometry = new THREE.CylinderGeometry( 1.3, 1.3, 0.2, 80 );
 const cylinderMaterial = new THREE.MeshStandardMaterial( 
   { color: "#d357fe",
@@ -244,11 +240,10 @@ const helper = new THREE.DirectionalLightHelper(directionalLight, 5);
 
 
 //camera position
-camera.position.y = 1;
-camera.position.z = 1.1; 
 camera.position.y = 0.65;
+camera.position.z = 1.1; 
 camera.lookAt(0, 0, 0);
-
+console.log('Camera Position:', camera.position.x, camera.position.y, camera.position.z);
 //add orbit controls
 const controls = new OrbitControls(camera, renderer.domElement);
 
@@ -663,9 +658,10 @@ function onDocumentMouseMove(event) {
   event.preventDefault();
 
   // Calculate mouse position in normalized device coordinates
-  pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
-  pointer.y = - (event.clientY / window.innerHeight) * 2 + 1;
 
+  const rect = renderer.domElement.getBoundingClientRect();
+  pointer.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+  pointer.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
   // Update the picking ray with the camera and mouse position
   raycaster.setFromCamera(pointer, camera);
 
@@ -703,15 +699,17 @@ function onDocumentMouseDown(event) {
   event.preventDefault();
 
   // Calculate mouse position in normalized device coordinates
-  pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
-  pointer.y = - (event.clientY / window.innerHeight) * 2 + 1;
+  const rect = renderer.domElement.getBoundingClientRect();
+  pointer.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+  pointer.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
 
   const isColorOption = event.target.classList.contains('box');
 
   if (!isColorOption) {
     // Calculate mouse position in normalized device coordinates
-    pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
-    pointer.y = - (event.clientY / window.innerHeight) * 2 + 1;
+    const rect = renderer.domElement.getBoundingClientRect();
+    pointer.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+    pointer.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
 
     // Update the picking ray with the camera and mouse position
     raycaster.setFromCamera(pointer, camera);
@@ -803,7 +801,8 @@ function animate() {
   // change plane gradients
   planeMaterial.uniforms.time.value += 0.01;
 
-  
+  raycaster.setFromCamera(pointer, camera);
+
 
   requestAnimationFrame(animate);
 
@@ -816,6 +815,7 @@ window.addEventListener('resize', () => {
   camera.aspect = newWidth / newHeight;
   camera.updateProjectionMatrix();
   renderer.setSize(newWidth, newHeight);
+  raycaster.setFromCamera(pointer, camera);
 });
 
 animate();
