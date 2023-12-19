@@ -94,6 +94,7 @@ body {
     flex-direction: row;
     justify-content: space-evenly;
     align-items:center;
+    position: top;
     width: 100%;
     margin: 48px;
   
@@ -201,15 +202,15 @@ body {
 
     .order-container{
       flex-direction: row;
+      justify-content: flex;
       align-items: center;
       margin: 0px;
     }
 
     .order-form{
       flex: 1;
-      margin-left: 0px;
-      margin-right: 0px;
-      margin-bottom: 32px;
+      display:flex;
+      flex-direction: flex-start;
     }
 
     .order-summary{
