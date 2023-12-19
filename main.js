@@ -711,6 +711,9 @@ function showOptionsForPart(partName) {
     case 'laces':
       document.querySelector('.box.neon-pink').closest('.box-container').style.display = 'flex';
       console.log('Displaying neon-pink box container for laces');
+      document.querySelector('.fabric-container.leather-container').style.display = 'flex';
+      document.querySelector('.fabric-container.polyester-container').style.display = 'flex';
+
 
       break;
     case 'sole_bottom':
