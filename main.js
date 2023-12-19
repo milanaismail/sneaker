@@ -733,6 +733,9 @@ button.addEventListener('click', function () {
   customizationData.shoeSize = document.getElementById('size').value;
   sendAllCustomizationData();
   console.log(customizationData);
+  localStorage.setItem("customizationData", JSON.stringify(customizationData));
+  window.location.href = "http://localhost:5173/order.html";
+
 });
 
 function animate() {
