@@ -702,7 +702,19 @@ document.querySelectorAll('.fabric-container').forEach(container => {
 });
 function showOptionsForPart(partName) {
   // Hide all color options
+  document.querySelectorAll('.box-container').forEach(container => {
+    container.style.display = 'none';
+  });
 
+  // Hide all fabric options
+  document.querySelectorAll('.fabric-container').forEach(container => {
+    container.style.display = 'none';
+  });
+
+  // Clear any previous selections
+  document.querySelectorAll('.box.selected').forEach(selectedBox => {
+    selectedBox.classList.remove('selected');
+  });
   // Show the relevant color options based on the part
   switch (partName) {
     
