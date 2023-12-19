@@ -1,7 +1,6 @@
 body {
     text-align: center;
     font-family: 'Helvetica', sans-serif;
-    display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
@@ -10,14 +9,39 @@ body {
     min-height: 100vh;
   }
 
+  .header{
+    border-bottom: #000000 1px solid;
+    width: 100%;
+    padding: 32px;
+    text-align: left;
+    display: flex;
+  }
+
+  hr{
+    width: 100%;
+    border: 1px solid #000000;
+  }
+
+  .logo{
+    width: 96px;
+    height: 96px;
+    margin-left: 256px;
+  }
+
+  .checkout-title{
+    margin-left: 32px;
+  }
+
 .order-form{
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: left;
-    padding: 256px;
+    margin-left: 256px;
+    margin-right: 128px;
     padding-top: 16px;
     padding-bottom: 0px;
+    width: 30%;
   }
   
   form{
@@ -28,7 +52,8 @@ body {
   }
 
   h2{
-    font-size: 64px;
+    font-size: 32px;
+    text-align: left;
   }
   
   input{
@@ -48,24 +73,25 @@ body {
   .order-container{
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
     align-items: flex-start;
     width: 100%;
+    margin: 48px;
   }
+
+ 
   
   .order-summary{
     background-color: #f0f0f0;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
-    background-color: black;
-    color: white;
+    background-color: lightgray;
     padding: 128px;
     padding-top: 16px;
-    width: 35%;
+    text-align: left;
   }
   
-  .order-summary p{
+  p{
     font-size: 24px;
   }
   
@@ -74,7 +100,7 @@ body {
     margin-bottom: 32px;
   }
 
-  button{
+  #orderButton{
     width: 50%; 
     height: 64px; 
     font-size: 24px;
@@ -84,4 +110,49 @@ body {
     background-color:rgb(105, 255, 71);
     border-width:0;
     margin-top: 16px;
+  }
+
+  .shoe-summary{
+    display: block;
+  }
+
+  .total{
+    font-size: 32px;
+  }
+
+  .order-summary-costs{
+    display: block;
+  }
+
+.price{
+    text-align: right;
+    font-size: 28px;
+  }
+
+  .dropdown{
+    display: none;
+  }
+
+  #more{
+    background-color: none;
+    background: none;
+    border: none;
+    font-size: 24px;
+    margin-left: 32px;
+  }
+
+  .order-summary-item{
+    display: flex;
+    align-items: center;
+    margin-bottom: 16px;
+
+  }
+
+  .order-summary-item p{
+    margin-left: 32px;
+    margin-top: 0px;
+  }
+
+  .order-summary-item .price{
+    margin-left: 320px;
   }
