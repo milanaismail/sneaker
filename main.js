@@ -4,12 +4,6 @@ import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 //import draco loader
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
-//import axes helper
-import { AxesHelper } from 'three';
-import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
-//add orbit controls
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
-
 
 const scene = new THREE.Scene();
 
@@ -50,9 +44,11 @@ function playClickSound() {
 window.addEventListener('click', loadAudio);
 
 const onPointerMove = ( event ) => {
-	pointer.x = ( event.clientX / window.innerWidth ) * 2 - 1;
-	pointer.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+  const rect = renderer.domElement.getBoundingClientRect();
+  pointer.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+  pointer.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
 }
+  
 window.addEventListener( 'pointermove', onPointerMove );
 
 //add gridhelper 
@@ -60,14 +56,13 @@ const size = 50;
 const divisions = 50;
 const gridHelper = new THREE.GridHelper( size, divisions );
 
-scene.add( gridHelper );
-
 gridHelper.position.y = -1;
 
 //change color of gridhelper
 gridHelper.material.color.set(0xffffff);
 // change width of gridhelper
 gridHelper.material.linewidth = 3;
+scene.add( gridHelper );
 
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize( window.innerWidth, window.innerHeight );
@@ -195,12 +190,6 @@ oilBarrel.load(
 	});*/
 
 //add cylinder
-const platformMaterial = new THREE.TextureLoader().load('/textures/platform.png');
-const platformColor = new THREE.TextureLoader().load('/textures/platformColor.jpg');
-const platformMetal = new THREE.TextureLoader().load('/textures/platformMetal.jpg');
-const platformRough = new THREE.TextureLoader().load('/textures/platformRough.jpg');
-const platformNormal = new THREE.TextureLoader().load('/textures/platformNorm.jpg');
-const platformAo = new THREE.TextureLoader().load('/textures/platformAo.jpg');
 const cylinderGeometry = new THREE.CylinderGeometry( 1.3, 1.3, 0.2, 80 );
 const cylinderMaterial = new THREE.MeshStandardMaterial( 
   { color: "#d357fe",
@@ -227,33 +216,20 @@ const spotLight = new THREE.SpotLight(0xffffff, 1);
 spotLight.position.set(0, 2, 0);
 spotLight.target.position.set(0, -0.5, 0);
 
-
 //add directional light
 const directionalLight = new THREE.DirectionalLight(0xffffff, 1.3);
 directionalLight.position.set(0, 10, 1);
 directionalLight.target.position.set(0, -0.5, 0);
 
-//add directional helper
-const directionalLightHelper = new THREE.DirectionalLightHelper(directionalLight, 5);
-scene.add(directionalLightHelper);
-
 //add shadow
 directionalLight.castShadow = true;
 scene.add(directionalLight);
 
-//add helper
-const helper = new THREE.DirectionalLightHelper(directionalLight, 5); 
-//scene.add(helper);
-
-
 //camera position
-camera.position.y = 1;
-camera.position.z = 1.1; 
 camera.position.y = 0.65;
+camera.position.z = 1.1; 
 camera.lookAt(0, 0, 0);
-
-//add orbit controls
-const controls = new OrbitControls(camera, renderer.domElement);
+console.log('Camera Position:', camera.position.x, camera.position.y, camera.position.z);
 
 /*let initials = "VZ";
 
@@ -463,6 +439,11 @@ let hoveredPart = null;
 let selectedPart = null;
 const partColors = new Map();
 
+
+// Add color option click event listeners
+const colorOptions = document.querySelectorAll('.colorOption .box');
+colorOptions.forEach(option => option.addEventListener('click', onColorOptionClick));
+
 const fabricOptions = document.querySelectorAll('.fabric-container .box-fabric');
 fabricOptions.forEach(option => option.addEventListener('click', onFabricOptionsClick));
 
@@ -474,6 +455,7 @@ function onColorOptionClick(event) {
       
       switch (selectedPart.name) {
         case 'Laces':
+          
           customizationData.lacesColor = selectedColor;
           break;
         case 'Sole bottom':
@@ -520,6 +502,7 @@ function onColorOptionClick(event) {
     if (selectedPart) {
       switch (selectedPart.name) {
         case 'Laces':
+          
           customizationData.fabricLacesType = fabricType;
           break;
         case 'Sole bottom':
@@ -655,20 +638,15 @@ function getFabricMaterial(fabricType) {
   }
 }
   
-
-// Add color option click event listeners
-const colorOptions = document.querySelectorAll('.colorOption .box');
-colorOptions.forEach(option => option.addEventListener('click', onColorOptionClick));
-
-
 // Function to handle the raycasting logic
 function onDocumentMouseMove(event) {
   event.preventDefault();
 
   // Calculate mouse position in normalized device coordinates
-  pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
-  pointer.y = - (event.clientY / window.innerHeight) * 2 + 1;
 
+  const rect = renderer.domElement.getBoundingClientRect();
+  pointer.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+  pointer.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
   // Update the picking ray with the camera and mouse position
   raycaster.setFromCamera(pointer, camera);
 
@@ -702,19 +680,92 @@ function onDocumentMouseMove(event) {
 
 window.addEventListener('mousemove', onDocumentMouseMove, false);
 
+document.querySelectorAll('.box-container').forEach(container => {
+  container.style.display = 'none';
+});
+
+// Hide all fabric options
+document.querySelectorAll('.fabric-container').forEach(container => {
+  container.style.display = 'none';
+});
+function showOptionsForPart(partName) {
+  // Hide all color options
+document.querySelectorAll('.box-container').forEach(container => {
+    container.style.display = 'none';
+  });
+
+  // Hide all fabric options
+  document.querySelectorAll('.fabric-container').forEach(container => {
+    container.style.display = 'none';
+  });
+
+  // Clear any previous selections
+  document.querySelectorAll('.box.selected').forEach(selectedBox => {
+    selectedBox.classList.remove('selected');
+  });
+  // Show the relevant color options based on the part
+  switch (partName) {
+    
+    case 'laces':
+      document.querySelector('.box.neon-yellow').closest('.box-container').style.display = 'flex';
+      document.querySelector('.box.reddish-orange').closest('.box-container').style.display = 'flex';
+      document.querySelector('.box.lime-green').closest('.box-container').style.display = 'flex';
+      document.querySelector('.box.deep-purple').closest('.box-container').style.display = 'flex';
+      document.querySelector('.fabric-container.leather-container').style.display = 'flex';
+      document.querySelector('.fabric-container.polyester-container').style.display = 'flex';
+      break;
+    case 'sole bottom':
+    case 'sole top':
+      console.log(partName)
+      document.querySelector('.box.chunky-white').closest('.box-container').style.display = 'flex';
+      document.querySelector('.box.transparent-black').closest('.box-container').style.display = 'flex';
+      document.querySelector('.box.slate-gray').closest('.box-container').style.display = 'flex';
+      document.querySelector('.box.rose-gold').closest('.box-container').style.display = 'flex';
+      // Show fabric options for sole_bottom
+      document.querySelector('.fabric-container.leather-container').style.display = 'flex';
+      break;
+      case 'lining':
+        document.querySelector('.box.bold-purple').closest('.box-container').style.display = 'flex';
+        document.querySelector('.box.vivid-orange').closest('.box-container').style.display = 'flex';
+        document.querySelector('.box.turqouise').closest('.box-container').style.display = 'flex';
+        document.querySelector('.box.creamy-white').closest('.box-container').style.display = 'flex';
+        document.querySelector('.fabric-container.leather-container').style.display = 'flex';
+        document.querySelector('.fabric-container.polyester-container').style.display = 'flex';
+        document.querySelector('.fabric-container.velvet-container').style.display = 'flex';
+        break;
+      case 'front part':
+      case 'upper part':
+      case 'body':
+        document.querySelector('.box.electric-blue').closest('.box-container').style.display = 'flex';
+        document.querySelector('.box.neon-pink').closest('.box-container').style.display = 'flex';
+        document.querySelector('.box.deep-burgundy').closest('.box-container').style.display = 'flex';
+        document.querySelector('.box.olive-green').closest('.box-container').style.display = 'flex';
+        document.querySelector('.box.jet-black').closest('.box-container').style.display = 'flex';
+        document.querySelector('.fabric-container.leather-container').style.display = 'flex';
+        document.querySelector('.fabric-container.denim-container').style.display = 'flex';
+        document.querySelector('.fabric-container.metal-leather-container').style.display = 'flex';
+        document.querySelector('.fabric-container.velvet-container').style.display = 'flex';
+        break;
+    // Add cases for other parts as needed
+  }
+}
+
+
 function onDocumentMouseDown(event) {
   event.preventDefault();
 
   // Calculate mouse position in normalized device coordinates
-  pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
-  pointer.y = - (event.clientY / window.innerHeight) * 2 + 1;
+  const rect = renderer.domElement.getBoundingClientRect();
+  pointer.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+  pointer.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
 
   const isColorOption = event.target.classList.contains('box');
 
   if (!isColorOption) {
     // Calculate mouse position in normalized device coordinates
-    pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
-    pointer.y = - (event.clientY / window.innerHeight) * 2 + 1;
+    const rect = renderer.domElement.getBoundingClientRect();
+    pointer.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+    pointer.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
 
     // Update the picking ray with the camera and mouse position
     raycaster.setFromCamera(pointer, camera);
@@ -758,6 +809,8 @@ function onDocumentMouseDown(event) {
       clickedBox.classList.add('selected');
       const clickedBoxFabric = event.target;
       clickedBoxFabric.classList.add('selected');
+      showOptionsForPart(selectedPart.name.toLowerCase());
+
     }
 
 
@@ -806,7 +859,8 @@ function animate() {
   // change plane gradients
   planeMaterial.uniforms.time.value += 0.01;
 
-  
+  raycaster.setFromCamera(pointer, camera);
+
 
   requestAnimationFrame(animate);
 
@@ -819,6 +873,7 @@ window.addEventListener('resize', () => {
   camera.aspect = newWidth / newHeight;
   camera.updateProjectionMatrix();
   renderer.setSize(newWidth, newHeight);
+  raycaster.setFromCamera(pointer, camera);
 });
 
 animate();
