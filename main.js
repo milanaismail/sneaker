@@ -700,14 +700,12 @@ document.querySelectorAll('.box-container').forEach(container => {
 document.querySelectorAll('.fabric-container').forEach(container => {
   container.style.display = 'none';
 });
-const neonPinkContainer = document.querySelector('.box.neon-pink');
-console.log(neonPinkContainer);
-
 function showOptionsForPart(partName) {
   // Hide all color options
 
   // Show the relevant color options based on the part
   switch (partName) {
+    
     case 'laces':
       document.querySelector('.box.neon-yellow').closest('.box-container').style.display = 'flex';
       document.querySelector('.box.reddish-orange').closest('.box-container').style.display = 'flex';
@@ -715,17 +713,39 @@ function showOptionsForPart(partName) {
       document.querySelector('.box.deep-purple').closest('.box-container').style.display = 'flex';
       document.querySelector('.fabric-container.leather-container').style.display = 'flex';
       document.querySelector('.fabric-container.polyester-container').style.display = 'flex';
-
-
       break;
-    case 'sole_bottom':
-      document.querySelectorAll('.colorOption .box-container[data-color="3498db"]').forEach(container => {
-        container.style.display = 'block';
-      });
+    case 'sole bottom':
+    case 'sole top':
+      console.log(partName)
+      document.querySelector('.box.chunky-white').closest('.box-container').style.display = 'flex';
+      document.querySelector('.box.transparent-black').closest('.box-container').style.display = 'flex';
+      document.querySelector('.box.slate-gray').closest('.box-container').style.display = 'flex';
+      document.querySelector('.box.rose-gold').closest('.box-container').style.display = 'flex';
       // Show fabric options for sole_bottom
-      document.querySelector('.fabric-container.leather-container').style.display = 'block';
-      document.querySelector('.fabric-container.metal-leather-container').style.display = 'block';
+      document.querySelector('.fabric-container.leather-container').style.display = 'flex';
       break;
+      case 'lining':
+        document.querySelector('.box.bold-purple').closest('.box-container').style.display = 'flex';
+        document.querySelector('.box.vivid-orange').closest('.box-container').style.display = 'flex';
+        document.querySelector('.box.turqouise').closest('.box-container').style.display = 'flex';
+        document.querySelector('.box.creamy-white').closest('.box-container').style.display = 'flex';
+        document.querySelector('.fabric-container.leather-container').style.display = 'flex';
+        document.querySelector('.fabric-container.polyester-container').style.display = 'flex';
+        document.querySelector('.fabric-container.velvet-container').style.display = 'flex';
+        break;
+      case 'front part':
+      case 'upper part':
+      case 'body':
+        document.querySelector('.box.electric-blue').closest('.box-container').style.display = 'flex';
+        document.querySelector('.box.neon-pink').closest('.box-container').style.display = 'flex';
+        document.querySelector('.box.deep-burgundy').closest('.box-container').style.display = 'flex';
+        document.querySelector('.box.olive-green').closest('.box-container').style.display = 'flex';
+        document.querySelector('.box.jet-black').closest('.box-container').style.display = 'flex';
+        document.querySelector('.fabric-container.leather-container').style.display = 'flex';
+        document.querySelector('.fabric-container.denim-container').style.display = 'flex';
+        document.querySelector('.fabric-container.metal-leather-container').style.display = 'flex';
+        document.querySelector('.fabric-container.velvet-container').style.display = 'flex';
+        break;
     // Add cases for other parts as needed
   }
 }
