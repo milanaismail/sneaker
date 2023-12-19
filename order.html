@@ -54,18 +54,32 @@
                   <p id="size"></p>
                   <p>Laces color: </p>
                   <p id="lacesColor"></p>
+                  <p>Laces fabric:</p>
+                  <p id="lacesFabrics"></p>
                   <p>Sole bottom color: </p>
                   <p id="soleBotColor"></p>
+                  <p>Sole bottom fabric:</p>
+                  <p id="soleBotFabrics"></p>
                   <p>Sole top color: </p>
                   <p id="soleTopColor"></p>
+                  <p>Sole top fabric:</p>
+                  <p id="soleTopFabrics"></p>
                   <p>Lining color: </p>
                   <p id="liningColor"></p>
+                  <p>Lining fabric:</p>
+                  <p id="liningFabrics"></p>
                   <p>Front part color: </p>
                   <p id="frontColor"></p>
+                  <p>Front part fabric:</p>
+                  <p id="frontFabrics"></p>
                   <p>Upper part color: </p>
                   <p id="upperColor"></p>
+                  <p>Upper part fabric:</p>
+                  <p id="upperFabrics"></p>
                   <p>Body color: </p>
                   <p id="bodyColor"></p>
+                  <p>Body fabric:</p>
+                  <p id="bodyFabrics"></p>
               </div>
               </div>
               <hr>
@@ -91,6 +105,13 @@
   let frontPartColor = JSON.parse(localStorage.getItem("customizationData")).frontPartColor;
   let upperPartColor = JSON.parse(localStorage.getItem("customizationData")).upperPartColor;
   let bodyColor = JSON.parse(localStorage.getItem("customizationData")).bodyColor;
+  let lacesFabric = JSON.parse(localStorage.getItem("customizationData")).fabricLacesType;
+  let soleBottomFabric = JSON.parse(localStorage.getItem("customizationData")).fabricSoleBottomType;
+  let soleTopFabric = JSON.parse(localStorage.getItem("customizationData")).fabricSoleTopType;
+  let liningFabric = JSON.parse(localStorage.getItem("customizationData")).fabricLiningType;
+  let frontPartFabric = JSON.parse(localStorage.getItem("customizationData")).fabricFrontPartType;
+  let upperPartFabric = JSON.parse(localStorage.getItem("customizationData")).fabricUpperPartType;
+  let bodyFabric = JSON.parse(localStorage.getItem("customizationData")).fabricBodyType;
 
   document.getElementById("size").innerHTML = shoeSize.slice(5);
   if(lacesColor === 3447003){
@@ -229,6 +250,13 @@
   document.getElementById("frontColor").innerHTML = frontPartColor;
   document.getElementById("upperColor").innerHTML = upperPartColor;
   document.getElementById("bodyColor").innerHTML = bodyColor;
+  document.getElementById("lacesFabrics").innerHTML = lacesFabric;
+  document.getElementById("soleBotFabrics").innerHTML = soleBottomFabric;
+  document.getElementById("soleTopFabrics").innerHTML = soleTopFabric;
+  document.getElementById("liningFabrics").innerHTML = liningFabric;
+  document.getElementById("frontFabrics").innerHTML = frontPartFabric;
+  document.getElementById("upperFabrics").innerHTML = upperPartFabric;
+  document.getElementById("bodyFabrics").innerHTML = bodyFabric;
 
   document.getElementById("more").addEventListener("click", openDetails);
   function openDetails() {

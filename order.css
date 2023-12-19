@@ -171,3 +171,32 @@ body {
   .order-summary-item .price{
     margin-left: auto;
   }
+
+  @media only screen and (max-width: 1650px) {
+    #back{
+      position: relative;
+      margin-left: 64px;
+    }
+    .header{
+      flex-direction: row;
+    }
+
+    .order-container{
+      flex-direction: column;
+      align-items: center;
+      margin: 0px;
+    }
+
+    .order-form{
+      width: 70%;
+      margin-left: 0px;
+      margin-right: 0px;
+      margin-bottom: 32px;
+    }
+
+    .order-summary{
+      width: 70%;
+      padding: 32px;
+      padding-top: 16px;
+    }
+  }
