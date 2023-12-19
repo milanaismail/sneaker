@@ -217,31 +217,20 @@ const spotLight = new THREE.SpotLight(0xffffff, 1);
 spotLight.position.set(0, 2, 0);
 spotLight.target.position.set(0, -0.5, 0);
 
-
 //add directional light
 const directionalLight = new THREE.DirectionalLight(0xffffff, 1.3);
 directionalLight.position.set(0, 10, 1);
 directionalLight.target.position.set(0, -0.5, 0);
 
-//add directional helper
-const directionalLightHelper = new THREE.DirectionalLightHelper(directionalLight, 5);
-scene.add(directionalLightHelper);
-
 //add shadow
 directionalLight.castShadow = true;
 scene.add(directionalLight);
-
-//add helper
-const helper = new THREE.DirectionalLightHelper(directionalLight, 5); 
-//scene.add(helper);
-
 
 //camera position
 camera.position.y = 0.65;
 camera.position.z = 1.1; 
 camera.lookAt(0, 0, 0);
 console.log('Camera Position:', camera.position.x, camera.position.y, camera.position.z);
-//add orbit controls
 
 /*let initials = "VZ";
 
@@ -702,7 +691,7 @@ document.querySelectorAll('.fabric-container').forEach(container => {
 });
 function showOptionsForPart(partName) {
   // Hide all color options
-  document.querySelectorAll('.box-container').forEach(container => {
+document.querySelectorAll('.box-container').forEach(container => {
     container.style.display = 'none';
   });
 
