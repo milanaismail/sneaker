@@ -56,14 +56,13 @@ const size = 50;
 const divisions = 50;
 const gridHelper = new THREE.GridHelper( size, divisions );
 
-scene.add( gridHelper );
-
 gridHelper.position.y = -1;
 
 //change color of gridhelper
 gridHelper.material.color.set(0xffffff);
 // change width of gridhelper
 gridHelper.material.linewidth = 3;
+scene.add( gridHelper );
 
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize( window.innerWidth, window.innerHeight );
