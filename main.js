@@ -255,7 +255,7 @@ camera.lookAt(0, 0, 0);
 //add orbit controls
 const controls = new OrbitControls(camera, renderer.domElement);
 
-let initials = "VZ";
+/*let initials = "VZ";
 
 document.getElementById('initialButton').addEventListener('click', function() {
   initials = document.getElementById('initials').value;
@@ -296,7 +296,7 @@ fontLoader.load( 'fonts/Mulish_Regular.json', function ( font ) {
 
   } );
 
-};
+};*/
 
 /*const fontLoader = new FontLoader();
 const font = fontLoader.load(
