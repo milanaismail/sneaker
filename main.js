@@ -451,6 +451,11 @@ let hoveredPart = null;
 let selectedPart = null;
 const partColors = new Map();
 
+
+// Add color option click event listeners
+const colorOptions = document.querySelectorAll('.colorOption .box');
+colorOptions.forEach(option => option.addEventListener('click', onColorOptionClick));
+
 const fabricOptions = document.querySelectorAll('.fabric-container .box-fabric');
 fabricOptions.forEach(option => option.addEventListener('click', onFabricOptionsClick));
 
@@ -462,6 +467,7 @@ function onColorOptionClick(event) {
       
       switch (selectedPart.name) {
         case 'Laces':
+          
           customizationData.lacesColor = selectedColor;
           break;
         case 'Sole bottom':
@@ -508,6 +514,7 @@ function onColorOptionClick(event) {
     if (selectedPart) {
       switch (selectedPart.name) {
         case 'Laces':
+          
           customizationData.fabricLacesType = fabricType;
           break;
         case 'Sole bottom':
@@ -643,12 +650,6 @@ function getFabricMaterial(fabricType) {
   }
 }
   
-
-// Add color option click event listeners
-const colorOptions = document.querySelectorAll('.colorOption .box');
-colorOptions.forEach(option => option.addEventListener('click', onColorOptionClick));
-
-
 // Function to handle the raycasting logic
 function onDocumentMouseMove(event) {
   event.preventDefault();
@@ -690,6 +691,40 @@ function onDocumentMouseMove(event) {
 }
 
 window.addEventListener('mousemove', onDocumentMouseMove, false);
+
+document.querySelectorAll('.box-container').forEach(container => {
+  container.style.display = 'none';
+});
+
+// Hide all fabric options
+document.querySelectorAll('.fabric-container').forEach(container => {
+  container.style.display = 'none';
+});
+const neonPinkContainer = document.querySelector('.box.neon-pink');
+console.log(neonPinkContainer);
+
+function showOptionsForPart(partName) {
+  // Hide all color options
+
+  // Show the relevant color options based on the part
+  switch (partName) {
+    case 'laces':
+      document.querySelector('.box.neon-pink').closest('.box-container').style.display = 'flex';
+      console.log('Displaying neon-pink box container for laces');
+
+      break;
+    case 'sole_bottom':
+      document.querySelectorAll('.colorOption .box-container[data-color="3498db"]').forEach(container => {
+        container.style.display = 'block';
+      });
+      // Show fabric options for sole_bottom
+      document.querySelector('.fabric-container.leather-container').style.display = 'block';
+      document.querySelector('.fabric-container.metal-leather-container').style.display = 'block';
+      break;
+    // Add cases for other parts as needed
+  }
+}
+
 
 function onDocumentMouseDown(event) {
   event.preventDefault();
@@ -749,6 +784,8 @@ function onDocumentMouseDown(event) {
       clickedBox.classList.add('selected');
       const clickedBoxFabric = event.target;
       clickedBoxFabric.classList.add('selected');
+      showOptionsForPart(selectedPart.name.toLowerCase());
+
     }
 
 
