@@ -77,6 +77,13 @@ renderer.antialias = true;
 
 renderer.setPixelRatio(window.devicePixelRatio);
 
+//add orbit controls
+/*const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
+controls.target.set(0, 0, 0);
+controls.update();*/
+
+
 //add public/cubemap
 const cubeTextureLoader = new THREE.CubeTextureLoader();
 const environmentMapTexture = cubeTextureLoader.load([
@@ -154,6 +161,34 @@ document.addEventListener('mouseup', () => {
   isDragging = false;
 });
 
+//Texture for barrel
+/*const texture = new THREE.TextureLoader().load('textures/normal2.png');
+const material2 = new THREE.MeshStandardMaterial({ 
+  map: texture,
+  metalness: 0.5,
+  roughness: 0.2,
+ });
+
+//add oil barrel
+const oilBarrel = new OBJLoader();
+
+oilBarrel.load(
+	// resource URL
+	'public/old_oil_barrel.obj',
+	// called when resource is loaded
+	function ( barrel ) {
+		scene.add( barrel );
+    barrel.scale.set(0.52, 0.52, 0.52);
+    barrel.position.set(0, -3.55, -0.6);
+    //add material2
+    barrel.traverse( function ( child ) {
+      if ( child instanceof THREE.Mesh ) {
+        child.material = material2;
+        child.receiveShadow = true;
+        child.castShadow = true;
+      }
+    });
+	});*/
 
 //add cylinder
 const cylinderGeometry = new THREE.CylinderGeometry( 1.3, 1.3, 0.2, 80 );
@@ -206,6 +241,7 @@ camera.position.y = 0.65;
 camera.position.z = 1.1; 
 camera.lookAt(0, 0, 0);
 console.log('Camera Position:', camera.position.x, camera.position.y, camera.position.z);
+//add orbit controls
 
 /*let initials = "VZ";
 
@@ -273,7 +309,7 @@ const font = fontLoader.load(
 );*/
 
 
-/*let customizationData = {
+let customizationData = {
   lacesColor: null,
   soleBottomColor: null,
   soleTopColor: null,
@@ -326,7 +362,7 @@ function sendAllCustomizationData() {
     console.error('Error sending customization data:', error);
   });
 }
-*/
+
 
 let shoe;
 
@@ -380,6 +416,7 @@ loader.load('public/Shoe_compressed.glb', function(gltf){
 
   
   shoeMeshes.push(lacesMesh, soleBottomMesh, soleTopMesh, insideMesh, outside1Mesh, outside2Mesh, outside3Mesh);
+  //console.log(lacesMesh);
 
   document.addEventListener('mousemove', (event) => {
     if (isDragging && shoe) {
@@ -388,6 +425,8 @@ loader.load('public/Shoe_compressed.glb', function(gltf){
   
       // Rotate the shoe based on mouse movement
       shoe.rotation.y += delta * 0.01; 
+      
+
     }
   });
   
@@ -451,7 +490,8 @@ function onColorOptionClick(event) {
         partColors.set(selectedPart.uuid, selectedColor);
 
       }
-
+  
+  
       // Add or remove the 'selected' class based on the selected color
       const selectedBox = document.querySelector('.box.selected');
       if (selectedBox) {
@@ -547,6 +587,7 @@ function getFabricMaterial(fabricType) {
         displacementScale: 0.01,
         aoMap: denimOcc,
         aoMapIntensity: 0.5,
+        //roughness: 0.5,
       });
     case 'metalLeatherFabric':
       const metalleatherTexture = new THREE.TextureLoader().load('/fabrics/leather.jpg');
@@ -579,6 +620,7 @@ function getFabricMaterial(fabricType) {
           displacementMap: velvetTexture,
           displacementScale: 0.1,
           metalnessMap: velvetMetal,
+          //roughnessMap: velvetRough,
         });
         case 'polyesterFabric':
           const polyesterTexture = new THREE.TextureLoader().load('/fabrics/polyester.png');
@@ -591,6 +633,7 @@ function getFabricMaterial(fabricType) {
             normalMap: polyesterNormal,
             displacementMap: polyesterTexture,
             displacementScale: 0.1,
+            //roughnessMap: velvetRough,
           });
     default:
       // Default material if fabricType is not recognized
@@ -611,10 +654,10 @@ function onDocumentMouseMove(event) {
   event.preventDefault();
 
   // Calculate mouse position in normalized device coordinates
+
   const rect = renderer.domElement.getBoundingClientRect();
   pointer.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
   pointer.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
- 
   // Update the picking ray with the camera and mouse position
   raycaster.setFromCamera(pointer, camera);
 
