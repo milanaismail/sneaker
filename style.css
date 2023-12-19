@@ -3,20 +3,20 @@ body {
   text-align: center;
   font-family: 'Helvetica', sans-serif;
   text-transform: uppercase;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+
 }
 
 .wrapper {
   display:flex;
-  width: 100%
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
 }
 
 .customizer-container{
   width: 500px; 
-  height:100vh;
+  height: 100vh;
   background-color: black;
   color: white;
   display: flex;
@@ -27,7 +27,7 @@ body {
 
 .canvas-container {
   flex: 1;
-  height: 100vh;
+ overflow: hidden;
   position: relative;
 }
 
