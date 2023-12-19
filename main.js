@@ -252,6 +252,130 @@ camera.position.z = 1.1;
 camera.position.y = 0.65;
 camera.lookAt(0, 0, 0);
 
+//add orbit controls
+const controls = new OrbitControls(camera, renderer.domElement);
+
+let initials = "VZ";
+
+document.getElementById('initialButton').addEventListener('click', function() {
+  initials = document.getElementById('initials').value;
+  scene.remove(scene.getObjectByName('text'));
+  createTextMesh();
+  console.log(initials);
+});
+let fontMesh;
+function createTextMesh (){
+const fontLoader = new FontLoader();
+
+fontLoader.load( 'fonts/Mulish_Regular.json', function ( font ) {
+  console.log(font);
+	const fontGeometry = new TextGeometry( initials, {
+		font: font,
+		size: 0.05,
+		height: 0.01,
+		curveSegments: 12,
+		bevelThickness: 0.010,
+		bevelSize: 0.08,
+		bevelOffset: 0,
+		bevelSegments: 5,
+	} );
+  const fontMaterial = new THREE.MeshBasicMaterial([
+    new THREE.MeshPhongMaterial({
+       color: 0xff22cc,
+       flatShading: true,
+    }), // front
+    new THREE.MeshPhongMaterial({
+       color: 0xffcc22
+    }), // side
+  ])
+  const fontMesh = new THREE.Mesh(fontGeometry, fontMaterial)
+  fontMesh.name = 'text'
+  scene.add(fontMesh)
+  fontMesh.position.set(0.45, 0.25, -0.5);
+  fontMesh.rotation.set(0, -65 * (Math.PI / 45), 0);
+
+  } );
+
+};
+
+/*const fontLoader = new FontLoader();
+const font = fontLoader.load(
+	// resource URL
+	'fonts/Mulish_Regular.json',
+
+	// onLoad callback
+	function ( font ) {
+		// do something with the font
+		console.log( font );
+	},
+
+	// onProgress callback
+	function ( xhr ) {
+		console.log( (xhr.loaded / xhr.total * 100) + '% loaded' );
+	},
+
+	// onError callback
+	function ( err ) {
+		console.log( 'An error happened' );
+	}
+);*/
+
+
+let customizationData = {
+  lacesColor: null,
+  soleBottomColor: null,
+  soleTopColor: null,
+  liningColor: null,
+  frontPartColor: null,
+  upperPartColor: null,
+  bodyColor: null,
+  fabricLacesType: null,
+  fabricSoleBottomType: null,
+  fabricSoleTopType: null,
+  fabricLiningType: null,
+  fabricFrontPartType: null,
+  fabricUpperPartType: null,
+  fabricBodyType: null,
+  shoeSize: null,
+};
+
+function sendAllCustomizationData() {
+  // Basic fetch function to send customization data to the server
+  fetch('/api/saveAllCustomization', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(customizationData),
+  })
+  .then(response => response.json())
+  .then(data => {
+    console.log('All customization data sent to the backend:', data);
+    // Reset customizationData after successful submission
+    customizationData = {
+      lacesColor: null,
+      soleBottomColor: null,
+      soleTopColor: null,
+      liningColor: null,
+      frontPartColor: null,
+      upperPartColor: null,
+      bodyColor: null,
+      fabricLacesType: null,
+      fabricSoleBottomType: null,
+      fabricSoleTopType: null,
+      fabricLiningType: null,
+      fabricFrontPartType: null,
+      fabricUpperPartType: null,
+      fabricBodyType: null,
+      shoeSize: null,
+    };
+  })
+  .catch(error => {
+    console.error('Error sending customization data:', error);
+  });
+}
+
+
 let shoe;
 
 const shoeMeshes = [];
@@ -313,6 +437,8 @@ loader.load('public/Shoe_compressed.glb', function(gltf){
   
       // Rotate the shoe based on mouse movement
       shoe.rotation.y += delta * 0.01; 
+      
+
     }
   });
   
@@ -340,14 +466,43 @@ const partColors = new Map();
 const fabricOptions = document.querySelectorAll('.fabric-container .box-fabric');
 fabricOptions.forEach(option => option.addEventListener('click', onFabricOptionsClick));
 
-
 // Function to handle color option clicks
 function onColorOptionClick(event) {
   const selectedColor = new THREE.Color(parseInt(event.target.dataset.color, 16));
     // Apply the selected color to the entire shoe
     if (selectedPart) {
-      selectedPart.material.color.copy(selectedColor);
-      partColors.set(selectedPart.uuid, selectedColor);
+      
+      switch (selectedPart.name) {
+        case 'Laces':
+          customizationData.lacesColor = selectedColor;
+          break;
+        case 'Sole bottom':
+          customizationData.soleBottomColor = selectedColor;
+          break;
+        case 'sole top':
+          customizationData.soleTopColor = selectedColor;
+          break;
+        case 'Lining':
+          customizationData.liningColor = selectedColor;
+          break;
+        case 'Front part':
+          customizationData.frontPartColor = selectedColor;
+          break;
+        case 'Upper part':
+          customizationData.upperPartColor = selectedColor;
+          break;
+        case 'Body':
+          customizationData.bodyColor = selectedColor;
+          break;
+
+        // Add cases for other parts as needed
+      } 
+      if (selectedPart.material) {
+        selectedPart.material.color.copy(selectedColor);
+        partColors.set(selectedPart.uuid, selectedColor);
+
+      }
+  
   
       // Add or remove the 'selected' class based on the selected color
       const selectedBox = document.querySelector('.box.selected');
@@ -356,13 +511,37 @@ function onColorOptionClick(event) {
       }
       event.target.classList.add('selected');
     }
-  
   }
 
   function onFabricOptionsClick(event) {
     const fabricType = event.currentTarget.id; // Get fabric type from parent container id
     console.log('Fabric type:', fabricType);
-  
+
+    if (selectedPart) {
+      switch (selectedPart.name) {
+        case 'Laces':
+          customizationData.fabricLacesType = fabricType;
+          break;
+        case 'Sole bottom':
+          customizationData.fabricSoleBottomType = fabricType;
+          break;
+        case 'sole top':
+          customizationData.fabricSoleTopType = fabricType;
+          break;
+        case 'Lining':
+          customizationData.fabricLiningType = fabricType;
+          break;
+        case 'Front part':
+          customizationData.fabricFrontPartType = fabricType;
+          break;
+        case 'Upper part':
+          customizationData.fabricUpperPartType = fabricType;
+          break;
+        case 'Body':
+          customizationData.fabricBodyType = fabricType;
+          break;
+      }
+    
     applyFabricToSelectedPart(fabricType);
   
     // Add or remove the 'selected' class based on the selected fabric
@@ -372,6 +551,7 @@ function onColorOptionClick(event) {
     }
     event.target.classList.add('selected');
   }
+}
 
 function applyFabricToSelectedPart(fabricType) {
   console.log('Applying fabric to selected part. Fabric type:', fabricType);
@@ -594,10 +774,9 @@ window.addEventListener('click', onDocumentMouseDown, false);
 
 // clock for animation
 const clock = new THREE.Clock();
-
+const button = document.getElementById('orderButton');
 
 document.getElementById('size').addEventListener('change', function () {
-  const button = document.getElementById('orderButton');
   button.disabled = this.value === ''; // Disable the button if no size is selected
 
   const orderButton = document.getElementById('orderButton');
@@ -607,6 +786,16 @@ document.getElementById('size').addEventListener('change', function () {
       // Redirect to order.html
       window.location.href = 'order.html';
   });
+
+});
+
+button.addEventListener('click', function () {
+  // Send all customization data to the backend
+  customizationData.shoeSize = document.getElementById('size').value;
+  sendAllCustomizationData();
+  console.log(customizationData);
+  localStorage.setItem("customizationData", JSON.stringify(customizationData));
+  window.location.href = "http://localhost:5173/order.html";
 
 });
 

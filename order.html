@@ -7,7 +7,12 @@
     <title>Swear customizer</title>
   </head>
   <body>
+   <div class="header"> 
+    <img src="/public/SWEAR-logo-black.png" alt="logo" class="logo" />
     <h1 class="checkout-title">CHECKOUT</h1>
+    <button id="back">Back to customizer</button>
+
+  </div>
     <div class="order-container">
         <div class="order-form">
             <h2>Customer and delivery details</h2>
@@ -28,51 +33,216 @@
                 <input type="text" id="zip" name="zip" placeholder="Zip"/>
               </form>
               <button id="orderButton" disabled>Order now</button>
+
         </div>  
 
           <div class="order-summary">
-            <h2 style="color: rgb(105, 255, 71);">Order summary</h2>
+            <h2>Order summary</h2>
+            <hr>
+            <div shoe-summary>
                 <div class="order-summary-item">
-                    <p>Picture of the shoe</p>
-                    <p id="model"></p>
+                    <img src="/public/shoe.png" alt="shoe" class="shoe" width="256px"/>
+                    <div class="shoe-details">
+                    <p> AMAZON </p>
+                    <p> Quantity: 1 </p>
+                    <button id="more"> More &#x2B9F;</button>
+                  </div>
+                    <p class="price">€256.00</p>
                 </div>
-                <div class="order-summary-item">
-                    <p>Size</p>
-                    <p id="size"></p>
-                </div>
-                <div class="order-summary-item">
-                    <p>Laces color</p>
-                    <p id="lacesColor"></p>
-                </div>
-                <div class="order-summary-item">
-                  <p>Sole bottom color</p>
+              <div class=" dropdown">
+                  <p>Size: </p>
+                  <p id="size"></p>
+                  <p>Laces color: </p>
+                  <p id="lacesColor"></p>
+                  <p>Sole bottom color: </p>
                   <p id="soleBotColor"></p>
-                </div>
-                <div class="order-summary-item">
-                  <p>Sole top color</p>
+                  <p>Sole top color: </p>
                   <p id="soleTopColor"></p>
-                </div>
-                <div class="order-summary-item">
-                  <p>Lining color</p>
+                  <p>Lining color: </p>
                   <p id="liningColor"></p>
-                </div>
-                <div class="order-summary-item">
-                  <p>Front part color</p>
+                  <p>Front part color: </p>
                   <p id="frontColor"></p>
-                </div>
-                <div class="order-summary-item">
-                  <p>Upper part color</p>
+                  <p>Upper part color: </p>
                   <p id="upperColor"></p>
-                </div>
-                <div class="order-summary-item">
-                  <p>Body color</p>
+                  <p>Body color: </p>
                   <p id="bodyColor"></p>
-                </div>
-                <div class="order-summary-item">
-                    <p>Price</p>
-                    <p id="price"></p>
-                </div>
+              </div>
+              </div>
+              <hr>
+              <div class="order-summary-costs">
+                <p>Items</p>
+                <p class="price">€256.00</p>
+                <p>Delivery</p>
+                <p class="price">€20.00</p>
+              </div>
+              <hr>
+                <h3 class="total">Total</h3>
+                <p class="price">€276.00</p>
         </div>
   </div>
+  <script>
+  
+  console.log(JSON.parse(localStorage.getItem("customizationData")));
+  const shoeSize = JSON.parse(localStorage.getItem("customizationData")).shoeSize;
+  let lacesColor = JSON.parse(localStorage.getItem("customizationData")).lacesColor;
+  let soleBottomColor = JSON.parse(localStorage.getItem("customizationData")).soleBottomColor;
+  let soleTopColor = JSON.parse(localStorage.getItem("customizationData")).soleTopColor;
+  let liningColor = JSON.parse(localStorage.getItem("customizationData")).liningColor;
+  let frontPartColor = JSON.parse(localStorage.getItem("customizationData")).frontPartColor;
+  let upperPartColor = JSON.parse(localStorage.getItem("customizationData")).upperPartColor;
+  let bodyColor = JSON.parse(localStorage.getItem("customizationData")).bodyColor;
+
+  document.getElementById("size").innerHTML = shoeSize.slice(5);
+  if(lacesColor === 3447003){
+    lacesColor = "Electric blue";
+  }
+  else if(lacesColor === 16711782){
+    lacesColor = "Neon pink";
+  }
+  else if(lacesColor === 9579326){
+    lacesColor = "Deep burgundy";
+  }
+  else if(lacesColor === 	5025616){
+    lacesColor = "Olive green";
+  }
+  else if(lacesColor === 0){
+    lacesColor = "Jet black";
+  }
+  else{
+    lacesColor = "White";
+  }
+  
+  if(soleBottomColor === 3447003){
+    soleBottomColor = "Electric blue";
+  }
+  else if(soleBottomColor === 16711782){
+    soleBottomColor = "Neon pink";
+  }
+  else if(soleBottomColor === 9579326){
+    soleBottomColor = "Deep burgundy";
+  }
+  else if(soleBottomColor === 	5025616){
+    soleBottomColor = "Olive green";
+  }
+  else if(soleBottomColor === 0){
+    soleBottomColor = "Jet black";
+  }
+  else{
+    soleBottomColor = "White";
+  }
+  if(soleTopColor === 3447003){
+    soleTopColor = "Electric blue";
+  }
+  else if(soleTopColor === 16711782){
+    soleTopColor = "Neon pink";
+  }
+  else if(soleTopColor === 9579326){
+    soleTopColor = "Deep burgundy";
+  }
+  else if(soleTopColor === 	5025616){
+    soleTopColor = "Olive green";
+  }
+  else if(soleTopColor === 0){
+    soleTopColor = "Jet black";
+  }
+  else{
+    soleTopColor = "White";
+  }
+  if(liningColor === 3447003){
+    liningColor = "Electric blue";
+  }
+  else if(liningColor === 16711782){
+    liningColor = "Neon pink";
+  }
+  else if(liningColor === 9579326){
+    liningColor = "Deep burgundy";
+  }
+  else if(liningColor === 	5025616){
+    liningColor = "Olive green";
+  }
+  else if(liningColor === 0){
+    liningColor = "Jet black";
+  }
+  else{
+    liningColor = "White";
+  }
+  if(frontPartColor === 3447003){
+    frontPartColor = "Electric blue";
+  }
+  else if(frontPartColor === 16711782){
+    frontPartColor = "Neon pink";
+  }
+  else if(frontPartColor === 9579326){
+    frontPartColor = "Deep burgundy";
+  }
+  else if(frontPartColor === 	5025616){
+    frontPartColor = "Olive green";
+  }
+  else if(frontPartColor === 0){
+    frontPartColor = "Jet black";
+  }
+  else{
+    frontPartColor = "White";
+  }
+  if(upperPartColor === 3447003){
+    upperPartColor = "Electric blue";
+  }
+  else if(upperPartColor === 16711782){
+    upperPartColor = "Neon pink";
+  }
+  else if(upperPartColor === 9579326){
+    upperPartColor = "Deep burgundy";
+  }
+  else if(upperPartColor === 	5025616){
+    upperPartColor = "Olive green";
+  }
+  else if(upperPartColor === 0){
+    upperPartColor = "Jet black";
+  }
+  else{
+    upperPartColor = "White";
+  }
+  if(bodyColor === 3447003){
+    bodyColor = "Electric blue";
+  }
+  else if(bodyColor === 16711782){
+    bodyColor = "Neon pink";
+  }
+  else if(bodyColor === 9579326){
+    bodyColor = "Deep burgundy";
+  }
+  else if(bodyColor === 	5025616){
+    bodyColor = "Olive green";
+  }
+  else if(bodyColor === 0){
+    bodyColor = "Jet black";
+  }
+  else{
+    bodyColor = "White";
+  }
+
+
+  document.getElementById("lacesColor").innerHTML = lacesColor;
+  document.getElementById("soleBotColor").innerHTML = soleBottomColor;
+  document.getElementById("soleTopColor").innerHTML = soleTopColor;
+  document.getElementById("liningColor").innerHTML = liningColor;
+  document.getElementById("frontColor").innerHTML = frontPartColor;
+  document.getElementById("upperColor").innerHTML = upperPartColor;
+  document.getElementById("bodyColor").innerHTML = bodyColor;
+
+  document.getElementById("more").addEventListener("click", openDetails);
+  function openDetails() {
+    if (document.querySelector(".dropdown").style.display === "none")
+      document.querySelector(".dropdown").style.display = "block";
+    else
+    document.querySelector(".dropdown").style.display = "none";
+  }
+
+  document.getElementById("back").addEventListener("click", () => {
+    window.location.href = "http://localhost:5173/";
+  });
+</script>
+
+
   </body>
 </html>
