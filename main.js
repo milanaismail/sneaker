@@ -4,9 +4,6 @@ import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 //import draco loader
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
-//import axes helper
-import { AxesHelper } from 'three';
-import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
 //add orbit controls
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
