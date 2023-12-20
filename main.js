@@ -837,7 +837,7 @@ document.getElementById('size').addEventListener('change', function () {
   // Add a click event listener to the button
   orderButton.addEventListener('click', function() {
       // Redirect to order.html
-      window.location.href = '/order.html';
+      window.location.href = 'order.html';
   });
 
 });
@@ -848,7 +848,7 @@ button.addEventListener('click', function () {
   sendAllCustomizationData();
   console.log(customizationData);
   localStorage.setItem("customizationData", JSON.stringify(customizationData));
-  window.location.href = "http://localhost:5173/order.html";
+  window.location.href = "order.html";
 
 });
 
