@@ -21,7 +21,7 @@ const listener = new THREE.AudioListener();
 
 camera.add(listener);
 
-//audio
+//audiohttps://sneaker-rose.vercel.app
 
 const sound = new THREE.PositionalAudio(listener);
 function loadAudio() {
@@ -86,12 +86,12 @@ controls.update();*/
 //add public/cubemap
 const cubeTextureLoader = new THREE.CubeTextureLoader();
 const environmentMapTexture = cubeTextureLoader.load([
-  '/public/cubemap/px.png',
-  '/public/cubemap/nx.png',
-  '/public/cubemap/py.png',
-  '/public/cubemap/ny.png',
-  '/public/cubemap/pz.png',
-  '/public/cubemap/nz.png',
+  '/cubemap/px.png',
+  '/cubemap/nx.png',
+  '/cubemap/py.png',
+  '/cubemap/ny.png',
+  '/cubemap/pz.png',
+  '/cubemap/nz.png',
 ]);
 
 
@@ -357,7 +357,7 @@ let shoe;
 const shoeMeshes = [];
 
 //add public/Shoe_compressed.glb 
-loader.load('public/Shoe_compressed.glb', function(gltf){
+loader.load('/Shoe_compressed.glb', function(gltf){
   shoe = gltf.scene;
   shoe.position.set(0.05, 0.10, -0.04)
   shoe.rotation.set(0, -65 * (Math.PI / 180), 0)
