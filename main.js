@@ -837,7 +837,7 @@ document.getElementById('size').addEventListener('change', function () {
   // Add a click event listener to the button
   orderButton.addEventListener('click', function() {
       // Redirect to order.html
-      window.location.href = 'order.html';
+      window.location.href = '/order.html';
   });
 
 });
